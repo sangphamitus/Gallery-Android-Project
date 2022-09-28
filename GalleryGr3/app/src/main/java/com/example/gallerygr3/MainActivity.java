@@ -10,10 +10,13 @@ import android.os.Environment;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,10 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     ArrayList<String> FileInPaths;
     RecyclerView folderPictureReview;
     RecyclerView imageReview;
+    String DCIM;
+    String Picture;
+    String SD;
+    Spinner chooseRoot;
 
     String[] ImageExtensions = new String[] {
             ".jpg",
@@ -51,10 +58,28 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DCIM= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
+        Picture =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+        SD=  Environment.getExternalStorageDirectory().getAbsolutePath();
+        String[] items={DCIM,Picture,SD};
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                      }, 1);
+        chooseRoot =(Spinner) findViewById(R.id.chooseRootDir);
+        chooseRoot.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,items));
+        chooseRoot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setCurrentDirectory(items[i]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                    //do nothing
+            }
+        });
+
 
         backBtn =(Button) findViewById(R.id.backButton);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -81,9 +106,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         context=MainActivity.this;
         folderPictureReview = (RecyclerView) findViewById(R.id.folderPictureReview);
         imageReview =(RecyclerView) findViewById(R.id.imagePictureView);
-        String curr= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
-        setCurrentDirectory(curr);
-
+        setCurrentDirectory(DCIM);
 
     }
     @Override
