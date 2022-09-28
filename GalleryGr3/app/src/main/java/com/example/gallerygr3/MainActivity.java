@@ -150,8 +150,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         File sdFile= new File(Dir);
         File[] foldersSD= sdFile.listFiles();
 
-
-
         try
         {
 
@@ -161,7 +159,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 boolean flag=false;
                 if( folder.isDirectory())
                 {
-
+                    //get absolute
                     DirInPaths.add(folder.getAbsolutePath());
 
                 }
