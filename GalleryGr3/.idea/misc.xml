@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.121" />
+        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/drawable/ic_launcher_background.xml" value="0.121" />
+        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/activity_selected_picture.xml" value="0.25416666666666665" />
+        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/clicked_picture.xml" value="0.1" />
+        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/fullsize_item.xml" value="0.253125" />
+        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/row_items.xml" value="0.253125" />
+        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/simple_image.xml" value="0.25416666666666665" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
