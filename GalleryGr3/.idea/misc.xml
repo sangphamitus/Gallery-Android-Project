@@ -3,11 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/workspace/project mobile/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable/ic_baseline_photo.xml" value="0.223" />
-        <entry key="..\:/workspace/project mobile/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
-        <entry key="..\:/workspace/project mobile/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/fragment_albums.xml" value="0.22826086956521738" />
-        <entry key="..\:/workspace/project mobile/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/fragment_photos.xml" value="0.22826086956521738" />
-        <entry key="..\:/workspace/project mobile/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/fragment_settings.xml" value="0.22826086956521738" />
+
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_main.xml" value="0.536" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/folder_view.xml" value="0.1" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/fragment_folder.xml" value="0.1" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/picture_view.xml" value="0.11629667003027246" />
+
       </map>
     </option>
   </component>
