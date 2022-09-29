@@ -6,14 +6,89 @@
     android:background="@color/photos"
     tools:context=".PhotosFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:textColor="#ffffff"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="photos Fragment" />
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/display"
+            android:stretchColumns="0">
+            <TableRow>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="back"
+                        android:id="@+id/backButton"
+                        android:layout_marginRight="5dp">
+
+                    </Button>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="20dp"
+                        android:id="@+id/currentDir"
+                        android:textFontWeight="@integer/material_motion_duration_medium_1">
+
+                    </TextView>
+                </LinearLayout>
+
+            </TableRow>
+            <TableRow>
+
+            </TableRow>
+
+            <TableRow>
+                <ScrollView
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/folderPictureReview"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            >
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="line"
+                            android:background="@color/cardview_dark_background"
+                            android:textColor="@color/cardview_dark_background"
+                            android:textSize="1dp"
+                            android:gravity="center_horizontal"></TextView>
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/imagePictureView"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            >
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                    </LinearLayout>
+
+
+                </ScrollView>
+            </TableRow>
+        </TableLayout>
+
+
+
 
 </FrameLayout>

@@ -19,11 +19,15 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 
     Context context;
     ArrayList<String> Dirs;
+    PhotosFragment mCallbacks;
 
-    public FolderAdapter(Context context,ArrayList<String> Dirs)
+
+    public FolderAdapter(Context context,ArrayList<String> Dirs,PhotosFragment mCallbacks)
     {
         this.context=context;
         this.Dirs=Dirs;
+        this.mCallbacks=mCallbacks;
+
     }
 
 
@@ -47,6 +51,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
                 int pos =holder.getAdapterPosition();
 
                 ((MainActivity)context).setCurrentDirectory(Dirs.get(pos));
+                mCallbacks.setTitleFolder();
             }
         });
 

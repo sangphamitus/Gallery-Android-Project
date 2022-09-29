@@ -2,7 +2,9 @@ package com.example.gallerygr3;
 
 
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -11,138 +13,172 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import android.Manifest;
-import android.content.Context;
+
 import android.content.pm.PackageManager;
-import android.os.Bundle;
+
 import android.os.Environment;
 
-import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 
+public class MainActivity extends AppCompatActivity  implements MainCallBack {
+
+    String currentDirectory=null;
+
+    String SD;
+    ArrayList<String> folderPaths=new ArrayList<String>();
+
+    PhotosFragment photo;
 
     LinearLayout[] arrNavLinearLayouts = new LinearLayout[3];
     ImageView[] arrNavImageViews = new ImageView[3];
     TextView[] arrNavTextViews = new TextView[3];
-    private int selectedTab=0;
+    private int selectedTab = 0;
     int[] arrRoundLayout = new int[3];
     int[] arrIcon = new int[3];
     int[] arrSelectedIcon = new int[3];
 
     Class[] arrFrag = new Class[3];
 
-
-
-public class MainActivity extends AppCompatActivity  implements MainCallBack {
-
-    Button backBtn;
-    Context context;
-    String currentDirectory;
-    ArrayList<String> folderPaths=new ArrayList<String>();
-    ArrayList<String> DirInPaths;
-    ArrayList<String> FileInPaths;
-    RecyclerView folderPictureReview;
-    RecyclerView imageReview;
-    String DCIM;
-    String Picture;
-    String SD;
-    Spinner chooseRoot;
-
-    String[] ImageExtensions = new String[] {
-            ".jpg",
-            ".png",
-            ".gif",
-            ".jpeg"
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, 1);
 
+        SD = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-        arrFrag[0]=PhotosFragment.class;
-        arrFrag[1]=AlbumsFragment.class;
-        arrFrag[2]=SettingsFragment.class;
+        arrFrag[0] = PhotosFragment.class;
+        arrFrag[1] = AlbumsFragment.class;
+        arrFrag[2] = SettingsFragment.class;
 
-        arrRoundLayout[0]=R.drawable.round_photos;
-        arrRoundLayout[1]=R.drawable.round_albums;
-        arrRoundLayout[2]=R.drawable.round_settings;
+        arrRoundLayout[0] = R.drawable.round_photos;
+        arrRoundLayout[1] = R.drawable.round_albums;
+        arrRoundLayout[2] = R.drawable.round_settings;
 
-        arrIcon[0]=R.drawable.ic_baseline_photo;
-        arrIcon[1]=R.drawable.ic_baseline_photo_library;
-        arrIcon[2]=R.drawable.ic_baseline_settings;
+        arrIcon[0] = R.drawable.ic_baseline_photo;
+        arrIcon[1] = R.drawable.ic_baseline_photo_library;
+        arrIcon[2] = R.drawable.ic_baseline_settings;
 
-        arrSelectedIcon[0]=R.drawable.ic_baseline_photo_selected;
-        arrSelectedIcon[1]=R.drawable.ic_baseline_photo_library_selected;
-        arrSelectedIcon[2]=R.drawable.ic_baseline_settings_selected;
+        arrSelectedIcon[0] = R.drawable.ic_baseline_photo_selected;
+        arrSelectedIcon[1] = R.drawable.ic_baseline_photo_library_selected;
+        arrSelectedIcon[2] = R.drawable.ic_baseline_settings_selected;
 
-        arrNavLinearLayouts[0]=(LinearLayout)findViewById(R.id.photosLayout);
-        arrNavLinearLayouts[1]=(LinearLayout)findViewById(R.id.albumsLayout);
-        arrNavLinearLayouts[2]=(LinearLayout)findViewById(R.id.settingsLayout);
+        arrNavLinearLayouts[0] = (LinearLayout) findViewById(R.id.photosLayout);
+        arrNavLinearLayouts[1] = (LinearLayout) findViewById(R.id.albumsLayout);
+        arrNavLinearLayouts[2] = (LinearLayout) findViewById(R.id.settingsLayout);
 
-        arrNavImageViews[0]=(ImageView)findViewById(R.id.photos_img);
-        arrNavImageViews[1]=(ImageView)findViewById(R.id.albums_img);
-        arrNavImageViews[2]=(ImageView)findViewById(R.id.settings_img);
+        arrNavImageViews[0] = (ImageView) findViewById(R.id.photos_img);
+        arrNavImageViews[1] = (ImageView) findViewById(R.id.albums_img);
+        arrNavImageViews[2] = (ImageView) findViewById(R.id.settings_img);
 
-        arrNavTextViews[0]=(TextView)findViewById(R.id.photos_txt);
-        arrNavTextViews[1]=(TextView)findViewById(R.id.albums_txt);
-        arrNavTextViews[2]=(TextView)findViewById(R.id.settings_txt);
+        arrNavTextViews[0] = (TextView) findViewById(R.id.photos_txt);
+        arrNavTextViews[1] = (TextView) findViewById(R.id.albums_txt);
+        arrNavTextViews[2] = (TextView) findViewById(R.id.settings_txt);
 
         arrNavLinearLayouts[0].setOnClickListener(new NavLinearLayouts(0));
         arrNavLinearLayouts[1].setOnClickListener(new NavLinearLayouts(1));
         arrNavLinearLayouts[2].setOnClickListener(new NavLinearLayouts(2));
+//
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                getSupportFragmentManager().beginTransaction()
+             .setReorderingAllowed(true)
+               .replace(R.id.fragment_container, arrFrag[0], null)
+                .commit();
+
+                Toast.makeText(MainActivity.this, "Permission granted!", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(MainActivity.this, "Permission denied!", Toast.LENGTH_SHORT).show();
+                finish();
+
+            }
+        }
+    }
+
+    @Override
+    public void setCurrentDirectory(String Dir) {
+        currentDirectory = Dir;
+
+        folderPaths.add(Dir);
+
+        Toast.makeText(this, "Change Dir: " + Dir, Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    @Override
+    public String getSDDirectory() {
+        return SD;
+    }
+
+    @Override
+    public String getCurrentDirectory() {
+        return currentDirectory;
+    }
+
+    @Override
+    public void pushFolderPath(String inp) {
+        folderPaths.add(inp);
+    }
+
+    @Override
+    public String popFolderPath() {
+        folderPaths.remove(folderPaths.size()-1 );
+        return folderPaths.get(folderPaths.size()-1);
+    }
+
+    @Override
+    public ArrayList<String> getFolderPath() {
+        return folderPaths;
     }
 
     protected class NavLinearLayouts implements View.OnClickListener {
         public int thisIndex;
 
-        NavLinearLayouts(int index){
-            thisIndex=index;
+        NavLinearLayouts(int index) {
+            thisIndex = index;
         }
 
         @SuppressLint("ResourceAsColor")
         @Override
         public void onClick(View view) {
-            if(selectedTab!=thisIndex) {
+            if (selectedTab != thisIndex) {
 
                 //go to current fragment
-                selectedTab=thisIndex;
+                selectedTab = thisIndex;
 
                 getSupportFragmentManager().beginTransaction()
                         .setReorderingAllowed(true)
-                        .replace(R.id.fragment_container,arrFrag[thisIndex],null)
+                        .replace(R.id.fragment_container, arrFrag[thisIndex], null)
                         .commit();
 
                 // change others icon
-                for(int i =0;i<3;i++){
-                    if(i!=thisIndex){
+                for (int i = 0; i < 3; i++) {
+                    if (i != thisIndex) {
                         arrNavTextViews[i].setVisibility(View.GONE);
                         arrNavImageViews[i].setImageResource(arrIcon[i]);
-                        arrNavLinearLayouts[i].setBackgroundColor(getResources().getColor(R.color.white,null));
+                        arrNavLinearLayouts[i].setBackgroundColor(getResources().getColor(R.color.white, null));
                     }
 
                     //change this icon
@@ -151,219 +187,16 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     arrNavLinearLayouts[thisIndex].setBackgroundResource(arrRoundLayout[thisIndex]);
 
                     //animation
-                    ScaleAnimation scaleAnimation= new ScaleAnimation(0.8f,1.0f,1f,1f, Animation.RELATIVE_TO_SELF,0,Animation.RELATIVE_TO_SELF,0.0f);
+                    ScaleAnimation scaleAnimation = new ScaleAnimation(0.8f, 1.0f, 1f, 1f, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.0f);
                     scaleAnimation.setDuration(200);
                     scaleAnimation.setFillAfter(true);
                     arrNavLinearLayouts[thisIndex].startAnimation(scaleAnimation);
 
                 }
 
-        DCIM= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
-        Picture =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
-        SD=  Environment.getExternalStorageDirectory().getAbsolutePath();
-        String[] items={DCIM,Picture,SD};
-        ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                     }, 1);
-        chooseRoot =(Spinner) findViewById(R.id.chooseRootDir);
-        chooseRoot.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,items));
-        chooseRoot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setCurrentDirectory(items[i]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                    //do nothing
-            }
-        });
-
-
-        backBtn =(Button) findViewById(R.id.backButton);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(folderPaths.size()==1)
-                {
-                    Toast.makeText(MainActivity.this,"cannot back directory",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    folderPaths.remove(folderPaths.size()-1 );
-                    setCurrentDirectory(folderPaths.get(folderPaths.size()-1));
-                }
-            }
-        });
-
-        //loadFolder();
-
-    }
-    private void initiateApp()
-    {
-
-        context=MainActivity.this;
-        folderPictureReview = (RecyclerView) findViewById(R.id.folderPictureReview);
-        imageReview =(RecyclerView) findViewById(R.id.imagePictureView);
-        setCurrentDirectory(DCIM);
-
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            // If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                initiateApp();
-                Toast.makeText(MainActivity.this, "Permission granted!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(MainActivity.this, "Permission denied!", Toast.LENGTH_SHORT).show();
 
             }
         }
-    }
-
-    @Override
-    public void setCurrentDirectory(String Dir)
-    {
-        currentDirectory=Dir;
-        folderPaths.add(currentDirectory);
-        Toast.makeText(this,"Change Dir: "+Dir,Toast.LENGTH_SHORT).show();
-        setTitleFolder();
-        readFolder();
-    }
-    private void setTitleFolder()
-    {
-
-        int getPositionFolderName=  currentDirectory.lastIndexOf("/");
-        String name= currentDirectory.substring(getPositionFolderName + 1);
-        TextView curDir=(TextView) findViewById(R.id.currentDir);
-
-        curDir.setText(name);
-        Context context =getApplicationContext();
-        Toast.makeText(context,"Dir:"+name,Toast.LENGTH_SHORT);
-    }
-    private void readFolder()
-    {
-        String Dir=currentDirectory;
-
-        File sdFile= new File(Dir);
-        File[] foldersSD= sdFile.listFiles();
-
-        try
-        {
-
-            DirInPaths=new ArrayList<String>();
-            for (File folder:foldersSD)
-            {
-                boolean flag=false;
-                if( folder.isDirectory())
-                {
-                    //get absolute
-                    DirInPaths.add(folder.getAbsolutePath());
-
-                }
-            }
-
-        }
-        catch(Exception e)
-        {
-            finish();
-        }
-        loadFolders();
-        readImagesInFolder();
-    }
-
-    private void readImagesInFolder()
-    {
-        try
-        {
-            String Dir=currentDirectory;
-            setTitleFolder();
-            File folder=new File(Dir);
-            File[] allFiles=folder.listFiles();
-
-            FileInPaths= new ArrayList<String>();
-            for(File file:allFiles)
-            {
-
-                for(String extension:ImageExtensions)
-                {
-                    if (file.getAbsolutePath().toLowerCase().endsWith(extension))
-                    {
-                       // addImageView(file.getAbsolutePath());
-                        FileInPaths.add(file.getAbsolutePath());
-
-                        break;
-                    }
-
-                }
-                if(FileInPaths.size()>10)
-                {
-                    break;
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Log.e("Error",e.getMessage());
-        }
-        if(FileInPaths.size()>0)
-        {
-            loadImages();
-        }
 
     }
-
-//    private void addButtonView(String file)
-//    {
-//        GridLayout linearLayout =  (GridLayout) findViewById(R.id.listFile);
-//
-//        Button tv = new Button(this);
-//        tv.setText(file);
-//        tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams .MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-//        tv.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                currentDirectory=file;
-//                setTitleFolder();
-//                readFolder();
-//
-//            }
-//        });
-//        linearLayout.addView(tv);
-//
-//    }
-//
-//    private void addImageView(String file)
-//    {
-//        LinearLayout linearLayout =  (LinearLayout) findViewById(R.id.listFile);
-//
-//        TextView tv = new TextView(this);
-//        tv.setText(file);
-//        tv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams .MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-//
-//        linearLayout.addView(tv);
-//
-//    }
-
-        private void loadFolders()
-        {
-            FolderAdapter folderAdapter =new FolderAdapter(context,DirInPaths);
-            folderPictureReview.setAdapter(folderAdapter);
-            folderPictureReview.setLayoutManager(new GridLayoutManager(context,2));
-        }
-        private  void loadImages()
-        {
-            ArrayList<String> inp= new ArrayList<String>();
-            for (int i=0;i<(FileInPaths.size()>10?10:FileInPaths.size());i++ )
-            {
-                inp.add(FileInPaths.get(i));
-            }
-            ImageAdapter imgAdapter =new ImageAdapter(context,inp);
-            imageReview.setAdapter(imgAdapter);
-            imageReview.setLayoutManager(new GridLayoutManager(context,2));
-        }
 }
