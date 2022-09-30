@@ -3,17 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.121" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/drawable/ic_launcher_background.xml" value="0.121" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/activity_selected_picture.xml" value="0.25416666666666665" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/clicked_picture.xml" value="0.1" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/fragment_image_display.xml" value="0.25416666666666665" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/fullsize_item.xml" value="0.253125" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/list_item.xml" value="0.25416666666666665" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/row_item.xml" value="0.1828125" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/row_items.xml" value="0.253125" />
-        <entry key="..\:/Destop/Mobile Project/GalleryGr3/app/src/main/res/layout/simple_image.xml" value="0.25416666666666665" />
+
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/folder_view.xml" value="0.1" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/fragment_folder.xml" value="0.1" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/fragment_photos.xml" value="0.264" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/picture_view.xml" value="0.11629667003027246" />
+
       </map>
     </option>
   </component>
