@@ -5,6 +5,7 @@ package com.example.gallerygr3;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     String currentDirectory=null;
 
     String SD;
+    String DCIM;
+    String Picture;
     ArrayList<String> folderPaths=new ArrayList<String>();
 
     PhotosFragment photo;
@@ -59,6 +62,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 }, 1);
 
         SD = Environment.getExternalStorageDirectory().getAbsolutePath();
+        DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
+        Picture= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
         arrFrag[0] = PhotosFragment.class;
         arrFrag[1] = AlbumsFragment.class;
@@ -143,14 +148,24 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     }
 
     @Override
-    public String popFolderPath() {
+    public void popFolderPath() {
         folderPaths.remove(folderPaths.size()-1 );
-        return folderPaths.get(folderPaths.size()-1);
+        currentDirectory = folderPaths.get(folderPaths.size()-1);
     }
 
     @Override
     public ArrayList<String> getFolderPath() {
         return folderPaths;
+    }
+
+    @Override
+    public String getDCIMDirectory() {
+        return DCIM;
+    }
+
+    @Override
+    public String getPictureDirectory() {
+        return Picture;
     }
 
     protected class NavLinearLayouts implements View.OnClickListener {
@@ -179,6 +194,11 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                         arrNavTextViews[i].setVisibility(View.GONE);
                         arrNavImageViews[i].setImageResource(arrIcon[i]);
                         arrNavLinearLayouts[i].setBackgroundColor(getResources().getColor(R.color.white, null));
+                        arrNavImageViews[i].setColorFilter(R.color.black);
+                    }
+                    else
+                    {
+                        arrNavImageViews[i].setColorFilter(Color.argb(255, 255, 255, 255));
                     }
 
                     //change this icon

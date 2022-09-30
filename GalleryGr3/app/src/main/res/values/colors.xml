@@ -8,11 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="photos">#1194AA</color>
+    <color name="photos">#F9F5EB</color>
     <color name="albums">#C9379D</color>
     <color name="settings">#AE7E0F</color>
 
-    <color name="photos_20">#331194AA</color>
+    <color name="photos_20">#607EAA</color>
     <color name="albums_20">#33C9379D</color>
     <color name="settings_20">#33AE7E0F</color>
 

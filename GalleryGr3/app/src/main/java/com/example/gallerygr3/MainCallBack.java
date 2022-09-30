@@ -8,8 +8,10 @@ public interface MainCallBack {
     public String getSDDirectory();
     public String getCurrentDirectory();
     public void pushFolderPath (String inp );
-    public String popFolderPath();
+    public void popFolderPath();
     public ArrayList<String> getFolderPath();
+    public String getDCIMDirectory();
+    public String getPictureDirectory();
 
 
 

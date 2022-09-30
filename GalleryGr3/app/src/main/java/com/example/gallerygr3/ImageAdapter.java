@@ -41,7 +41,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
         int getPositionFolderName= Images.get(position).lastIndexOf("/");
         String name= Images.get(position).substring(getPositionFolderName + 1);
-       holder.imageText.setText(name);
+        String[] ArrayName= name.split("\\.");
+        String displayName="";
+
+        if (ArrayName[0].length() > 10)
+        {
+            displayName = ArrayName[0].substring(0, 5);
+            displayName+="...";
+            displayName += ArrayName[0].substring(ArrayName[0].length()-5);
+        }
+        else
+        {
+            displayName = ArrayName[0];
+        }
+        displayName+="."+ArrayName[1];
+
+       holder.imageText.setText(displayName);
 
         File imgFile= new File(Images.get(position));
         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
