@@ -13,6 +13,7 @@ public interface MainCallBack {
     public String getDCIMDirectory();
     public String getPictureDirectory();
 
+    public ArrayList<String> getFileinDir();
 
 
 }

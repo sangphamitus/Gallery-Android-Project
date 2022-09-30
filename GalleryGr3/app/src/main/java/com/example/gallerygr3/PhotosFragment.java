@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -304,7 +305,7 @@ public class PhotosFragment extends Fragment implements FolderCallBack {
 
         ImageAdapter imgAdapter =new ImageAdapter(context,FileInPaths);
         imageReview.setAdapter(imgAdapter);
-        imageReview.setLayoutManager(new GridLayoutManager(context,2));
+        imageReview.setLayoutManager(new GridView(context,4));
     }
 
 
