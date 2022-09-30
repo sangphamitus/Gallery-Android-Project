@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 }, 1);
 
       //  SD = Environment.getExternalStorageDirectory().getAbsolutePath();
-       // DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
+        DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
         Picture= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
         arrFrag[0] = ImageDisplay.class;
@@ -136,30 +136,25 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     }
 
 
-    private void readFolder()
-    {
-        String Dir=currentDirectory;
+    private void readFolder() {
 
-        File sdFile= new File(Dir);
-        File[] foldersSD= sdFile.listFiles();
+        String[] imageGets = {DCIM, Picture};
+        for (int i = 0; i < imageGets.length; i++) {
 
-            try
-            {
-                for (File file:foldersSD)
-                {
-                    if( file.isDirectory())
-                    {
+            String Dir = imageGets[i];
+            File sdFile = new File(Dir);
+            File[] foldersSD = sdFile.listFiles();
+
+            try {
+                for (File file : foldersSD) {
+                    if (file.isDirectory()) {
                         //get absolute
-                       //do nothing
+                        //do nothing
 
-                    }
-                    else
-                    {
-                        for(String extension:ImageExtensions)
-                        {
+                    } else {
+                        for (String extension : ImageExtensions) {
 
-                            if (file.getAbsolutePath().toLowerCase().endsWith(extension))
-                            {
+                            if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
                                 // addImageView(file.getAbsolutePath());
                                 FileInPaths.add(file.getAbsolutePath());
 
@@ -170,15 +165,13 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     }
                 }
 
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 //do nothing
             }
 
         }
 
-
+    }
 
     @Override
     public String getSDDirectory() {

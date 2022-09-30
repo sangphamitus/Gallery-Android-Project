@@ -15,6 +15,20 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="0">
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="30sp"
+                    android:text="Gallery"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20sp">
+
+                </TextView>
                 <ImageButton
                     android:id="@+id/resizeView"
                     android:layout_width="95dp"
@@ -22,6 +36,10 @@
                     android:layout_gravity="right"
                     android:scaleType="fitCenter"
                     android:src="@drawable/resizeicon" />
+
+            </TableRow>
+
+        </TableLayout>
 
 
         <GridView
