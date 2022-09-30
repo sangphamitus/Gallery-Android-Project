@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,16 +32,18 @@ import java.util.ArrayList;
  */
 public class PhotosFragment extends Fragment implements FolderCallBack {
 
-    Button backBtn;
+    ImageButton backBtn;
     Context context;
     String currentDirectory=null;
 
-    ArrayList<String> DirInPaths;
-    ArrayList<String> FileInPaths;
+    ArrayList<String> DirInPaths=new ArrayList<String>();
+    ArrayList<String> FileInPaths=new ArrayList<String>();
     RecyclerView folderPictureReview;
     RecyclerView imageReview;
 
     String SD;
+    String DCIM;
+    String Pictures;
     View currentView;
 
     TextView currDirDisplay;
@@ -100,6 +103,8 @@ public class PhotosFragment extends Fragment implements FolderCallBack {
         context= getContext();
         SD= ((MainActivity)context).getSDDirectory();
 
+        DCIM= ((MainActivity)context).getDCIMDirectory();
+        Pictures= ((MainActivity)context).getPictureDirectory();
 
 
 
@@ -117,7 +122,7 @@ public class PhotosFragment extends Fragment implements FolderCallBack {
 
         currDirDisplay =(TextView) currentView.findViewById(R.id.currentDir);
 
-        backBtn =(Button) currentView.findViewById(R.id.backButton);
+        backBtn =(ImageButton) currentView.findViewById(R.id.backButton);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,9 +133,9 @@ public class PhotosFragment extends Fragment implements FolderCallBack {
                 }
                 else
                 {
-                   String outer= ((MainActivity)context).popFolderPath();
-                    ((MainActivity)context).setCurrentDirectory(outer);
-                   // currentDirectory=((MainActivity)context).getCurrentDirectory();
+                   ((MainActivity)context).popFolderPath();
+                   // ((MainActivity)context).setCurrentDirectory(outer);
+                    currentDirectory=((MainActivity)context).getCurrentDirectory();
                     setTitleFolder();
 
                 }
@@ -142,7 +147,27 @@ public class PhotosFragment extends Fragment implements FolderCallBack {
         return currentView;
     }
 
+    public void clearImage() {
+        int size = FileInPaths.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                FileInPaths.remove(0);
+            }
 
+
+        }
+    }
+    public void clearDir()
+    {int size = DirInPaths.size();
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                DirInPaths.remove(0);
+            }
+
+
+        }
+
+    }
 
     public void setTitleFolder()
     {
@@ -162,70 +187,109 @@ public class PhotosFragment extends Fragment implements FolderCallBack {
 
         File sdFile= new File(Dir);
         File[] foldersSD= sdFile.listFiles();
-
-        try
+        clearImage();
+        clearDir();
+        if(Dir==SD)
         {
+            DirInPaths.add(DCIM);
+            DirInPaths.add(Pictures);
+        }
 
-            DirInPaths=new ArrayList<String>();
-            for (File folder:foldersSD)
+        else
+        {
+            try
             {
-                boolean flag=false;
-                if( folder.isDirectory())
-                {
-                    //get absolute
-                    DirInPaths.add(folder.getAbsolutePath());
 
+
+
+                for (File file:foldersSD)
+                {
+                    if( file.isDirectory())
+                    {
+                        //get absolute
+                        DirInPaths.add(file.getAbsolutePath());
+
+                    }
+                    else
+                    {
+                        for(String extension:ImageExtensions)
+                        {
+                            if(FileInPaths.size()>15)
+                            {
+                                break;
+                            }
+                            if (file.getAbsolutePath().toLowerCase().endsWith(extension))
+                            {
+                                // addImageView(file.getAbsolutePath());
+                                FileInPaths.add(file.getAbsolutePath());
+
+                                break;
+                            }
+
+                        }
+                    }
                 }
+
+            }
+            catch(Exception e)
+            {
+                //do nothing
             }
 
         }
-        catch(Exception e)
+
+        if(DirInPaths.size()>0)
         {
-            //do nothing
+
+            clearImage();
+
         }
         loadFolders();
-        readImagesInFolder();
+
+
+        loadImages();
     }
 
-    private void readImagesInFolder()
-    {
-        try
-        {
-            String Dir=currentDirectory;
 
-            File folder=new File(Dir);
-            File[] allFiles=folder.listFiles();
-
-            FileInPaths= new ArrayList<String>();
-            for(File file:allFiles)
-            {
-
-                for(String extension:ImageExtensions)
-                {
-                    if (file.getAbsolutePath().toLowerCase().endsWith(extension))
-                    {
-                        // addImageView(file.getAbsolutePath());
-                        FileInPaths.add(file.getAbsolutePath());
-
-                        break;
-                    }
-
-                }
-                if(FileInPaths.size()>10)
-                {
-                    break;
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Log.e("Error",e.getMessage());
-        }
-
-            loadImages();
+      //  readImagesInFolder();
 
 
-    }
+//    private void readImagesInFolder()
+//    {
+//        try
+//        {
+//            String Dir=currentDirectory;
+//            File folder=new File(Dir);
+//            File[] allFiles=folder.listFiles();
+//
+//
+//            FileInPaths= new ArrayList<String>();
+//            for(File file:allFiles)
+//            {
+//
+//                for(String extension:ImageExtensions)
+//                {
+//                    if (file.getAbsolutePath().toLowerCase().endsWith(extension))
+//                    {
+//                        // addImageView(file.getAbsolutePath());
+//                        FileInPaths.add(file.getAbsolutePath());
+//
+//                        break;
+//                    }
+//
+//                }
+//
+//            }
+//        }
+//        catch (Exception e)
+//        {
+//            Log.e("Error",e.getMessage());
+//        }
+//
+//            loadImages();
+//
+//
+//    }
 
     private void loadFolders()
     {
@@ -237,12 +301,8 @@ public class PhotosFragment extends Fragment implements FolderCallBack {
     }
     private  void loadImages()
     {
-        ArrayList<String> inp= new ArrayList<String>();
-        for (int i=0;i<(FileInPaths.size()>10?10:FileInPaths.size());i++ )
-        {
-            inp.add(FileInPaths.get(i));
-        }
-        ImageAdapter imgAdapter =new ImageAdapter(context,inp);
+
+        ImageAdapter imgAdapter =new ImageAdapter(context,FileInPaths);
         imageReview.setAdapter(imgAdapter);
         imageReview.setLayoutManager(new GridLayoutManager(context,2));
     }

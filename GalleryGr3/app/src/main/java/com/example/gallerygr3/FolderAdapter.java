@@ -43,7 +43,21 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 
         int getPositionFolderName=  Dirs.get(position).lastIndexOf("/");
         String name= Dirs.get(position).substring(getPositionFolderName + 1);
-        holder.textFolder.setText(name);
+
+        String displayName="";
+
+        if (name.length() > 15)
+        {
+            displayName = name.substring(0, 7);
+            displayName+="...";
+            displayName += name.substring(name.length()-8);
+        }
+        else
+        {
+            displayName = name;
+        }
+
+        holder.textFolder.setText(displayName);
 
         holder.folderItem.setOnClickListener(new View.OnClickListener() {
             @Override

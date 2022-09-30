@@ -54,7 +54,8 @@
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_baseline_photo" />
+                android:src="@drawable/ic_baseline_photo"
+                app:tint="@color/photos"/>
 
             <TextView
                 android:id="@+id/photos_txt"
