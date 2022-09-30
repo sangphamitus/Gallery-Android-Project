@@ -7,8 +7,10 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import android.graphics.Bitmap;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -22,18 +24,34 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.io.File;
+
+
+
+/*
+* File imgFile= new File(Images.get(position));
+        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+        holder.imageItem.setImageBitmap(myBitmap);
+*
+* */
 
 public class ImageDisplay extends Fragment {
     ImageButton changeBtn;
     GridView gridView;
     CardView cardView;
-    String[] names ={"img1","img2","img3","img4","img5","img6","img7","img8","img9","img10","img11","img12"};
+    String[] names;
     int numCol=2;
-    int[] images ={R.drawable.avatar1,R.drawable.avatar2, R.drawable.avatar3,
-            R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6,
-            R.drawable.avatar7, R.drawable.avatar8, R.drawable.avatar9,
-            R.drawable.avatar10, R.drawable.avatar11, R.drawable.avatar12,
-    };
+    ArrayList<String> images;
+
+
+//    int[] images ={R.drawable.avatar1,R.drawable.avatar2, R.drawable.avatar3,
+//            R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6,
+//            R.drawable.avatar7, R.drawable.avatar8, R.drawable.avatar9,
+//            R.drawable.avatar10, R.drawable.avatar11, R.drawable.avatar12,
+//    };
+
 
     public ImageDisplay() {
         // Required empty public constructor
@@ -50,11 +68,11 @@ public class ImageDisplay extends Fragment {
 
     public class CustomAdapter extends BaseAdapter {
         private String[] imageNames;
-        private int[] imagePhotos;
+        private ArrayList<String> imagePhotos;
         private Context context;
         private LayoutInflater layoutInflater;
 
-        public CustomAdapter(String[] imageNames, int[] imagePhotos, Context context) {
+        public CustomAdapter(String[] imageNames, ArrayList<String> imagePhotos, Context context) {
             this.imageNames = imageNames;
             this.imagePhotos = imagePhotos;
             this.context = context;
@@ -63,7 +81,7 @@ public class ImageDisplay extends Fragment {
 
         @Override
         public int getCount() {
-            return imagePhotos.length;
+            return imagePhotos.size();
         }
 
         @Override
@@ -85,18 +103,23 @@ public class ImageDisplay extends Fragment {
             ImageView imageView = view.findViewById(R.id.imageView);
 
 //            tvName.setText(imageNames[i]);
-            imageView.setImageResource(imagePhotos[i]);
+
+//            imageView.setImageResource(imagePhotos[i]);
+
+            File imgFile= new File(imagePhotos.get(i));
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            imageView.setImageBitmap(myBitmap);
             return view;
         }
     }
 
     public class ListAdapter extends BaseAdapter{
         private String[] imageNames;
-        private int[] imagePhotos;
+        private ArrayList<String> imagePhotos;
         private Context context;
         private LayoutInflater layoutInflater;
 
-        public ListAdapter(String[] imageNames, int[] imagePhotos, Context context) {
+        public ListAdapter(String[] imageNames, ArrayList<String> imagePhotos, Context context) {
             this.imageNames = imageNames;
             this.imagePhotos = imagePhotos;
             this.context = context;
@@ -105,7 +128,7 @@ public class ImageDisplay extends Fragment {
 
         @Override
         public int getCount() {
-            return imagePhotos.length;
+            return imagePhotos.size();
         }
 
         @Override
@@ -127,15 +150,53 @@ public class ImageDisplay extends Fragment {
             ImageView imageView = view.findViewById(R.id.imageView);
 
             tvName.setText(imageNames[i]);
-            imageView.setImageResource(imagePhotos[i]);
+
+
+            File imgFile= new File(imagePhotos.get(i));
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            imageView.setImageBitmap(myBitmap);
+
             return view;
         }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
+        Context context= getActivity();
+        images =((MainActivity)context).getFileinDir();
+
+        //create name array
+
+        names= new String[images.size()];
+
+        for(int i=0;i<images.size();i++){
+
+            // get name from file===================================
+            int getPositionFolderName= images.get(i).lastIndexOf("/");
+            String name= images.get(i).substring(getPositionFolderName + 1);
+
+            String[] ArrayName= name.split("\\.");
+            String displayName="";
+
+            if (ArrayName[0].length() > 10)
+            {
+                displayName = ArrayName[0].substring(0, 5);
+                displayName+="...";
+                displayName += ArrayName[0].substring(ArrayName[0].length()-5);
+            }
+            else
+            {
+                displayName = ArrayName[0];
+            }
+            displayName+="."+ArrayName[1];
+
+            names[i]=displayName;
+
+            // ====================================================
+        }
     }
 
 
@@ -156,12 +217,12 @@ public class ImageDisplay extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedName= names[i];
-                int selectedImage = images[i];
+                String selectedName= images.get(i);
 
+//                int selectedImage = images[i];
 
                 startActivity(new Intent(getActivity(), SelectedPicture.class)
-                        .putExtra("name", selectedName).putExtra("image",selectedImage));
+                        .putExtra("name", selectedName));
             }
 
         });

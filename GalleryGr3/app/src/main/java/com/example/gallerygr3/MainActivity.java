@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     String Picture;
     ArrayList<String> folderPaths=new ArrayList<String>();
     ArrayList<String> FileInPaths=new ArrayList<String>();
-    PhotosFragment photo;
+//    PhotosFragment photo;
 
     String[] ImageExtensions = new String[] {
             ".jpg",
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
        // DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
         Picture= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
-        arrFrag[0] = PhotosFragment.class;
+        arrFrag[0] = ImageDisplay.class;
         arrFrag[1] = AlbumsFragment.class;
         arrFrag[2] = SettingsFragment.class;
 
@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         arrNavLinearLayouts[1].setOnClickListener(new NavLinearLayouts(1));
         arrNavLinearLayouts[2].setOnClickListener(new NavLinearLayouts(2));
 //
+        setCurrentDirectory(Picture);
     }
 
     @Override
