@@ -1,6 +1,5 @@
 package com.example.gallerygr3;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
