@@ -66,6 +66,8 @@ public class ImageDisplay extends Fragment {
     Bundle myStateInfo;
     LayoutInflater myStateinflater;
     ViewGroup myStatecontainer;
+    ImageDisplay.CustomAdapter customAdapter=null;
+    ImageDisplay.ListAdapter listAdapter=null;
     private static final int CAMERA_REQUEST = 1888;
 
 //    int[] images ={R.drawable.avatar1,R.drawable.avatar2, R.drawable.avatar3,
@@ -94,6 +96,32 @@ public class ImageDisplay extends Fragment {
         private Context context;
         private LayoutInflater layoutInflater;
 
+        public void changeDataSource(ArrayList<String> imagePhotos) {
+            this.imagePhotos = imagePhotos;
+            String[] names = new String[imagePhotos.size()];
+
+            for (int i = 0; i < imagePhotos.size(); i++) {
+
+                // get name from file===================================
+                int getPositionFolderName = imagePhotos.get(i).lastIndexOf("/");
+                String name = imagePhotos.get(i).substring(getPositionFolderName + 1);
+
+                String[] ArrayName = name.split("\\.");
+                String displayName = "";
+
+                if (ArrayName[0].length() > 10) {
+                    displayName = ArrayName[0].substring(0, 5);
+                    displayName += "...";
+                    displayName += ArrayName[0].substring(ArrayName[0].length() - 5);
+                } else {
+                    displayName = ArrayName[0];
+                }
+                displayName += "." + ArrayName[1];
+
+                names[i] = displayName;
+            }
+            this.imageNames=names;
+        }
         public CustomAdapter(String[] imageNames, ArrayList<String> imagePhotos, Context context) {
             this.imageNames = imageNames;
             this.imagePhotos = imagePhotos;
@@ -140,6 +168,11 @@ public class ImageDisplay extends Fragment {
         private ArrayList<String> imagePhotos;
         private Context context;
         private LayoutInflater layoutInflater;
+
+        public void changeDataSource(ArrayList<String> imagePhotos) {
+            this.imagePhotos = imagePhotos;
+
+        }
 
         public ListAdapter(String[] imageNames, ArrayList<String> imagePhotos, Context context) {
             this.imageNames = imageNames;
@@ -241,8 +274,16 @@ public class ImageDisplay extends Fragment {
         fab_expand=(FloatingActionButton) view.findViewById(R.id.fab_Expand);
         fab_url=(FloatingActionButton) view.findViewById(R.id.fab_url);
 
-        ImageDisplay.CustomAdapter customAdapter = new ImageDisplay.CustomAdapter(names,images,getActivity());
-        ImageDisplay.ListAdapter listAdapter = new ImageDisplay.ListAdapter(names,images,getActivity());
+        if(customAdapter==null)
+        {
+            customAdapter = new ImageDisplay.CustomAdapter(names,images,getActivity());
+
+        }
+        if(listAdapter==null)
+        {
+            listAdapter = new ImageDisplay.ListAdapter(names,images,getActivity());
+        }
+
         gridView.setAdapter(customAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -310,7 +351,12 @@ public class ImageDisplay extends Fragment {
                         Intent data = result.getData();
                         images.add(0,namePictureShoot);
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
-                        onCreate(new Bundle());
+
+                        customAdapter.changeDataSource(images);
+                        listAdapter.changeDataSource(images);
+
+                         onCreate(myStateInfo);
+                        onCreateView(myStateinflater,myStatecontainer,myStateInfo);
                     }
                 }
             });
