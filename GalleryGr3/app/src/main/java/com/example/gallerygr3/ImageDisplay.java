@@ -95,7 +95,7 @@ public class ImageDisplay extends Fragment {
         private ArrayList<String> imagePhotos;
         private Context context;
         private LayoutInflater layoutInflater;
-
+ 
         public void changeDataSource(ArrayList<String> imagePhotos) {
             this.imagePhotos = imagePhotos;
             String[] names = new String[imagePhotos.size()];
