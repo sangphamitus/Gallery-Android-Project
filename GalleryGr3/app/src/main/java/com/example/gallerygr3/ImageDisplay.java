@@ -16,6 +16,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.graphics.Bitmap;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -32,6 +37,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,7 +62,11 @@ public class ImageDisplay extends Fragment {
     String[] names;
     int numCol=2;
     ArrayList<String> images;
-
+    String namePictureShoot="";
+    Bundle myStateInfo;
+    LayoutInflater myStateinflater;
+    ViewGroup myStatecontainer;
+    private static final int CAMERA_REQUEST = 1888;
 
 //    int[] images ={R.drawable.avatar1,R.drawable.avatar2, R.drawable.avatar3,
 //            R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6,
@@ -177,6 +187,7 @@ public class ImageDisplay extends Fragment {
 
         super.onCreate(savedInstanceState);
 
+
         Context context= getActivity();
         images =((MainActivity)context).getFileinDir();
 
@@ -216,6 +227,10 @@ public class ImageDisplay extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        myStateinflater=inflater;
+        myStatecontainer=container;
+        myStateInfo = savedInstanceState;
+  //      myStateInfo = savedInstanceState;
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_image_display, container, false);
 
@@ -284,6 +299,23 @@ public class ImageDisplay extends Fragment {
     }
 
 
+    // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
+                        Intent data = result.getData();
+                        images.add(0,namePictureShoot);
+                        Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
+                        onCreate(new Bundle());
+                    }
+                }
+            });
+
+
     private void openCamera()  {
         // Ask permission
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -295,7 +327,9 @@ public class ImageDisplay extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT,getUri(Environment.DIRECTORY_PICTURES));
-        startActivity(intent);
+       // startActivity(intent);
+        //startActivityForResult(intent,CAMERA_REQUEST);
+        someActivityResultLauncher.launch(intent);
     }
     private String generateFileName(){
         LocalDateTime now=LocalDateTime.now();
@@ -306,7 +340,9 @@ public class ImageDisplay extends Fragment {
     private Uri getUri(String path){
 
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, generateFileName()+".jpg");
+        String tempName=generateFileName()+".jpg";
+        namePictureShoot= ((MainActivity)getContext()).getCurrentDirectory()+'/'+tempName;
+        values.put(MediaStore.Images.Media.DISPLAY_NAME,tempName );
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
         values.put(MediaStore.Images.Media.RELATIVE_PATH, path);
 
