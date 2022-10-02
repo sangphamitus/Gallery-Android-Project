@@ -1,19 +1,28 @@
 
 package com.example.gallerygr3;
 import com.example.gallerygr3.SelectedPicture;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.graphics.Bitmap;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +33,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.io.File;
 
@@ -39,6 +50,7 @@ import java.io.File;
 
 public class ImageDisplay extends Fragment {
     ImageButton changeBtn;
+    FloatingActionButton fab_camera,fab_expand,fab_url;
     GridView gridView;
     CardView cardView;
     String[] names;
@@ -210,6 +222,9 @@ public class ImageDisplay extends Fragment {
         gridView = (GridView) view.findViewById(R.id.gridView);
         changeBtn = (ImageButton)view.findViewById(R.id.resizeView);
         cardView = (CardView) view.findViewById(R.id.cardView);
+        fab_camera=(FloatingActionButton) view.findViewById(R.id.fab_Camera);
+        fab_expand=(FloatingActionButton) view.findViewById(R.id.fab_Expand);
+        fab_url=(FloatingActionButton) view.findViewById(R.id.fab_url);
 
         ImageDisplay.CustomAdapter customAdapter = new ImageDisplay.CustomAdapter(names,images,getActivity());
         ImageDisplay.ListAdapter listAdapter = new ImageDisplay.ListAdapter(names,images,getActivity());
@@ -243,9 +258,61 @@ public class ImageDisplay extends Fragment {
             }
         });
 
+        fab_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openCamera();
+            }
+        });
+        fab_url.setVisibility(View.INVISIBLE);
+        fab_camera.setVisibility(View.INVISIBLE);
+        fab_expand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (fab_camera.getVisibility() == View.INVISIBLE){
+                    fab_url.setVisibility(View.VISIBLE);
+                    fab_camera.setVisibility(View.VISIBLE);
+                } else {
+                    fab_url.setVisibility(View.INVISIBLE);
+                    fab_camera.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
         return view;
 //        return inflater.inflate(R.layout.fragment_image_display, container, false);
     }
 
+
+    private void openCamera()  {
+        // Ask permission
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),new String[]{
+                    Manifest.permission.CAMERA
+            },100);
+        }
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,getUri(Environment.DIRECTORY_PICTURES));
+        startActivity(intent);
+    }
+    private String generateFileName(){
+        LocalDateTime now=LocalDateTime.now();
+        DateTimeFormatter myFormat=DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        return now.format(myFormat);
+    }
+    // Android 10+
+    private Uri getUri(String path){
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, generateFileName()+".jpg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, path);
+
+        Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+
+        return uri;
+    }
 
 }
