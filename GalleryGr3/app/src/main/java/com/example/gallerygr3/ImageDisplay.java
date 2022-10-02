@@ -95,33 +95,6 @@ public class ImageDisplay extends Fragment {
         private ArrayList<String> imagePhotos;
         private Context context;
         private LayoutInflater layoutInflater;
- 
-        public void changeDataSource(ArrayList<String> imagePhotos) {
-            this.imagePhotos = imagePhotos;
-            String[] names = new String[imagePhotos.size()];
-
-            for (int i = 0; i < imagePhotos.size(); i++) {
-
-                // get name from file===================================
-                int getPositionFolderName = imagePhotos.get(i).lastIndexOf("/");
-                String name = imagePhotos.get(i).substring(getPositionFolderName + 1);
-
-                String[] ArrayName = name.split("\\.");
-                String displayName = "";
-
-                if (ArrayName[0].length() > 10) {
-                    displayName = ArrayName[0].substring(0, 5);
-                    displayName += "...";
-                    displayName += ArrayName[0].substring(ArrayName[0].length() - 5);
-                } else {
-                    displayName = ArrayName[0];
-                }
-                displayName += "." + ArrayName[1];
-
-                names[i] = displayName;
-            }
-            this.imageNames=names;
-        }
         public CustomAdapter(String[] imageNames, ArrayList<String> imagePhotos, Context context) {
             this.imageNames = imageNames;
             this.imagePhotos = imagePhotos;
@@ -147,6 +120,7 @@ public class ImageDisplay extends Fragment {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             if(view == null){
+                Toast.makeText((MainActivity)context,"image"+i,Toast.LENGTH_SHORT).show();
                 view =layoutInflater.inflate(R.layout.row_item,viewGroup,false);
             }
 //            TextView tvName = view.findViewById(R.id.tvName);
@@ -159,6 +133,7 @@ public class ImageDisplay extends Fragment {
             File imgFile= new File(imagePhotos.get(i));
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             imageView.setImageBitmap(myBitmap);
+
             return view;
         }
     }
@@ -168,11 +143,6 @@ public class ImageDisplay extends Fragment {
         private ArrayList<String> imagePhotos;
         private Context context;
         private LayoutInflater layoutInflater;
-
-        public void changeDataSource(ArrayList<String> imagePhotos) {
-            this.imagePhotos = imagePhotos;
-
-        }
 
         public ListAdapter(String[] imageNames, ArrayList<String> imagePhotos, Context context) {
             this.imageNames = imageNames;
@@ -217,7 +187,6 @@ public class ImageDisplay extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
 
@@ -350,13 +319,11 @@ public class ImageDisplay extends Fragment {
                         // There are no request codes
                         Intent data = result.getData();
                         images.add(0,namePictureShoot);
+                        customAdapter.notifyDataSetChanged();
+                        listAdapter.notifyDataSetChanged();
+
+
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
-
-                        customAdapter.changeDataSource(images);
-                        listAdapter.changeDataSource(images);
-
-                         onCreate(myStateInfo);
-                        onCreateView(myStateinflater,myStatecontainer,myStateInfo);
                     }
                 }
             });
