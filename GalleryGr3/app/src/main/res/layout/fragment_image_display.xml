@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ImageDisplay"
+    android:id="@+id/imagedisplay_corLay">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ImageDisplay"
+        android:id="@+id/imagedisplay">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MainActivity"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="0">
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="30sp"
+                        android:text="Gallery"
+                        android:gravity="center_vertical"
+                        android:paddingStart="20sp">
+
+                    </TextView>
+                    <ImageButton
+                        android:id="@+id/resizeView"
+                        android:layout_width="95dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="right"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/resizeicon" />
+
+                </TableRow>
+
+            </TableLayout>
+
+
+            <GridView
+                android:id="@+id/gridView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:horizontalSpacing="4dp"
+                android:numColumns="4"
+                android:verticalSpacing="4dp" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="0dp"
+        android:elevation="6dp"
+        >
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/fab_Camera"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:contentDescription="Url"
+            android:src="@android:drawable/stat_sys_download_done"
+            app:backgroundTint="#FAFAFA" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_Camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/fab_Expand"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:contentDescription="Camera"
+            android:src="@android:drawable/ic_menu_camera"
+            app:backgroundTint="#FAFAFA"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_Expand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:contentDescription="Expand"
+            android:src="@android:drawable/ic_menu_add"
+            app:backgroundTint="#FAFAFA" />
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
