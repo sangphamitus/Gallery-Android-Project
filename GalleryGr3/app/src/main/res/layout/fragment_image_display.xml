@@ -46,8 +46,6 @@
                 </TableRow>
 
             </TableLayout>
-
-
             <GridView
                 android:id="@+id/gridView"
                 android:layout_width="wrap_content"
