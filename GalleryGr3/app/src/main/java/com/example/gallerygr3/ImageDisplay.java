@@ -46,13 +46,7 @@ import java.io.File;
 
 
 
-/*
-* File imgFile= new File(Images.get(position));
-        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
-        holder.imageItem.setImageBitmap(myBitmap);
-*
-* */
 
 public class ImageDisplay extends Fragment {
     ImageButton changeBtn;
@@ -255,7 +249,6 @@ public class ImageDisplay extends Fragment {
         }
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -293,7 +286,8 @@ public class ImageDisplay extends Fragment {
 //                int selectedImage = images[i];
 
                 startActivity(new Intent(getActivity(), SelectedPicture.class)
-                        .putExtra("name", selectedName));
+                        .putExtra("name", selectedName)
+                        .putExtra("images",images));
             }
 
         });
