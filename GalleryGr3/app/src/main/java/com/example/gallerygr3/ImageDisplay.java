@@ -220,7 +220,7 @@ public class ImageDisplay extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-
+        myStateInfo=savedInstanceState;
         Context context= getActivity();
         images =((MainActivity)context).getFileinDir();
 
@@ -355,7 +355,8 @@ public class ImageDisplay extends Fragment {
                         customAdapter.changeDataSource(images);
                         listAdapter.changeDataSource(images);
 
-                         onCreate(myStateInfo);
+                     //   myStateInfo= new Bundle();
+                      //   onCreate(myStateInfo);
                         onCreateView(myStateinflater,myStatecontainer,myStateInfo);
                     }
                 }
