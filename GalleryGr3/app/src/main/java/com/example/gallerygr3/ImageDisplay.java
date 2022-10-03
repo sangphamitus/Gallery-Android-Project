@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -39,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -202,6 +204,7 @@ public class ImageDisplay extends Fragment {
         images =((MainActivity)context).getFileinDir();
 
         //create name array
+        names= new ArrayList<String>();
 
         for(int i=0;i<images.size();i++){
 
@@ -306,7 +309,12 @@ public class ImageDisplay extends Fragment {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
-                        Intent data = result.getData();
+
+                        File imgFile= new File(namePictureShoot);
+                        Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        imageShoot=rotateImage(imageShoot,90);
+                        saveImage(imageShoot,namePictureShoot);
+
                         images.add(namePictureShoot);
                         names.add(getDisplayName(namePictureShoot));
                         customAdapter.notifyDataSetChanged();
@@ -317,8 +325,28 @@ public class ImageDisplay extends Fragment {
                     }
                 }
             });
+    private void saveImage(Bitmap finalBitmap,String imagePath) {
 
+        File myFile = new File(imagePath);
 
+        if (myFile.exists()) myFile.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(myFile);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static Bitmap rotateImage(Bitmap bmpSrc, float degrees) {
+        int w = bmpSrc.getWidth();
+        int h = bmpSrc.getHeight();
+        Matrix mtx = new Matrix();
+        mtx.postRotate(degrees);
+        Bitmap bmpTrg = Bitmap.createBitmap(bmpSrc, 0, 0, w, h, mtx, true);
+        return bmpTrg;
+    }
     private void openCamera()  {
         // Ask permission
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
