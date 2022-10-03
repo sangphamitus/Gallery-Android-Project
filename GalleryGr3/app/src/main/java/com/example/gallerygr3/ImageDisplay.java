@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -39,27 +40,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.io.File;
+import java.util.Arrays;
 
 
 
-/*
-* File imgFile= new File(Images.get(position));
-        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
-        holder.imageItem.setImageBitmap(myBitmap);
-*
-* */
 
 public class ImageDisplay extends Fragment {
     ImageButton changeBtn;
     FloatingActionButton fab_camera,fab_expand,fab_url;
     GridView gridView;
     CardView cardView;
-    String[] names;
+    ArrayList<String> names;
     int numCol=2;
     ArrayList<String> images;
     String namePictureShoot="";
@@ -91,38 +88,15 @@ public class ImageDisplay extends Fragment {
     }
 
     public class CustomAdapter extends BaseAdapter {
-        private String[] imageNames;
+        private ArrayList<String> imageNames;
         private ArrayList<String> imagePhotos;
         private Context context;
         private LayoutInflater layoutInflater;
- 
-        public void changeDataSource(ArrayList<String> imagePhotos) {
-            this.imagePhotos = imagePhotos;
-            String[] names = new String[imagePhotos.size()];
-
-            for (int i = 0; i < imagePhotos.size(); i++) {
-
-                // get name from file===================================
-                int getPositionFolderName = imagePhotos.get(i).lastIndexOf("/");
-                String name = imagePhotos.get(i).substring(getPositionFolderName + 1);
-
-                String[] ArrayName = name.split("\\.");
-                String displayName = "";
-
-                if (ArrayName[0].length() > 10) {
-                    displayName = ArrayName[0].substring(0, 5);
-                    displayName += "...";
-                    displayName += ArrayName[0].substring(ArrayName[0].length() - 5);
-                } else {
-                    displayName = ArrayName[0];
-                }
-                displayName += "." + ArrayName[1];
-
-                names[i] = displayName;
-            }
-            this.imageNames=names;
+        private class ViewHolder{
+            ImageView imageView;
         }
-        public CustomAdapter(String[] imageNames, ArrayList<String> imagePhotos, Context context) {
+
+        public CustomAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, Context context) {
             this.imageNames = imageNames;
             this.imagePhotos = imagePhotos;
             this.context = context;
@@ -146,35 +120,34 @@ public class ImageDisplay extends Fragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            if(view == null){
-                view =layoutInflater.inflate(R.layout.row_item,viewGroup,false);
-            }
-//            TextView tvName = view.findViewById(R.id.tvName);
-            ImageView imageView = view.findViewById(R.id.imageView);
-
-//            tvName.setText(imageNames[i]);
-
-//            imageView.setImageResource(imagePhotos[i]);
-
+            ViewHolder viewHolder=null;
             File imgFile= new File(imagePhotos.get(i));
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            imageView.setImageBitmap(myBitmap);
+            if(view == null){
+                view =layoutInflater.inflate(R.layout.row_item,viewGroup,false);
+                viewHolder=new ViewHolder();
+                viewHolder.imageView=view.findViewById(R.id.imageView);
+                view.setTag(viewHolder);
+            } else {
+                viewHolder=(ViewHolder) view.getTag();
+            }
+            viewHolder.imageView.setImageBitmap(myBitmap);
+
             return view;
         }
     }
 
     public class ListAdapter extends BaseAdapter{
-        private String[] imageNames;
+        private ArrayList<String> imageNames;
         private ArrayList<String> imagePhotos;
         private Context context;
         private LayoutInflater layoutInflater;
-
-        public void changeDataSource(ArrayList<String> imagePhotos) {
-            this.imagePhotos = imagePhotos;
-
+        private class ViewHolder{
+            TextView textView;
+            ImageView imageView;
         }
 
-        public ListAdapter(String[] imageNames, ArrayList<String> imagePhotos, Context context) {
+        public ListAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, Context context) {
             this.imageNames = imageNames;
             this.imagePhotos = imagePhotos;
             this.context = context;
@@ -198,13 +171,20 @@ public class ImageDisplay extends Fragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
+            ViewHolder viewHolder=null;
             if(view == null){
                 view =layoutInflater.inflate(R.layout.list_item,viewGroup,false);
+                viewHolder=new ViewHolder();
+                viewHolder.imageView=view.findViewById(R.id.imageView);
+                viewHolder.textView=view.findViewById(R.id.tvName);
+                view.setTag(viewHolder);
+            } else {
+                viewHolder=(ViewHolder) view.getTag();
             }
-            TextView tvName = view.findViewById(R.id.tvName);
-            ImageView imageView = view.findViewById(R.id.imageView);
+            TextView tvName = viewHolder.textView;
+            ImageView imageView = viewHolder.imageView;
 
-            tvName.setText(imageNames[i]);
+            tvName.setText(imageNames.get(i));
 
 
             File imgFile= new File(imagePhotos.get(i));
@@ -217,7 +197,6 @@ public class ImageDisplay extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
 
@@ -225,36 +204,18 @@ public class ImageDisplay extends Fragment {
         images =((MainActivity)context).getFileinDir();
 
         //create name array
-
-        names= new String[images.size()];
+        names= new ArrayList<String>();
 
         for(int i=0;i<images.size();i++){
 
             // get name from file===================================
-            int getPositionFolderName= images.get(i).lastIndexOf("/");
-            String name= images.get(i).substring(getPositionFolderName + 1);
 
-            String[] ArrayName= name.split("\\.");
-            String displayName="";
 
-            if (ArrayName[0].length() > 10)
-            {
-                displayName = ArrayName[0].substring(0, 5);
-                displayName+="...";
-                displayName += ArrayName[0].substring(ArrayName[0].length()-5);
-            }
-            else
-            {
-                displayName = ArrayName[0];
-            }
-            displayName+="."+ArrayName[1];
-
-            names[i]=displayName;
+            names.add(getDisplayName(images.get(i)));
 
             // ====================================================
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -293,7 +254,8 @@ public class ImageDisplay extends Fragment {
 //                int selectedImage = images[i];
 
                 startActivity(new Intent(getActivity(), SelectedPicture.class)
-                        .putExtra("name", selectedName));
+                        .putExtra("name", selectedName)
+                        .putExtra("images",images));
             }
 
         });
@@ -306,8 +268,7 @@ public class ImageDisplay extends Fragment {
 //                    numCol=2;
                     gridView.setAdapter(listAdapter);
 
-                }
-                else{
+                } else if(numCol == 2) {
                     gridView.setAdapter(customAdapter);
                 }
                 gridView.setNumColumns(numCol);
@@ -348,20 +309,44 @@ public class ImageDisplay extends Fragment {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
-                        Intent data = result.getData();
-                        images.add(0,namePictureShoot);
+
+                        File imgFile= new File(namePictureShoot);
+                        Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        imageShoot=rotateImage(imageShoot,90);
+                        saveImage(imageShoot,namePictureShoot);
+
+                        images.add(namePictureShoot);
+                        names.add(getDisplayName(namePictureShoot));
+                        customAdapter.notifyDataSetChanged();
+                        listAdapter.notifyDataSetChanged();
+
+
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
-
-                        customAdapter.changeDataSource(images);
-                        listAdapter.changeDataSource(images);
-
-                         onCreate(myStateInfo);
-                        onCreateView(myStateinflater,myStatecontainer,myStateInfo);
                     }
                 }
             });
+    private void saveImage(Bitmap finalBitmap,String imagePath) {
 
+        File myFile = new File(imagePath);
 
+        if (myFile.exists()) myFile.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(myFile);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static Bitmap rotateImage(Bitmap bmpSrc, float degrees) {
+        int w = bmpSrc.getWidth();
+        int h = bmpSrc.getHeight();
+        Matrix mtx = new Matrix();
+        mtx.postRotate(degrees);
+        Bitmap bmpTrg = Bitmap.createBitmap(bmpSrc, 0, 0, w, h, mtx, true);
+        return bmpTrg;
+    }
     private void openCamera()  {
         // Ask permission
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -396,5 +381,24 @@ public class ImageDisplay extends Fragment {
 
         return uri;
     }
+    private String getDisplayName(String path){
+        int getPositionFolderName= path.lastIndexOf("/");
+        String name= path.substring(getPositionFolderName + 1);
 
+        String[] ArrayName= name.split("\\.");
+        String displayName="";
+
+        if (ArrayName[0].length() > 10)
+        {
+            displayName = ArrayName[0].substring(0, 5);
+            displayName+="...";
+            displayName += ArrayName[0].substring(ArrayName[0].length()-5);
+        }
+        else
+        {
+            displayName = ArrayName[0];
+        }
+        displayName+="."+ArrayName[1];
+        return displayName;
+    }
 }
