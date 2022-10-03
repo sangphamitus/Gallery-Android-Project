@@ -1,33 +1,26 @@
 package com.example.gallerygr3;
 
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-
 import android.content.pm.PackageManager;
-
 import android.os.Environment;
-
-
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -39,9 +32,15 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     String DCIM;
     String Picture;
     ArrayList<String> folderPaths=new ArrayList<String>();
+    ArrayList<String> FileInPaths=new ArrayList<String>();
+//    PhotosFragment photo;
 
-    PhotosFragment photo;
-
+    String[] ImageExtensions = new String[] {
+            ".jpg",
+            ".png",
+            ".gif",
+            ".jpeg"
+    };
     LinearLayout[] arrNavLinearLayouts = new LinearLayout[3];
     ImageView[] arrNavImageViews = new ImageView[3];
     TextView[] arrNavTextViews = new TextView[3];
@@ -52,20 +51,25 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     Class[] arrFrag = new Class[3];
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA
                 }, 1);
 
-        SD = Environment.getExternalStorageDirectory().getAbsolutePath();
+      //  SD = Environment.getExternalStorageDirectory().getAbsolutePath();
         DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
         Picture= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
-        arrFrag[0] = PhotosFragment.class;
+        arrFrag[0] = ImageDisplay.class;
         arrFrag[1] = AlbumsFragment.class;
         arrFrag[2] = SettingsFragment.class;
 
@@ -97,6 +101,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         arrNavLinearLayouts[1].setOnClickListener(new NavLinearLayouts(1));
         arrNavLinearLayouts[2].setOnClickListener(new NavLinearLayouts(2));
 //
+        setCurrentDirectory(Picture);
     }
 
     @Override
@@ -105,7 +110,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         if (requestCode == 1) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                readFolder();
                 getSupportFragmentManager().beginTransaction()
              .setReorderingAllowed(true)
                .replace(R.id.fragment_container, arrFrag[0], null)
@@ -131,6 +136,43 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
+
+    private void readFolder() {
+
+        String[] imageGets = {DCIM, Picture};
+        for (int i = 0; i < imageGets.length; i++) {
+
+            String Dir = imageGets[i];
+            File sdFile = new File(Dir);
+            File[] foldersSD = sdFile.listFiles();
+
+            try {
+                for (File file : foldersSD) {
+                    if (file.isDirectory()) {
+                        //get absolute
+                        //do nothing
+
+                    } else {
+                        for (String extension : ImageExtensions) {
+
+                            if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
+                                // addImageView(file.getAbsolutePath());
+                                FileInPaths.add(file.getAbsolutePath());
+
+                                break;
+                            }
+
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                //do nothing
+            }
+
+        }
+
+    }
 
     @Override
     public String getSDDirectory() {
@@ -166,6 +208,11 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     @Override
     public String getPictureDirectory() {
         return Picture;
+    }
+
+    @Override
+    public ArrayList<String> getFileinDir() {
+        return FileInPaths;
     }
 
     protected class NavLinearLayouts implements View.OnClickListener {
