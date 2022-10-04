@@ -41,7 +41,9 @@
                         android:layout_height="50dp"
                         android:layout_gravity="right"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/resizeicon" />
+                        android:background="@color/white"
+                        android:padding="8dp"
+                        android:src="@drawable/menu" />
 
                 </TableRow>
 

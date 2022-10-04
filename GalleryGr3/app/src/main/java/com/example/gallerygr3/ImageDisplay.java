@@ -6,6 +6,9 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.gallerygr3.SelectedPicture;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -82,6 +85,10 @@ public class ImageDisplay extends Fragment {
     private static final int CAMERA_REQUEST = 1888;
 
 
+    //universal-image-loader
+    // Create default options which will be used for every
+//  displayImage(...) call if no options will be passed to this method
+
     public ImageDisplay() {
         // Required empty public constructor
     }
@@ -140,20 +147,8 @@ public class ImageDisplay extends Fragment {
             }
 //            viewHolder.imageView.setImageBitmap(myBitmap);
             File imgFile= new File(imagePhotos.get(i));
-            ViewHolder finalViewHolder = viewHolder;
-            Glide.with(context)
-                    .asBitmap()
-                    .load(imgFile.getAbsolutePath())
-                    .apply(new RequestOptions().placeholder(R.drawable.avatar4))
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            finalViewHolder.imageView.setImageBitmap(resource);
-                        }
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
+
+            ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
             return view;
         }
 
@@ -206,22 +201,24 @@ public class ImageDisplay extends Fragment {
             }
             TextView tvName = viewHolder.textView;
             tvName.setText(imageNames.get(i));
-            File imgFile= new File(imagePhotos.get(i));
-            ListAdapter.ViewHolder finalViewHolder = viewHolder;
 
-            Glide.with(context)
-                    .asBitmap()
-                    .load(imgFile.getAbsolutePath())
-                    .apply(new RequestOptions().placeholder(R.drawable.ic_baseline_arrow_back_24))
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            finalViewHolder.imageView.setImageBitmap(resource);
-                        }
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
+            File imgFile= new File(imagePhotos.get(i));
+//            ListAdapter.ViewHolder finalViewHolder = viewHolder;
+
+//            Glide.with(context)
+//                    .asBitmap()
+//                    .load(imgFile.getAbsolutePath())
+//                    .apply(new RequestOptions().placeholder(R.drawable.ic_baseline_arrow_back_24))
+//                    .into(new CustomTarget<Bitmap>() {
+//                        @Override
+//                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+//                            finalViewHolder.imageView.setImageBitmap(resource);
+//                        }
+//                        @Override
+//                        public void onLoadCleared(@Nullable Drawable placeholder) {
+//                        }
+//                    });
+            ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
             return view;
         }
 
@@ -231,9 +228,22 @@ public class ImageDisplay extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .delayBeforeLoading(0)
+                .resetViewBeforeLoading(true)
+                .showImageOnLoading(R.drawable.placehoder)
+                .showImageForEmptyUri(R.drawable.placehoder)
+                .showImageOnFail(R.drawable.placehoder)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
+           .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        ImageLoader.getInstance().init(config); // Do it on Application start
+
         Context context= getActivity();
         images =((MainActivity)context).getFileinDir();
-//        Toast.makeText(getActivity(), images.toString(), Toast.LENGTH_LONG).show();
         //create name array
 
         for(int i=0;i<images.size();i++){
@@ -246,7 +256,6 @@ public class ImageDisplay extends Fragment {
             // ====================================================
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
