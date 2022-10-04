@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,6 +23,7 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.graphics.Bitmap;
@@ -41,6 +43,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -147,10 +150,12 @@ public class ImageDisplay extends Fragment {
             }
 //            viewHolder.imageView.setImageBitmap(myBitmap);
             File imgFile= new File(imagePhotos.get(i));
-
             ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
+
             return view;
         }
+
+
 
     }
 
@@ -203,21 +208,6 @@ public class ImageDisplay extends Fragment {
             tvName.setText(imageNames.get(i));
 
             File imgFile= new File(imagePhotos.get(i));
-//            ListAdapter.ViewHolder finalViewHolder = viewHolder;
-
-//            Glide.with(context)
-//                    .asBitmap()
-//                    .load(imgFile.getAbsolutePath())
-//                    .apply(new RequestOptions().placeholder(R.drawable.ic_baseline_arrow_back_24))
-//                    .into(new CustomTarget<Bitmap>() {
-//                        @Override
-//                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-//                            finalViewHolder.imageView.setImageBitmap(resource);
-//                        }
-//                        @Override
-//                        public void onLoadCleared(@Nullable Drawable placeholder) {
-//                        }
-//                    });
             ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
             return view;
         }
@@ -227,7 +217,7 @@ public class ImageDisplay extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //Sử dụng thư viện univeral-image-loader
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .delayBeforeLoading(0)
                 .resetViewBeforeLoading(true)
@@ -338,6 +328,7 @@ public class ImageDisplay extends Fragment {
         return view;
 //        return inflater.inflate(R.layout.fragment_image_display, container, false);
     }
+
 
 
     // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
