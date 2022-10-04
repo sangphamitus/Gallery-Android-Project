@@ -1,5 +1,9 @@
 
 package com.example.gallerygr3;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.gallerygr3.SelectedPicture;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -11,7 +15,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,6 +27,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -39,6 +46,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -56,11 +65,12 @@ import java.util.Arrays;
 * */
 
 public class ImageDisplay extends Fragment {
+
     ImageButton changeBtn;
     FloatingActionButton fab_camera,fab_expand,fab_url;
     GridView gridView;
     CardView cardView;
-    ArrayList<String> names;
+    ArrayList<String> names = new ArrayList<>();
     int numCol=2;
     ArrayList<String> images;
     String namePictureShoot="";
@@ -71,16 +81,9 @@ public class ImageDisplay extends Fragment {
     ImageDisplay.ListAdapter listAdapter=null;
     private static final int CAMERA_REQUEST = 1888;
 
-//    int[] images ={R.drawable.avatar1,R.drawable.avatar2, R.drawable.avatar3,
-//            R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6,
-//            R.drawable.avatar7, R.drawable.avatar8, R.drawable.avatar9,
-//            R.drawable.avatar10, R.drawable.avatar11, R.drawable.avatar12,
-//    };
-
 
     public ImageDisplay() {
         // Required empty public constructor
-
     }
 
     // TODO: Rename and change types and number of parameters
@@ -105,6 +108,7 @@ public class ImageDisplay extends Fragment {
             this.imagePhotos = imagePhotos;
             this.context = context;
             this.layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+
         }
 
         @Override
@@ -125,8 +129,7 @@ public class ImageDisplay extends Fragment {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             ViewHolder viewHolder=null;
-            File imgFile= new File(imagePhotos.get(i));
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             if(view == null){
                 view =layoutInflater.inflate(R.layout.row_item,viewGroup,false);
                 viewHolder=new ViewHolder();
@@ -135,10 +138,25 @@ public class ImageDisplay extends Fragment {
             } else {
                 viewHolder=(ViewHolder) view.getTag();
             }
-            viewHolder.imageView.setImageBitmap(myBitmap);
-
+//            viewHolder.imageView.setImageBitmap(myBitmap);
+            File imgFile= new File(imagePhotos.get(i));
+            ViewHolder finalViewHolder = viewHolder;
+            Glide.with(context)
+                    .asBitmap()
+                    .load(imgFile.getAbsolutePath())
+                    .apply(new RequestOptions().placeholder(R.drawable.avatar4))
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            finalViewHolder.imageView.setImageBitmap(resource);
+                        }
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
             return view;
         }
+
     }
 
     public class ListAdapter extends BaseAdapter{
@@ -156,6 +174,7 @@ public class ImageDisplay extends Fragment {
             this.imagePhotos = imagePhotos;
             this.context = context;
             this.layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+
         }
 
         @Override
@@ -186,35 +205,43 @@ public class ImageDisplay extends Fragment {
                 viewHolder=(ViewHolder) view.getTag();
             }
             TextView tvName = viewHolder.textView;
-            ImageView imageView = viewHolder.imageView;
-
             tvName.setText(imageNames.get(i));
-
-
             File imgFile= new File(imagePhotos.get(i));
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            imageView.setImageBitmap(myBitmap);
+            ListAdapter.ViewHolder finalViewHolder = viewHolder;
 
+            Glide.with(context)
+                    .asBitmap()
+                    .load(imgFile.getAbsolutePath())
+                    .apply(new RequestOptions().placeholder(R.drawable.ic_baseline_arrow_back_24))
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            finalViewHolder.imageView.setImageBitmap(resource);
+                        }
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
             return view;
         }
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         Context context= getActivity();
         images =((MainActivity)context).getFileinDir();
-
+//        Toast.makeText(getActivity(), images.toString(), Toast.LENGTH_LONG).show();
         //create name array
 
         for(int i=0;i<images.size();i++){
 
             // get name from file===================================
 
-
-            names.add(getDisplayName(images.get(i)));
+            String name = getDisplayName(images.get(i));
+            names.add(name);
 
             // ====================================================
         }
