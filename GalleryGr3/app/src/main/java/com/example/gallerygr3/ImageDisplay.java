@@ -1,4 +1,3 @@
-
 package com.example.gallerygr3;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -65,7 +64,6 @@ import java.util.Arrays;
 /*
 * File imgFile= new File(Images.get(position));
         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
         holder.imageItem.setImageBitmap(myBitmap);
 *
 * */
@@ -211,7 +209,6 @@ public class ImageDisplay extends Fragment {
             ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
             return view;
         }
-
     }
 
     @Override
@@ -222,15 +219,15 @@ public class ImageDisplay extends Fragment {
                 .delayBeforeLoading(0)
                 .resetViewBeforeLoading(true)
                 .showImageOnLoading(R.drawable.placehoder)
-                .showImageForEmptyUri(R.drawable.placehoder)
-                .showImageOnFail(R.drawable.placehoder)
+                .showImageForEmptyUri(R.drawable.error_image)
+                .showImageOnFail(R.drawable.error_image)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
-           .defaultDisplayImageOptions(defaultOptions)
+                .defaultDisplayImageOptions(defaultOptions)
                 .build();
-        ImageLoader.getInstance().init(config); // Do it on Application start
+        ImageLoader.getInstance().init(config);
 
         Context context= getActivity();
         images =((MainActivity)context).getFileinDir();
@@ -238,7 +235,7 @@ public class ImageDisplay extends Fragment {
 
         for(int i=0;i<images.size();i++){
 
-            // get name from file===================================
+            // get name from file ===================================
 
             String name = getDisplayName(images.get(i));
             names.add(name);
@@ -254,7 +251,7 @@ public class ImageDisplay extends Fragment {
         myStateinflater=inflater;
         myStatecontainer=container;
         myStateInfo = savedInstanceState;
-  //      myStateInfo = savedInstanceState;
+        //      myStateInfo = savedInstanceState;
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_image_display, container, false);
 
@@ -363,7 +360,7 @@ public class ImageDisplay extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT,getUri(Environment.DIRECTORY_PICTURES));
-       // startActivity(intent);
+        // startActivity(intent);
         //startActivityForResult(intent,CAMERA_REQUEST);
         someActivityResultLauncher.launch(intent);
     }
