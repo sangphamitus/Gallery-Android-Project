@@ -60,7 +60,13 @@ public class SelectedPicture extends AppCompatActivity {
             viewPager2.setClipChildren(false);
             viewPager2.setOffscreenPageLimit(2);
             viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-
+            viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                    aa.BackToInit();
+                }
+            });
         }
 
     }

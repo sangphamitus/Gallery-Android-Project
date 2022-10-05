@@ -2,12 +2,18 @@ package com.example.gallerygr3;
 
 import android.content.Context;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.icu.number.Scale;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.ViewHolder> {
+public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.ViewHolder> implements ZoomCallBack{
     ArrayList<viewPagerItem> arrayItems;
 
     //Zoom =====================
@@ -28,7 +34,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     // These matrices will be used to scale points of the image
     Matrix matrix = new Matrix();
     Matrix savedMatrix = new Matrix();
-
+    Matrix initMatrix=null;
     // The 3 states (events) which the user is trying to perform
     static final int NONE = 0;
     static final int DRAG = 1;
@@ -39,9 +45,10 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     PointF start = new PointF();
     PointF mid = new PointF();
     float oldDist = 1f;
-    //Zoom =============
-    
 
+    //Zoom =============
+
+    ImageView view;
     public viewPagerAdapter(ArrayList<viewPagerItem> arrayItems) {
         this.arrayItems = arrayItems;
     }
@@ -59,11 +66,12 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         viewPagerItem item= arrayItems.get(position);
         holder.img.setImageBitmap(item.getItemBitmap());
+
      //   holder.txtName.setText(item.getSelectedName());
         holder.img.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                ImageView view = (ImageView) v;
+                view = (ImageView) v;
                 view.setScaleType(ImageView.ScaleType.MATRIX);
                 float scale;
 
@@ -74,6 +82,11 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                 {
                     case MotionEvent.ACTION_DOWN:   // first finger down only
                         matrix.set(view.getImageMatrix());
+                        if(initMatrix==null)
+                        {
+                            initMatrix=new Matrix();
+                            initMatrix.set(matrix);
+                        }
                         savedMatrix.set(matrix);
                         start.set(event.getX(), event.getY());
                         //Log.d(TAG, "mode=DRAG"); // write to LogCat
@@ -132,6 +145,17 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
             }
         });
     }
+    @Override
+    public void BackToInit()
+    {
+        if(view==null) return;
+        view.setScaleType(ImageView.ScaleType.MATRIX);
+
+
+        view.setImageMatrix(initMatrix);
+        view.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        initMatrix=null;
+    }
 
     @Override
     public int getItemCount() {
@@ -140,15 +164,16 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
 
     public class ViewHolder  extends RecyclerView.ViewHolder{
         ImageView img;
-        TextView txtName;
+    //    TextView txtName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             img=itemView.findViewById(R.id.imageView);
-            txtName=itemView.findViewById(R.id.tvName);
+           // txtName=itemView.findViewById(R.id.tvName);
 
         }
     }
+
     private float spacing(MotionEvent event)
     {
         float x = event.getX(0) - event.getX(1);
