@@ -47,7 +47,7 @@ public class SelectedPicture extends AppCompatActivity {
                 names[i]=images.get(i);
             }
 
-            listItem=new ArrayList<>();
+            listItem=new  ArrayList<viewPagerItem> ();
             for(int i=0;i<images.size();i++){
                 viewPagerItem item = new viewPagerItem(names[i]);
                 listItem.add(item);
