@@ -258,7 +258,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     scaleAnimation.setDuration(200);
                     scaleAnimation.setFillAfter(true);
                     arrNavLinearLayouts[thisIndex].startAnimation(scaleAnimation);
-
                 }
 
 
