@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -251,10 +252,14 @@ public class AlbumDisplayFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     String folderPath=((MainActivity) context).Picture + AlbumsFragment.folderPath+"/"+album.name;
+                    int from=album.imagePaths.size();
+                    int to=from+addedPaths.size()-1;
                     for (int i=0;i < addedPaths.size();i++){
                         String newFileName=copyFile(addedPaths.get(i),folderPath);
                         album.imagePaths.add(folderPath+"/"+newFileName);
-                        listView.getAdapter().notifyItemChanged(album.imagePaths.size()-1);
+                    }
+                    if(from <= to){
+                        listView.getAdapter().notifyItemRangeChanged(from,to);
                     }
                     dismiss();
                 }
@@ -282,6 +287,7 @@ public class AlbumDisplayFragment extends Fragment {
         Path to=Paths.get(newFolderLocation+"/"+newFileName);
         try {
             Files.copy(from,to,StandardCopyOption.REPLACE_EXISTING);
+            Toast.makeText(context,"copy "+newFileName,Toast.LENGTH_SHORT).show();
             return newFileName;
         } catch (IOException e) {
             e.printStackTrace();

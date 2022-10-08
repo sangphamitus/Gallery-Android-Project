@@ -360,7 +360,7 @@ public class ImageDisplay extends Fragment {
     }
     public static String generateFileName(){
         LocalDateTime now=LocalDateTime.now();
-        DateTimeFormatter myFormat=DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        DateTimeFormatter myFormat=DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS");
         return now.format(myFormat);
     }
     // Android 10+
