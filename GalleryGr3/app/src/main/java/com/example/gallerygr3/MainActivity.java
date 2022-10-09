@@ -20,6 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -56,7 +58,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
         ActivityCompat.requestPermissions(MainActivity.this,
