@@ -62,18 +62,18 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:elevation="6dp"
         >
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:padding="10dp"
             android:layout_alignParentEnd="true"
-            android:orientation="vertical">
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/fab_url"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,28 +83,25 @@
                 android:clickable="true"
                 android:contentDescription="Url"
                 android:src="@android:drawable/stat_sys_download"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                app:elevation="0dp"
-
                 app:backgroundTint="#DAE5D0"
-                />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                app:elevation="0dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/fab_Camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/fab_Expand"
+                android:layout_above="@id/fab_expand"
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="26dp"
                 android:clickable="true"
                 android:contentDescription="Camera"
                 android:src="@android:drawable/ic_menu_camera"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                app:elevation="0dp"
-                app:backgroundTint="#DAE5D0"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+                app:backgroundTint="#DAE5D0"
+                app:elevation="0dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_Expand"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/fab_expand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -113,9 +110,8 @@
                 android:clickable="true"
                 android:contentDescription="Expand"
                 android:src="@android:drawable/ic_menu_add"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                app:elevation="0dp"
-                app:backgroundTint="#DAE5D0" />
+                app:backgroundTint="#DAE5D0"
+                app:elevation="0dp" />
         </LinearLayout>
 
     </RelativeLayout>

@@ -1,9 +1,11 @@
 package com.example.gallerygr3;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.gallerygr3.SelectedPicture;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -65,10 +67,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.io.File;
-import java.util.Arrays;
-
-
-
 
 /*
 * File imgFile= new File(Images.get(position));
@@ -270,7 +268,7 @@ public class ImageDisplay extends Fragment {
         changeBtn = (ImageButton)view.findViewById(R.id.resizeView);
         cardView = (CardView) view.findViewById(R.id.cardView);
         fab_camera=(FloatingActionButton) view.findViewById(R.id.fab_Camera);
-        fab_expand=(FloatingActionButton) view.findViewById(R.id.fab_Expand);
+        fab_expand=(FloatingActionButton) view.findViewById(R.id.fab_expand);
         fab_url=(FloatingActionButton) view.findViewById(R.id.fab_url);
 
         if(customAdapter==null)
@@ -356,6 +354,7 @@ public class ImageDisplay extends Fragment {
 
                         images.add(namePictureShoot);
                         names.add(getDisplayName(namePictureShoot));
+
                         customAdapter.notifyDataSetChanged();
                         listAdapter.notifyDataSetChanged();
 
@@ -401,9 +400,9 @@ public class ImageDisplay extends Fragment {
         //startActivityForResult(intent,CAMERA_REQUEST);
         someActivityResultLauncher.launch(intent);
     }
-    private String generateFileName(){
+    public static String generateFileName(){
         LocalDateTime now=LocalDateTime.now();
-        DateTimeFormatter myFormat=DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        DateTimeFormatter myFormat=DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS");
         return now.format(myFormat);
     }
     // Android 10+
