@@ -291,7 +291,8 @@ public class ImageDisplay extends Fragment {
 
                 startActivity(new Intent(getActivity(), SelectedPicture.class)
                         .putExtra("name", selectedName)
-                        .putExtra("images",images));
+                        .putExtra("images",images)
+                        .putExtra("pos",i));
             }
 
         });

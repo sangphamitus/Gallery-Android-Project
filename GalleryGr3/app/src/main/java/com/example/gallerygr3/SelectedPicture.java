@@ -16,7 +16,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-public class SelectedPicture extends AppCompatActivity {
+public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
 
     ViewPager2 viewPager2;
     ArrayList<viewPagerItem> listItem;
@@ -40,6 +40,7 @@ public class SelectedPicture extends AppCompatActivity {
             //cut name
             String selectedName = intent.getStringExtra("name");
             ArrayList<String> images = intent.getStringArrayListExtra("images");
+            int pos = intent.getIntExtra("pos",0);
 
             names= new String[images.size()];
             // fix name from data
@@ -53,9 +54,10 @@ public class SelectedPicture extends AppCompatActivity {
                 listItem.add(item);
             }
 
-            viewPagerAdapter aa=new viewPagerAdapter(listItem);
+            viewPagerAdapter aa=new viewPagerAdapter(listItem,this);
 
             viewPager2.setAdapter(aa);
+            viewPager2.setCurrentItem(pos,false);
             viewPager2.setClipToPadding(false);
             viewPager2.setClipChildren(false);
             viewPager2.setOffscreenPageLimit(2);
@@ -69,5 +71,17 @@ public class SelectedPicture extends AppCompatActivity {
             });
         }
 
+    }
+
+    @Override
+    public void preventSwipe() {
+        viewPager2.setUserInputEnabled(false);
+        return;
+    }
+
+    @Override
+    public void allowSwipe() {
+        viewPager2.setUserInputEnabled(true);
+        return;
     }
 }

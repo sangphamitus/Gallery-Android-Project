@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.ViewHolder> implements ZoomCallBack{
     ArrayList<viewPagerItem> arrayItems;
-
+    SelectedPicture main;
     //Zoom =====================
     private static final String TAG = "Touch";
     @SuppressWarnings("unused")
@@ -47,12 +47,19 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     float oldDist = 1f;
 
     //Zoom =============
-    boolean isZoom=false;
 
     ImageView view;
-    public viewPagerAdapter(ArrayList<viewPagerItem> arrayItems) {
+    public viewPagerAdapter(ArrayList<viewPagerItem> arrayItems ,SelectedPicture main) {
+        this.main=main;
         this.arrayItems = arrayItems;
     }
+
+    // handle zoom event and swipe event var
+    private static final long DOUBLE_PRESS_INTERVAL = 250; // in millis
+    private long lastPressTime;
+    boolean mHasDoubleClicked = false;
+    boolean allowSwipe = true;
+    boolean isZoom=false;
 
     @NonNull
     @Override
@@ -72,6 +79,8 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         holder.img.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                long pressTime = System.currentTimeMillis();
+
                 view = (ImageView) v;
                 view.setScaleType(ImageView.ScaleType.MATRIX);
                 float scale;
@@ -93,6 +102,23 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                         //Log.d(TAG, "mode=DRAG"); // write to LogCat
 
                         mode = DRAG;
+                        if (pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
+                            mHasDoubleClicked = true;
+
+                        }
+                        else {     // If not double click....
+//                            BackToInit();
+                            mHasDoubleClicked = false;
+                        };
+                        // record the last time the menu button was pressed.
+                        lastPressTime = pressTime;
+
+                        if(mHasDoubleClicked){
+                            isZoom=false;
+                            allowSwipe=true;
+//                            Toast.makeText(main, "swipe: "+allowSwipe, Toast.LENGTH_SHORT).show();
+                        }
+
                         break;
 
                     case MotionEvent.ACTION_UP: // first finger lifted
@@ -119,11 +145,17 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
 
                         if (mode == DRAG)
                         {
-                            matrix.set(savedMatrix);
-                            matrix.postTranslate(event.getX() - start.x, event.getY() - start.y); // create the transformation in the matrix  of points
+                            if(isZoom){
+                                matrix.set(savedMatrix);
+                                matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
+                            }
+//                            matrix.set(savedMatrix);
+//                            matrix.postTranslate(event.getX() - start.x, event.getY() - start.y); // create the transformation in the matrix  of points
                         }
                         else if (mode == ZOOM)
                         {
+                            isZoom=true;
+                            allowSwipe=false;
                             // pinch zooming
                             float newDist = spacing(event);
                             Log.d(TAG, "newDist=" + newDist);
@@ -140,7 +172,15 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                         break;
                 }
 
-                view.setImageMatrix(matrix); // display the transformation on screen
+                if(allowSwipe){
+                    main.allowSwipe();
+                    BackToInit();
+//                    Toast.makeText(main, "allow", Toast.LENGTH_SHORT).show();
+                }else{
+                    main.preventSwipe();
+                    view.setImageMatrix(matrix); // display the transformation on screen
+
+                }
 
                 return true; // indicate event was handled
             }
