@@ -47,6 +47,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     float oldDist = 1f;
 
     //Zoom =============
+    boolean isZoom=false;
 
     ImageView view;
     public viewPagerAdapter(ArrayList<viewPagerItem> arrayItems) {
