@@ -1,5 +1,6 @@
 package com.example.gallerygr3;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -70,6 +71,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         return new ViewHolder(view);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         viewPagerItem item= arrayItems.get(position);

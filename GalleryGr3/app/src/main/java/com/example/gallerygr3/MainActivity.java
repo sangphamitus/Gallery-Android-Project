@@ -111,7 +111,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         if (requestCode == 1) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                readFolder();
+                readFolder(Picture);
+                readFolder(DCIM);
                 getSupportFragmentManager().beginTransaction()
              .setReorderingAllowed(true)
                .replace(R.id.fragment_container, arrFrag[0], null)
@@ -138,12 +139,9 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     }
 
 
-    private void readFolder() {
 
-        String[] imageGets = {DCIM, Picture};
-        for (int i = 0; i < imageGets.length; i++) {
+    private void readFolder(String Dir) {
 
-            String Dir = imageGets[i];
             File sdFile = new File(Dir);
             File[] foldersSD = sdFile.listFiles();
 
@@ -152,6 +150,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     if (file.isDirectory()) {
                         //get absolute
                         //do nothing
+                        readFolder(file.getAbsolutePath());
 
                     } else {
                         for (String extension : ImageExtensions) {
@@ -173,7 +172,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
         }
 
-    }
+
 
     @Override
     public String getSDDirectory() {
