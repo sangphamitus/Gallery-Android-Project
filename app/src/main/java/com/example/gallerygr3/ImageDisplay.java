@@ -42,6 +42,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -76,7 +77,7 @@ import java.io.File;
 * */
 
 
-public class ImageDisplay extends Fragment {
+public class ImageDisplay extends Fragment{
 
     ImageButton changeBtn;
     FloatingActionButton fab_camera,fab_expand,fab_url;
@@ -94,6 +95,13 @@ public class ImageDisplay extends Fragment {
     private static final int CAMERA_REQUEST = 1888;
 
 
+    //--------------------------------
+
+//    String[] names;
+//    ArrayList<String> images;
+    //-------------------------------
+
+
     //universal-image-loader
     // Create default options which will be used for every
 //  displayImage(...) call if no options will be passed to this method
@@ -109,6 +117,8 @@ public class ImageDisplay extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
     public class CustomAdapter extends BaseAdapter {
         private ArrayList<String> imageNames;
@@ -214,7 +224,8 @@ public class ImageDisplay extends Fragment {
             tvName.setText(imageNames.get(i));
 
             File imgFile= new File(imagePhotos.get(i));
-            ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
+            ImageLoader.getInstance().
+                    displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
             return view;
         }
     }
@@ -262,6 +273,7 @@ public class ImageDisplay extends Fragment {
         myStateInfo = savedInstanceState;
         //      myStateInfo = savedInstanceState;
         super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.fragment_image_display, container, false);
 
         gridView = (GridView) view.findViewById(R.id.gridView);
@@ -282,6 +294,7 @@ public class ImageDisplay extends Fragment {
         }
 
         gridView.setAdapter(customAdapter);
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -289,6 +302,8 @@ public class ImageDisplay extends Fragment {
 
 //                int selectedImage = images[i];
 
+                //=================================================================================
+                // show next layout by start activity
                 startActivity(new Intent(getActivity(), SelectedPicture.class)
                         .putExtra("name", selectedName)
                         .putExtra("images",images)

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,7 +17,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
+public class SelectedPicture extends AppCompatActivity implements IselectedPicture{
 
     ViewPager2 viewPager2;
     ArrayList<viewPagerItem> listItem;
@@ -39,8 +40,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
             //cut name
             String selectedName = intent.getStringExtra("name");
+            Integer pos = intent.getIntExtra("pos",0);
             ArrayList<String> images = intent.getStringArrayListExtra("images");
-            int pos = intent.getIntExtra("pos",0);
 
             names= new String[images.size()];
             // fix name from data
@@ -55,8 +56,11 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             }
 
             viewPagerAdapter aa=new viewPagerAdapter(listItem,this);
-
+//
             viewPager2.setAdapter(aa);
+
+//            viewPager2.requestDisallowInterceptTouchEvent(true)
+
             viewPager2.setCurrentItem(pos,false);
             viewPager2.setClipToPadding(false);
             viewPager2.setClipChildren(false);

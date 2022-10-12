@@ -1,5 +1,6 @@
 package com.example.gallerygr3;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -7,6 +8,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.icu.number.Scale;
+import android.net.Uri;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -16,16 +18,22 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.ViewHolder> implements ZoomCallBack{
     ArrayList<viewPagerItem> arrayItems;
     SelectedPicture main;
-    //Zoom =====================
+    //Zoom var =====================
     private static final String TAG = "Touch";
     @SuppressWarnings("unused")
     Context context;
@@ -39,6 +47,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     static final int NONE = 0;
     static final int DRAG = 1;
     static final int ZOOM = 2;
+
     int mode = NONE;
 
     // these PointF objects are used to record the point(s) the user is touching
@@ -46,13 +55,9 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     PointF mid = new PointF();
     float oldDist = 1f;
 
-    //Zoom =============
+    //Zoom var =============
 
     ImageView view;
-    public viewPagerAdapter(ArrayList<viewPagerItem> arrayItems ,SelectedPicture main) {
-        this.main=main;
-        this.arrayItems = arrayItems;
-    }
 
     // handle zoom event and swipe event var
     private static final long DOUBLE_PRESS_INTERVAL = 250; // in millis
@@ -61,32 +66,70 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     boolean allowSwipe = true;
     boolean isZoom=false;
 
+    public viewPagerAdapter(ArrayList<viewPagerItem> arrayItems,SelectedPicture main) {
+        this.arrayItems = arrayItems;
+        this.main=main;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.full_creen_picture,parent,false);
+        context= parent.getContext();
+//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+//                .delayBeforeLoading(0)
+//                .resetViewBeforeLoading(true)
+//                .showImageOnLoading(R.drawable.placehoder)
+//                .showImageForEmptyUri(R.drawable.error_image)
+//                .showImageOnFail(R.drawable.error_image)
+//                .cacheInMemory(true)
+//                .cacheOnDisk(true)
+//                .build();
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(parent.getContext())
+//                .defaultDisplayImageOptions(defaultOptions)
+//                .build();
+//        ImageLoader.getInstance().init(config);
 
         return new ViewHolder(view);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         viewPagerItem item= arrayItems.get(position);
+
         holder.img.setImageBitmap(item.getItemBitmap());
 
+
+
+//        File fileImg=item.getimgFile();
+//        ImageLoader.getInstance().
+//                displayImage(String.valueOf(Uri.parse("file://"+fileImg.getAbsolutePath().toString())),holder.img);
+
+
      //   holder.txtName.setText(item.getSelectedName());
+
+        holder.img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setScaleX(2);
+            }
+        });
+
         holder.img.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
                 long pressTime = System.currentTimeMillis();
+
 
                 view = (ImageView) v;
                 view.setScaleType(ImageView.ScaleType.MATRIX);
                 float scale;
 
                 dumpEvent(event);
-
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK)
                 {
@@ -100,8 +143,8 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                         savedMatrix.set(matrix);
                         start.set(event.getX(), event.getY());
                         //Log.d(TAG, "mode=DRAG"); // write to LogCat
-
                         mode = DRAG;
+
                         if (pressTime - lastPressTime <= DOUBLE_PRESS_INTERVAL) {
                             mHasDoubleClicked = true;
 
@@ -109,7 +152,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                         else {     // If not double click....
 //                            BackToInit();
                             mHasDoubleClicked = false;
-                        };
+                            };
                         // record the last time the menu button was pressed.
                         lastPressTime = pressTime;
 
@@ -149,8 +192,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                                 matrix.set(savedMatrix);
                                 matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
                             }
-//                            matrix.set(savedMatrix);
-//                            matrix.postTranslate(event.getX() - start.x, event.getY() - start.y); // create the transformation in the matrix  of points
+                            // create the transformation in the matrix  of points
                         }
                         else if (mode == ZOOM)
                         {
@@ -172,6 +214,8 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                         break;
                 }
 
+
+
                 if(allowSwipe){
                     main.allowSwipe();
                     BackToInit();
@@ -181,22 +225,19 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                     view.setImageMatrix(matrix); // display the transformation on screen
 
                 }
-
                 return true; // indicate event was handled
             }
         });
-    }
-    @Override
-    public void BackToInit()
-    {
-        if(view==null) return;
-        view.setScaleType(ImageView.ScaleType.MATRIX);
 
+        holder.img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Toast.makeText(main, "onclick", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        view.setImageMatrix(initMatrix);
-        view.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        initMatrix=null;
     }
+
 
     @Override
     public int getItemCount() {
@@ -205,15 +246,32 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
 
     public class ViewHolder  extends RecyclerView.ViewHolder{
         ImageView img;
-    //    TextView txtName;
+        //    TextView txtName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             img=itemView.findViewById(R.id.imageView);
-           // txtName=itemView.findViewById(R.id.tvName);
+            // txtName=itemView.findViewById(R.id.tvName);
 
         }
     }
+
+    //zoom component code
+
+    @Override
+    public void BackToInit()
+    {
+        if(view==null) return;
+        view.setScaleType(ImageView.ScaleType.MATRIX);
+        view.setImageMatrix(initMatrix);
+        view.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        initMatrix=null;
+
+//        main.allowSwipe();
+
+    }
+
+
 
     private float spacing(MotionEvent event)
     {
@@ -265,4 +323,8 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         sb.append("]");
         Log.d("Touch Events ---------", sb.toString());
     }
+
+
+    // end zoom code
+
 }
