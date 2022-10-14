@@ -190,11 +190,16 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                         if(b)
                         {
-                            selectedImages.add(imagePhotos.get(i)) ;
+                            if(!selectedImages.contains(imagePhotos.get(i))) {
+                                selectedImages.add(imagePhotos.get(i));
+                            }
                             checkPhoto.set(i,Boolean.TRUE);
                         }
                         else
-                        { selectedImages.remove(imagePhotos.get(i)) ;
+                        {
+                            if(selectedImages.contains(imagePhotos.get(i))) {
+                                selectedImages.remove(imagePhotos.get(i));
+                            }
                             checkPhoto.set(i,Boolean.FALSE);
 
                         }
@@ -240,6 +245,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         private class ViewHolder{
             TextView textView;
             ImageView imageView;
+            CheckBox check;
         }
 
         public ListAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, Context context) {
@@ -273,19 +279,44 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 viewHolder=new ViewHolder();
                 viewHolder.imageView=view.findViewById(R.id.imageView);
                 viewHolder.textView=view.findViewById(R.id.tvName);
+                viewHolder.check=view.findViewById(R.id.checkImage);
                 view.setTag(viewHolder);
             } else {
                 viewHolder=(ViewHolder) view.getTag();
             }
             TextView tvName = viewHolder.textView;
             tvName.setText(imageNames.get(i));
-            if(isHolding&&checkPhoto.get(i))
+            if(isHolding)
             {
-                viewHolder.imageView.setColorFilter(Color.BLUE);
+                viewHolder.check.setVisibility(View.VISIBLE);
+
+                viewHolder.check.setChecked(checkPhoto.get(i));
+                viewHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(b)
+                        {
+                            if(!selectedImages.contains(imagePhotos.get(i))) {
+                                selectedImages.add(imagePhotos.get(i));
+                            }
+                            checkPhoto.set(i,Boolean.TRUE);
+                        }
+                        else
+                        {
+                            if(selectedImages.contains(imagePhotos.get(i))) {
+                                selectedImages.remove(imagePhotos.get(i));
+                            }
+                            checkPhoto.set(i,Boolean.FALSE);
+
+                        }
+                        ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
+
+                    }
+                });
             }
             else
             {
-                viewHolder.imageView.setColorFilter(Color.TRANSPARENT);
+                viewHolder.check.setVisibility(View.INVISIBLE);
             }
             File imgFile= new File(imagePhotos.get(i));
             ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
@@ -490,22 +521,26 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     {
         isHolding =true;
         ((MainActivity)getContext()).Holding(isHolding);
-        Collections.fill(checkPhoto,Boolean.TRUE);
         if(selectedImages.size()==images.size())
         {
-            selectedImages.clear();
+            //selectedImages.clear();
             Collections.fill(checkPhoto,Boolean.FALSE);
 
         }
         else
         {
-            selectedImages.clear();
-            for(String name:images)
-            {
-                selectedImages.add(name);
-            }
+            Collections.fill(checkPhoto,Boolean.TRUE);
 
         }
+//        else
+//        {
+//            selectedImages.clear();
+//            for(String name:images)
+//            {
+//                selectedImages.add(name);
+//            }
+//
+//        }
         ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
