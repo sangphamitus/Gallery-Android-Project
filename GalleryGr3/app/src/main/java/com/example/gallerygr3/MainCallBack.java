@@ -14,6 +14,9 @@ public interface MainCallBack {
     public String getPictureDirectory();
 
     public ArrayList<String> getFileinDir();
+    public void removeImageUpdate(String[] input);
+    public void Holding(boolean isHolding);
+    public void SelectedTextChange(String text);
 
 
 }

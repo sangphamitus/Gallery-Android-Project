@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import android.Manifest;
@@ -20,10 +22,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity  implements MainCallBack {
@@ -34,8 +39,17 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     String DCIM;
     String Picture;
     ArrayList<String> folderPaths=new ArrayList<String>();
-    ArrayList<String> FileInPaths=new ArrayList<String>();
+    public ArrayList<String> FileInPaths=new ArrayList<String>();
 //    PhotosFragment photo;
+
+    LinearLayout navbar;
+    RelativeLayout chooseNavbar;
+    RelativeLayout status;
+
+    FloatingActionButton deleteBtn;
+    FloatingActionButton cancelBtn;
+    FloatingActionButton selectAll;
+    TextView informationSelected;
 
     String[] ImageExtensions = new String[] {
             ".jpg",
@@ -70,7 +84,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
         Picture= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
-        arrFrag[0] = ImageDisplay.class;
+     //   arrFrag[0] = ImageDisplay.class;
         arrFrag[1] = AlbumsFragment.class;
         arrFrag[2] = SettingsFragment.class;
 
@@ -78,9 +92,42 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         arrRoundLayout[1] = R.drawable.round_albums;
         arrRoundLayout[2] = R.drawable.round_settings;
 
+        navbar = (LinearLayout) findViewById(R.id.navbar);
+        chooseNavbar =(RelativeLayout) findViewById(R.id.selectNavbar);
+        status= (RelativeLayout) findViewById(R.id.status);
+
+        deleteBtn=(FloatingActionButton) findViewById(R.id.deleteImageButton);
+        cancelBtn=(FloatingActionButton) findViewById(R.id.clear);
+        selectAll=(FloatingActionButton) findViewById(R.id.selectAll);
+
+        informationSelected=(TextView)findViewById(R.id.infomationText);
+
+
         arrIcon[0] = R.drawable.ic_baseline_photo;
         arrIcon[1] = R.drawable.ic_baseline_photo_library;
         arrIcon[2] = R.drawable.ic_baseline_settings;
+
+        deleteBtn.setOnClickListener(new View.OnClickListener()  {
+            @Override
+            public void onClick(View view) {
+                ImageDisplay ic= ImageDisplay.newInstance();
+                ic.deleteClicked();
+            }
+        });
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImageDisplay ic= ImageDisplay.newInstance();
+                ic.clearClicked();
+            }
+        });
+        selectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImageDisplay ic= ImageDisplay.newInstance();
+                ic.selectAllClicked();
+            }
+        });
 
         arrSelectedIcon[0] = R.drawable.ic_baseline_photo_selected;
         arrSelectedIcon[1] = R.drawable.ic_baseline_photo_library_selected;
@@ -113,11 +160,14 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readFolder(Picture);
                 readFolder(DCIM);
+//                getSupportFragmentManager().beginTransaction()
+//             .setReorderingAllowed(true)
+//               .replace(R.id.fragment_container, arrFrag[0], null)
+//                .commit();
                 getSupportFragmentManager().beginTransaction()
-             .setReorderingAllowed(true)
-               .replace(R.id.fragment_container, arrFrag[0], null)
-                .commit();
-
+                        .setReorderingAllowed(true)
+                        .replace(R.id.fragment_container, ImageDisplay.newInstance(), null)
+                        .commit();
                 Toast.makeText(MainActivity.this, "Permission granted!", Toast.LENGTH_SHORT).show();
 
             } else {
@@ -136,6 +186,36 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
         Toast.makeText(this, "Change Dir: " + Dir, Toast.LENGTH_SHORT).show();
 
+    }
+
+    @Override
+    public void removeImageUpdate(String[] input)
+    {
+        for (String name:input)
+        {
+            FileInPaths.remove(name);
+
+        }
+
+    }
+    @Override
+    public void Holding(boolean isHolding)
+    {
+        if(isHolding)
+        {
+            chooseNavbar.setVisibility(View.VISIBLE);
+            navbar.setVisibility(View.INVISIBLE);
+            status.setVisibility(View.VISIBLE);
+        }
+        else {
+            chooseNavbar.setVisibility(View.INVISIBLE);
+            navbar.setVisibility(View.VISIBLE);
+            status.setVisibility(View.INVISIBLE);
+        }
+    }
+    @Override
+    public void SelectedTextChange(String text){
+            informationSelected.setText(text);
     }
 
 
@@ -229,12 +309,21 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
                 //go to current fragment
                 selectedTab = thisIndex;
+                if(thisIndex!=0)
+                {
 
                 getSupportFragmentManager().beginTransaction()
                         .setReorderingAllowed(true)
                         .replace(R.id.fragment_container, arrFrag[thisIndex], null)
                         .commit();
-
+                }
+                else
+                {
+                    getSupportFragmentManager().beginTransaction()
+                            .setReorderingAllowed(true)
+                            .replace(R.id.fragment_container, ImageDisplay.newInstance(), null)
+                            .commit();
+                }
                 // change others icon
                 for (int i = 0; i < 3; i++) {
                     if (i != thisIndex) {
