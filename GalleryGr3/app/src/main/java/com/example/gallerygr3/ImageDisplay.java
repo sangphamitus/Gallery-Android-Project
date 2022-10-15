@@ -182,29 +182,36 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             }
             if(isHolding)
             {
+                int currentView=i;
                 viewHolder.check.setVisibility(View.VISIBLE);
 
-                viewHolder.check.setChecked(checkPhoto.get(i));
+                if(selectedImages.contains(imagePhotos.get(i))) {
+                    viewHolder.check.setChecked(true);
+                }else
+                {
+                    viewHolder.check.setChecked(false);
+                }
                 viewHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if(b)
-                        {
-                            if(!selectedImages.contains(imagePhotos.get(i))) {
-                                selectedImages.add(imagePhotos.get(i));
+                        if(currentView<imagePhotos.size()) {
+
+
+                            if (b) {
+                                if (!selectedImages.contains(imagePhotos.get(currentView))) {
+                                    selectedImages.add(imagePhotos.get(currentView));
+                                }
+
+                            } else {
+                                if (selectedImages.contains(imagePhotos.get(currentView))) {
+                                    selectedImages.remove(imagePhotos.get(currentView));
+                                }
+
+
                             }
-                            checkPhoto.set(i,Boolean.TRUE);
-                        }
-                        else
-                        {
-                            if(selectedImages.contains(imagePhotos.get(i))) {
-                                selectedImages.remove(imagePhotos.get(i));
-                            }
-                            checkPhoto.set(i,Boolean.FALSE);
+                            ((MainActivity) getContext()).SelectedTextChange(selectedImages.size() + " images selected");
 
                         }
-                        ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
-
                     }
                 });
             }
@@ -288,29 +295,36 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             tvName.setText(imageNames.get(i));
             if(isHolding)
             {
+                int currentView=i;
                 viewHolder.check.setVisibility(View.VISIBLE);
 
-                viewHolder.check.setChecked(checkPhoto.get(i));
+                if(selectedImages.contains(imagePhotos.get(i))) {
+                    viewHolder.check.setChecked(true);
+                }else
+                {
+                    viewHolder.check.setChecked(false);
+                }
                 viewHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if(b)
-                        {
-                            if(!selectedImages.contains(imagePhotos.get(i))) {
-                                selectedImages.add(imagePhotos.get(i));
+                        if(currentView<imagePhotos.size()) {
+
+
+                            if (b) {
+                                if (!selectedImages.contains(imagePhotos.get(currentView))) {
+                                    selectedImages.add(imagePhotos.get(currentView));
+                                }
+
+                            } else {
+                                if (selectedImages.contains(imagePhotos.get(currentView))) {
+                                    selectedImages.remove(imagePhotos.get(currentView));
+                                }
+
+
                             }
-                            checkPhoto.set(i,Boolean.TRUE);
-                        }
-                        else
-                        {
-                            if(selectedImages.contains(imagePhotos.get(i))) {
-                                selectedImages.remove(imagePhotos.get(i));
-                            }
-                            checkPhoto.set(i,Boolean.FALSE);
+                            ((MainActivity) getContext()).SelectedTextChange(selectedImages.size() + " images selected");
 
                         }
-                        ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
-
                     }
                 });
             }
@@ -408,11 +422,11 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     if(!selectedImages.contains(selectedName))
                     {
                         selectedImages.add(selectedName) ;
-                        checkPhoto.set(i,Boolean.TRUE);
+
                     }
                     else {
                         selectedImages.remove(selectedName) ;
-                        checkPhoto.set(i,Boolean.FALSE);
+
 
                     }
                     ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
@@ -431,13 +445,11 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 isHolding =true;
                 ((MainActivity)getContext()).Holding(isHolding);
 
-
-
                 String selectedName= images.get(i);
                 String[] select= new String[1];
                 select[0]=selectedName;
                 selectedImages.add(selectedName) ;
-                checkPhoto.set(i,Boolean.TRUE);
+
                 ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
 
                 Toast.makeText(getContext(), select.length+" items deleted", Toast.LENGTH_SHORT).show();
