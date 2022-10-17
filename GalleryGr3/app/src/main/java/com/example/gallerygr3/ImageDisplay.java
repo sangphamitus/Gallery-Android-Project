@@ -209,7 +209,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 
                             }
-                            ((MainActivity) getContext()).SelectedTextChange(selectedImages.size() + " images selected");
+                            ((MainActivity) getContext()).SelectedTextChange(selectedImages.size() + "");
 
                         }
                     }
@@ -322,7 +322,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 
                             }
-                            ((MainActivity) getContext()).SelectedTextChange(selectedImages.size() + " images selected");
+                            ((MainActivity) getContext()).SelectedTextChange(selectedImages.size() + "");
 
                         }
                     }
@@ -429,7 +429,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 
                     }
-                    ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
+                    ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+"" );
                     customAdapter.notifyDataSetChanged();
                     listAdapter.notifyDataSetChanged();
                 }
@@ -450,7 +450,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 select[0]=selectedName;
                 selectedImages.add(selectedName) ;
 
-                ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
+                ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+"" );
 
                 Toast.makeText(getContext(), select.length+" items deleted", Toast.LENGTH_SHORT).show();
 
@@ -553,7 +553,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 //            }
 //
 //        }
-        ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+" images selected" );
+        ((MainActivity)getContext()).SelectedTextChange(selectedImages.size()+"" );
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
     }

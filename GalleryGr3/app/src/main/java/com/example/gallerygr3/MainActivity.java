@@ -3,9 +3,14 @@ package com.example.gallerygr3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,10 +51,13 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     RelativeLayout chooseNavbar;
     RelativeLayout status;
 
+    MainActivity context;
     FloatingActionButton deleteBtn;
     FloatingActionButton cancelBtn;
     FloatingActionButton selectAll;
     TextView informationSelected;
+
+
 
     String[] ImageExtensions = new String[] {
             ".jpg",
@@ -67,18 +75,22 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     Class[] arrFrag = new Class[3];
 
+    String deleteNotify="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context= this;
 
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.CAMERA
                 }, 1);
+
+
 
       //  SD = Environment.getExternalStorageDirectory().getAbsolutePath();
         DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
@@ -110,8 +122,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         deleteBtn.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View view) {
-                ImageDisplay ic= ImageDisplay.newInstance();
-                ic.deleteClicked();
+                showDeleteAlertDialog(context );
             }
         });
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +161,33 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         arrNavLinearLayouts[2].setOnClickListener(new NavLinearLayouts(2));
 //
         setCurrentDirectory(Picture);
+
+
     }
+
+    private void showDeleteAlertDialog(MainActivity mainActivity){
+        new AlertDialog.Builder(mainActivity)
+                .setTitle("Delete")
+                .setMessage("Do you want to delete "+deleteNotify+" image(s) permanently in device ?")
+                .setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ImageDisplay ic= ImageDisplay.newInstance();
+                                ic.deleteClicked();
+                            }
+                        })
+                .setNeutralButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //
+                            }
+                        })
+                .create()
+                .show();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -215,7 +252,9 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     }
     @Override
     public void SelectedTextChange(String text){
-            informationSelected.setText(text);
+
+        deleteNotify=text;
+        informationSelected.setText(text+" images selected");
     }
 
 
