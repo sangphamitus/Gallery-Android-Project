@@ -77,6 +77,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     String deleteNotify="";
 
+    public ArrayList<String> chooseToDeleteInList=new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,20 +124,31 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         deleteBtn.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View view) {
-                showDeleteAlertDialog(context );
+                showCustomDialogBox();
             }
         });
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ImageDisplay ic= ImageDisplay.newInstance();
+                clearChooseToDeleteInList();
                 ic.clearClicked();
             }
         });
         selectAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageDisplay ic= ImageDisplay.newInstance();
+               ImageDisplay ic= ImageDisplay.newInstance();
+               if(chooseToDeleteInList.size()==FileInPaths.size())
+               {
+                   chooseToDeleteInList.clear();
+
+               }
+               else
+               {
+                   chooseToDeleteInList=new ArrayList<String >(FileInPaths);
+
+               }
                 ic.selectAllClicked();
             }
         });
@@ -188,7 +201,44 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 .show();
     }
 
+    private void showCustomDialogBox()
+    {
+        final Dialog customDialog = new Dialog( context );
+        customDialog.setTitle("Delete confirm");
 
+        customDialog.setContentView(R.layout.delete_dialog_notify);
+
+        ((TextView) customDialog.findViewById(R.id.deleteNotify))
+                .setText("Do you want to delete "+deleteNotify+" image(s) permanently in your device ?");
+
+        ((Button) customDialog.findViewById(R.id.cancelDelete))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                      //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        ((Button) customDialog.findViewById(R.id.confirmDelete))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageDisplay ic= ImageDisplay.newInstance();
+
+                        String[] select = chooseToDeleteInList.toArray(new String[chooseToDeleteInList.size()]);
+                        // String[] select= (String[]) selectedImages.toArray();
+                        ImageDelete.DeleteImage(select);
+                        removeImageUpdate(select);
+                        clearChooseToDeleteInList();
+                        ic.deleteClicked();
+
+                        customDialog.dismiss();
+                    }
+                });
+
+        customDialog.show();
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -251,13 +301,46 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         }
     }
     @Override
-    public void SelectedTextChange(String text){
+    public void SelectedTextChange(){
 
-        deleteNotify=text;
-        informationSelected.setText(text+" images selected");
+        deleteNotify=chooseToDeleteInList.size()+"";
+        informationSelected.setText(chooseToDeleteInList.size()+" images selected");
     }
 
+    @Override
+    public ArrayList<String> chooseToDeleteInList() {
+        return chooseToDeleteInList;
+    }
+    @Override
+    public void clearChooseToDeleteInList()
+    {
+        chooseToDeleteInList.clear();
+    }
+    @Override
+    public ArrayList<String> adjustChooseToDeleteInList(String ListInp,String type )
+    {
+        switch (type)
+        {
+            case "choose":
 
+                    if(!chooseToDeleteInList.contains(ListInp))
+                    {
+                        chooseToDeleteInList.add(ListInp);
+                    }
+
+                break;
+            case "unchoose":
+
+                    if(chooseToDeleteInList.contains(ListInp))
+                    {
+                        chooseToDeleteInList.remove(ListInp);
+                    }
+
+                break;
+
+        }
+        return chooseToDeleteInList;
+    }
 
     private void readFolder(String Dir) {
 

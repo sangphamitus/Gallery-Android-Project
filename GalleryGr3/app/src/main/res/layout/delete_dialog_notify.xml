@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="5dp"
+    >
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,15 +31,15 @@
             <Button android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="cancel"
-                    android:backgroundTint="@color/material_dynamic_neutral80"
+                    android:backgroundTint="@color/cancel_delete"
                     android:textColor="@color/black"
                     android:id="@+id/cancelDelete"
-                android:layout_marginHorizontal="20dp"
-                > </Button>
+                android:layout_marginHorizontal="20dp"> </Button>
+
             <Button android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Delete"
-                android:backgroundTint="@color/material_dynamic_primary60"
+                android:backgroundTint="@color/confirm_delete"
                 android:textColor="@color/white"
                 android:id="@+id/confirmDelete"
                 android:layout_marginHorizontal="20dp"
