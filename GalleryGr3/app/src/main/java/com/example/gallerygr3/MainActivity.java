@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.INTERNET
                 }, 1);
 
 
@@ -178,28 +179,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
-    private void showDeleteAlertDialog(MainActivity mainActivity){
-        new AlertDialog.Builder(mainActivity)
-                .setTitle("Delete")
-                .setMessage("Do you want to delete "+deleteNotify+" image(s) permanently in device ?")
-                .setPositiveButton("Delete",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ImageDisplay ic= ImageDisplay.newInstance();
-                                ic.deleteClicked();
-                            }
-                        })
-                .setNeutralButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //
-                            }
-                        })
-                .create()
-                .show();
-    }
+
+
 
     private void showCustomDialogBox()
     {
@@ -281,6 +262,16 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
+
+        }
+
+    }
+    @Override
+    public void addImageUpdate(String[] input)
+    {
+        for (String name:input)
+        {
+            FileInPaths.add(name);
 
         }
 

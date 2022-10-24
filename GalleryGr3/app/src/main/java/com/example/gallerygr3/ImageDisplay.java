@@ -16,6 +16,9 @@ import com.example.gallerygr3.ImageDelete;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +44,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -51,11 +55,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.webkit.DownloadListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -74,7 +80,9 @@ import java.util.ArrayList;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 /*
 * File imgFile= new File(Images.get(position));
@@ -500,6 +508,13 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 openCamera();
             }
         });
+
+        fab_url.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showInputDialogBox();
+            }
+        });
         fab_url.setVisibility(View.INVISIBLE);
         fab_camera.setVisibility(View.INVISIBLE);
         fab_expand.setOnClickListener(new View.OnClickListener() {
@@ -518,6 +533,76 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         return view;
 //        return inflater.inflate(R.layout.fragment_image_display, container, false);
     }
+
+    private void showInputDialogBox()
+    {
+        final String[] url_input = {"",""};
+        final Dialog customDialog = new Dialog( getContext());
+        customDialog.setTitle("Delete confirm");
+
+        customDialog.setContentView(R.layout.url_download_diagbox);
+
+        ((Button) customDialog.findViewById(R.id.download_url_cancel))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        ((Button) customDialog.findViewById(R.id.download_url_confirm))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        url_input[0] = ((EditText) customDialog.findViewById(R.id.download_url_input)).getText().toString();
+                        url_input[1] =((EditText) customDialog.findViewById(R.id.download_url_rename)).getText().toString();
+                        Toast.makeText(INSTANCE.getContext(), url_input[0], Toast.LENGTH_SHORT).show();
+                        String[] ArrInput=DownloadImageFromURL(url_input[0].trim(),url_input[1].trim());
+                        ((MainActivity)getContext()).addImageUpdate(ArrInput);
+                        customAdapter.notifyDataSetChanged();
+                        listAdapter.notifyDataSetChanged();
+                        customDialog.dismiss();
+                    }
+                });
+
+        customDialog.show();
+    }
+
+    private String[] DownloadImageFromURL(String input,String fileName)
+    {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(input));
+        String[] result=new String[1];
+        String fileExtension=input.substring(input.lastIndexOf("."));
+        while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
+            fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+        }
+
+        if (fileName.length()==0){
+            fileName= (new Date()).toString();
+
+        }
+        String fullNameFile=((MainActivity)getContext()).getPictureDirectory() + "/" + fileName + "." + fileExtension;
+        request.setDescription("Downloading " + input + "...");
+        request.setTitle(input);
+       // request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationUri(Uri.fromFile(new File(fullNameFile)));
+        DownloadManager manager = (DownloadManager) INSTANCE.getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        manager.enqueue(request);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        Notification noti = new NotificationCompat.Builder((MainActivity)getContext(),"Download " +fullNameFile )
+                .setContentText("Downloaded item")
+                .setSmallIcon(R.drawable.ic_launcher_background)
+
+                .build();
+
+
+
+        result[0]=fullNameFile;
+        return result;
+    }
+
 
     @Override
     public  void deleteClicked()

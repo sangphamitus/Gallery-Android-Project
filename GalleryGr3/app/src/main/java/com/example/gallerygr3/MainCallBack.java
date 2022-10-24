@@ -20,5 +20,6 @@ public interface MainCallBack {
     public ArrayList<String> chooseToDeleteInList();
     public ArrayList<String> adjustChooseToDeleteInList(String ListInp,String type );
     public void clearChooseToDeleteInList();
+    public void addImageUpdate(String[] input);
 
 }
