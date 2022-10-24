@@ -3,7 +3,6 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,6 +20,110 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/navbar" />
 
+
+    <RelativeLayout
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/round_navbar"
+        android:elevation="10dp"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:weightSum="3"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_horizontal"
+
+         >
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+
+            android:id="@+id/selectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+
+            android:src="@drawable/ic_baseline_playlist_add_check_24"
+            app:backgroundTint="#FFFFFF"
+
+            app:elevation="0dp"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_alignParentStart="true"
+
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:clickable="true"
+
+            android:src="@drawable/ic_baseline_clear_24"
+            app:backgroundTint="#FFFFFF" app:elevation="0dp"/>
+
+        <TextView
+            android:id="@+id/infomationText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="selected 0 images"
+            android:textColor="@color/black"
+            android:layout_centerHorizontal="true"
+            android:layout_marginVertical="10dp"
+            android:textSize="20dp">
+
+        </TextView>
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/selectNavbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/round_navbar"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        android:orientation="horizontal"
+
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+
+            android:id="@+id/deleteImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="30dp"
+                android:clickable="true"
+                app:elevation="0dp"
+                android:src="@drawable/ic_baseline_delete_outline_24"
+                app:backgroundTint="#FFFFFF"
+               >
+
+            </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+
+
+
+    </RelativeLayout>
+
+
     <LinearLayout
         android:id="@+id/navbar"
         android:layout_width="match_parent"
@@ -30,6 +133,7 @@
         android:elevation="10dp"
         android:gravity="center"
         android:orientation="horizontal"
+
 
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
