@@ -45,6 +45,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,7 @@ import java.io.File;
 
 
 public class ImageDisplay extends Fragment {
-
+    Context context;
     ImageButton changeBtn;
     FloatingActionButton fab_camera,fab_expand,fab_url;
     GridView gridView;
@@ -237,7 +238,8 @@ public class ImageDisplay extends Fragment {
                 .build();
         ImageLoader.getInstance().init(config);
 
-        Context context= getActivity();
+        this.context= getActivity();
+
         images =((MainActivity)context).getFileinDir();
         //create name array
         names= new ArrayList<String>();
@@ -256,6 +258,10 @@ public class ImageDisplay extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //
+        Toast.makeText(getContext(),"ImageDisplay oncreatview",Toast.LENGTH_SHORT).show();
+        // Get images
+
         // Inflate the layout for this fragment
         myStateinflater=inflater;
         myStatecontainer=container;
@@ -275,10 +281,14 @@ public class ImageDisplay extends Fragment {
         {
             customAdapter = new ImageDisplay.CustomAdapter(names,images,getActivity());
 
+        } else {
+            customAdapter.notifyDataSetChanged();
         }
         if(listAdapter==null)
         {
             listAdapter = new ImageDisplay.ListAdapter(names,images,getActivity());
+        } else {
+            listAdapter.notifyDataSetChanged();
         }
 
         gridView.setAdapter(customAdapter);

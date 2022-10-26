@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.MANAGE_EXTERNAL_STORAGE
                 }, 1);
 
       //  SD = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -137,8 +138,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
-
-    private void readFolder() {
+    protected void readFolder() {
 
         String[] imageGets = {DCIM, Picture};
         for (int i = 0; i < imageGets.length; i++) {
