@@ -55,7 +55,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             @Override
             public void onClick(View view) {
                 SelectedPicture.super.onBackPressed();
-//                Toast.makeText(SelectedPicture.this, "123", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -71,6 +70,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
 
         //PHẦN NÀY ĐỂ ẨN HIỆN TASK BAR TRONG SINGLE IMG - CHUA LAM DUOC
+
 //        viewPager2.getChildAt(viewPager2.getCurrentItem()).setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
