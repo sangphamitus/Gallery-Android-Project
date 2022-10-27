@@ -26,6 +26,7 @@ public final class ImageDelete {
         return running;
     }
 
+    //xử lí single image
     public static boolean DeleteImage(String image){
         boolean running=true;
         File fdel=new File(image);

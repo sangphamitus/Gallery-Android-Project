@@ -3,16 +3,21 @@ package com.example.gallerygr3;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,14 +30,18 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<viewPagerItem> listItem;
     String[] names;
     ArrayList<String> images;
-    //moi them
+
     ImageButton backBtn;
     ImageButton deleteBtn;
     String currentSelectedName;
     int currentPosition;
     MainActivity main;
 
+    RelativeLayout topNav;
+    RelativeLayout bottomNav;
 
+    boolean displayNavBars = true;
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +49,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
         viewPager2=(ViewPager2)findViewById(R.id.main_viewPager) ;
 
-        //xu li nut back trong anh toan man hinh
+        //xử lí nút back toàn màn hình
         backBtn=(ImageButton) findViewById(R.id.backButton);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,11 +63,32 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] temp ={currentSelectedName};
-                showCustomDialogBoxInSelectedPicture(temp);
-//                Toast.makeText(SelectedPicture.this, "123", Toast.LENGTH_SHORT).show();
+                showCustomDialogBoxInSelectedPicture();
             }
         });
+
+        topNav = (RelativeLayout) findViewById(R.id.topNavSinglePic);
+        bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
+
+        //PHẦN NÀY ĐỂ ẨN HIỆN TASK BAR TRONG SINGLE IMG - CHUA LAM DUOC
+//        viewPager2.getChildAt(viewPager2.getCurrentItem()).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                if (displayNavBars ==false){
+//////                    topNav.setVisibility(View.VISIBLE);
+//////                    topNav.setVisibility(View.VISIBLE);
+////                    topNav.setBackgroundColor(Color.RED);
+////                    displayNavBars = true;
+////
+////                }
+////                else if(displayNavBars ==true){
+////                    displayNavBars = false;
+////                    topNav.setVisibility(View.INVISIBLE);
+////                    topNav.setVisibility(View.INVISIBLE);
+////                }
+//                Toast.makeText(getApplicationContext(), "123", Toast.LENGTH_SHORT).show();
+//            }
+//        });
         //get img and name data
         Intent intent = getIntent();
         if(intent.getExtras()!=null){
@@ -129,7 +159,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         viewPager2.setCurrentItem(currentPosition ,false);
     }
 
-    private void showCustomDialogBoxInSelectedPicture(String[] select)
+    private void showCustomDialogBoxInSelectedPicture()
     {
         final Dialog customDialog = new Dialog( this );
         customDialog.setTitle("Delete confirm");
@@ -155,7 +185,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                         ImageDisplay ic= ImageDisplay.newInstance();
                         ImageDelete.DeleteImage(currentSelectedName);
                         removeImageUpdate(currentSelectedName);
-                        //cap nhat o ImageDisplay nhung phan tu da xoa
+                        //cập nhật lại danh sách trong ImageDisplay
                         ic.deleteClicked(currentSelectedName);
                         customDialog.dismiss();
                     }

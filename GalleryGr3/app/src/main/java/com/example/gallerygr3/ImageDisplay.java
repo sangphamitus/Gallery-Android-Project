@@ -618,9 +618,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     @Override
     public  void deleteClicked(String file)
     {
-//        ArrayList<String> temp = new ArrayList<String>();
-//        temp.add(file);
-//        selectedImages = temp;
         ((MainActivity)getContext()).removeImageUpdate(file);
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
