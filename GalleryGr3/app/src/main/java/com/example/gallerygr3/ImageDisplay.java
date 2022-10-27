@@ -31,6 +31,7 @@ import android.graphics.drawable.Drawable;
 
 import android.graphics.Matrix;
 
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -74,6 +75,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.FileOutputStream;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -385,6 +387,53 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         Context context= getActivity();
         images =((MainActivity)context).getFileinDir();
+
+        //get date
+        ArrayList<Date> listDate= new ArrayList<Date>();
+        for(int i=0;i<images.size();i++){
+            File file = new File(images.get(i));
+            if(file.exists()) //Extra check, Just to validate the given path
+            {
+                ExifInterface intf = null;
+                try
+                {
+                    intf = new ExifInterface(images.get(i));
+                    if(intf != null)
+                    {
+                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+                        Date lastModDate = new Date(file.lastModified());
+                        listDate.add(lastModDate);
+                        Log.i("PHOTO DATE", "Dated : "+ dateString); //Display dateString. You can do/use it your own way
+                    }
+                }
+                catch (IOException e)
+                {
+                }
+                if(intf == null)
+                {
+                    Date lastModDate = new Date(file.lastModified());
+                    Log.i("PHOTO DATE", "Dated : "+ lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+                }
+            }
+        }
+
+        //get object
+        ArrayList<ImageDate> imgDates = new ArrayList<ImageDate>();
+        for(int i=0;i<images.size();i++){
+            ImageDate temp = new ImageDate(images.get(i),listDate.get(i));
+            imgDates.add(temp);
+        }
+
+        //sort obj
+        Collections.sort(imgDates);
+        Collections.reverse(imgDates);
+
+        //change images after sort
+        for(int i=0;i<imgDates.size();i++){
+            images.set(i,imgDates.get(i).getImage());
+        }
+
+//        Collections.sort(images);
         //checkPhoto=new ArrayList<Boolean>(Arrays.asList(new Boolean[images.size()]));
         //Collections.fill(checkPhoto, Boolean.FALSE);
 
@@ -397,6 +446,9 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
             String name = getDisplayName(images.get(i));
             names.add(name);
+            // ====================================================
+
+
 
             // ====================================================
         }

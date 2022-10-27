@@ -7,11 +7,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     FloatingActionButton cancelBtn;
     FloatingActionButton selectAll;
     TextView informationSelected;
+
+    FloatingActionButton createSliderBtn;
 
 
 
@@ -114,6 +119,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         deleteBtn=(FloatingActionButton) findViewById(R.id.deleteImageButton);
         cancelBtn=(FloatingActionButton) findViewById(R.id.clear);
         selectAll=(FloatingActionButton) findViewById(R.id.selectAll);
+        createSliderBtn=(FloatingActionButton)findViewById(R.id.createSliderBtn);
 
         informationSelected=(TextView)findViewById(R.id.infomationText);
 
@@ -154,6 +160,14 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             }
         });
 
+        createSliderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "create sliderrrrr", Toast.LENGTH_SHORT).show();
+                showSliderDiaglogBox();
+            }
+        });
+
         arrSelectedIcon[0] = R.drawable.ic_baseline_photo_selected;
         arrSelectedIcon[1] = R.drawable.ic_baseline_photo_library_selected;
         arrSelectedIcon[2] = R.drawable.ic_baseline_settings_selected;
@@ -179,7 +193,46 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
+    private void showSliderDiaglogBox(){
+        final Dialog customDialog = new Dialog( context );
+        customDialog.setTitle("Create Slider with Music");
+        customDialog.setContentView(R.layout.slider_diaglog_notify);
 
+
+        ((Button) customDialog.findViewById(R.id.cancelSlider))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        customDialog.dismiss();
+                    }
+                });
+
+        ((Button) customDialog.findViewById(R.id.comfirmSlider))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        RadioGroup radio= (RadioGroup) customDialog.findViewById(R.id.musicGroup);
+
+                        int id = radio.getCheckedRadioButtonId();
+                        RadioButton selectedRadionBtn= (RadioButton)customDialog.findViewById(id);
+                        String name=selectedRadionBtn.getText().toString();
+
+                        customDialog.dismiss();// ẩn diaglogbox
+
+                        String[] select = chooseToDeleteInList.toArray
+                                (new String[chooseToDeleteInList.size()]);
+
+                        Intent intent = new Intent(context,SliderMusic.class)
+                                .putExtra("images",select)
+                                .putExtra("music", name);
+
+                        startActivity(intent);
+                    }
+                });
+        customDialog.show();
+
+    }
 
 
     private void showCustomDialogBox()
@@ -206,15 +259,15 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     @Override
                     public void onClick(View view) {
                         ImageDisplay ic= ImageDisplay.newInstance();
-
-                        String[] select = chooseToDeleteInList.toArray(new String[chooseToDeleteInList.size()]);
+                        String[] select = chooseToDeleteInList.toArray
+                                (new String[chooseToDeleteInList.size()]);
+                        String temp=select[0];
                         // String[] select= (String[]) selectedImages.toArray();
                         ImageDelete.DeleteImage(select);
                         removeImageUpdate(select);
-                        clearChooseToDeleteInList();
-                        ic.deleteClicked();
-
-                        customDialog.dismiss();
+                        clearChooseToDeleteInList(); // ??
+                        ic.deleteClicked(); // xoá clicked
+                        customDialog.dismiss();// ẩn diaglogbox
                     }
                 });
 
