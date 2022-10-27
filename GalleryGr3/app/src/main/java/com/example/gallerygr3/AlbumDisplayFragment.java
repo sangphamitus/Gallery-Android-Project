@@ -274,6 +274,11 @@ public class AlbumDisplayFragment extends Fragment {
         }
     }
     private class MoveOrCopy extends BottomSheetDialog{
+        @Override
+        public void dismiss() {
+            super.dismiss();
+            album_images_count.setText(String.format(context.getString(R.string.album_image_count),album.imagePaths.size()));
+        }
 
         public MoveOrCopy(@NonNull Context context) {
             super(context);
