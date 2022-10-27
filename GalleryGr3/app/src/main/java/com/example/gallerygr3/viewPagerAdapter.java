@@ -217,6 +217,10 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         }
     }
 
+    public viewPagerItem getItem(int i) {
+        return arrayItems.get(i);
+    }
+
     private float spacing(MotionEvent event)
     {
         float x = event.getX(0) - event.getX(1);

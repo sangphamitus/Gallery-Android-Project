@@ -25,4 +25,22 @@ public final class ImageDelete {
         }
         return running;
     }
+
+    public static boolean DeleteImage(String image){
+        boolean running=true;
+        File fdel=new File(image);
+        if(fdel.exists()){
+
+            try
+            {
+                fdel.delete();
+            }
+            catch (Error e)
+            {
+                running =false;
+                return running;
+            }
+        }
+        return running;
+    }
 }

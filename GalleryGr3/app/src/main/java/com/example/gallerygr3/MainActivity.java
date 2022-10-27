@@ -179,9 +179,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
-
-
-
     private void showCustomDialogBox()
     {
         final Dialog customDialog = new Dialog( context );
@@ -262,8 +259,14 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
-
         }
+
+    }
+    @Override
+    public void removeImageUpdate(String input)
+    {
+
+            FileInPaths.remove(input);
 
     }
     @Override

@@ -3,12 +3,15 @@ package com.example.gallerygr3;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +25,12 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<viewPagerItem> listItem;
     String[] names;
     ArrayList<String> images;
+    //moi them
+    ImageButton backBtn;
+    ImageButton deleteBtn;
+    String currentSelectedName;
+    int currentPosition;
+    MainActivity main;
 
 
     @Override
@@ -31,9 +40,26 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
         viewPager2=(ViewPager2)findViewById(R.id.main_viewPager) ;
 
+        //xu li nut back trong anh toan man hinh
+        backBtn=(ImageButton) findViewById(R.id.backButton);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectedPicture.super.onBackPressed();
+//                Toast.makeText(SelectedPicture.this, "123", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        deleteBtn=(ImageButton) findViewById(R.id.deleteSingleBtn);
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] temp ={currentSelectedName};
+                showCustomDialogBoxInSelectedPicture(temp);
+//                Toast.makeText(SelectedPicture.this, "123", Toast.LENGTH_SHORT).show();
+            }
+        });
         //get img and name data
-
-
         Intent intent = getIntent();
         if(intent.getExtras()!=null){
 
@@ -66,11 +92,13 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                     super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                    String temp=aa.getItem(position).getSelectedName();
+                    setCurrentSelectedName(aa.getItem(position).getSelectedName());
+                    setCurrentPosition(pos);
                     aa.BackToInit();
                 }
             });
         }
-
     }
 
     @Override
@@ -83,5 +111,55 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     public void allowSwipe() {
         viewPager2.setUserInputEnabled(true);
         return;
+    }
+
+    @Override
+    public void setCurrentSelectedName(String name){
+        this.currentSelectedName = name;
+    }
+    @Override
+    public void setCurrentPosition(int pos){
+        this.currentPosition = pos;
+    }
+    @Override
+    public void removeImageUpdate(String input){
+        listItem.remove(currentPosition);
+        viewPagerAdapter aa=new viewPagerAdapter(listItem,this);
+        viewPager2.setAdapter(aa);
+        viewPager2.setCurrentItem(currentPosition ,false);
+    }
+
+    private void showCustomDialogBoxInSelectedPicture(String[] select)
+    {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Delete confirm");
+
+        customDialog.setContentView(R.layout.delete_dialog_notify);
+
+        ((TextView) customDialog.findViewById(R.id.deleteNotify))
+                .setText("Do you want to delete in your device ?");
+
+        ((Button) customDialog.findViewById(R.id.cancelDelete))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        ((Button) customDialog.findViewById(R.id.confirmDelete))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDelete.DeleteImage(currentSelectedName);
+                        removeImageUpdate(currentSelectedName);
+                        //cap nhat o ImageDisplay nhung phan tu da xoa
+                        ic.deleteClicked(currentSelectedName);
+                        customDialog.dismiss();
+                    }
+                });
+        customDialog.show();
     }
 }
