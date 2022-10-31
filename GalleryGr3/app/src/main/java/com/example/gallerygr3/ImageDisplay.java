@@ -94,9 +94,12 @@ import java.util.Timer;
 * */
 
 
+
 public class ImageDisplay extends Fragment implements chooseAndDelete{
+    Context context;
 
     private static ImageDisplay INSTANCE = null;
+
 
     ImageButton changeBtn;
     FloatingActionButton fab_camera,fab_expand,fab_url;
@@ -385,7 +388,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 .build();
         ImageLoader.getInstance().init(config);
 
-        Context context= getActivity();
+        this.context= getActivity();
+
         images =((MainActivity)context).getFileinDir();
 
         //get date
@@ -457,6 +461,10 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //
+        Toast.makeText(getContext(),"ImageDisplay oncreatview",Toast.LENGTH_SHORT).show();
+        // Get images
+
         // Inflate the layout for this fragment
         myStateinflater=inflater;
         myStatecontainer=container;
@@ -476,10 +484,14 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         {
             customAdapter = new ImageDisplay.CustomAdapter(names,images,getActivity());
 
+        } else {
+            customAdapter.notifyDataSetChanged();
         }
         if(listAdapter==null)
         {
             listAdapter = new ImageDisplay.ListAdapter(names,images,getActivity());
+        } else {
+            listAdapter.notifyDataSetChanged();
         }
 
         gridView.setAdapter(customAdapter);

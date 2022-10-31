@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -82,9 +83,9 @@ public class AlbumsFragment extends Fragment {
         // SAMPLE TEST
         spanColumns = 2;
         rcv_albumList = layout.findViewById(R.id.album_list);
-        rcv_albumList.setLayoutManager(new GridLayoutManager(context, spanColumns));
+        rcv_albumList.setLayoutManager(new LinearLayoutManager(context));
         rcv_albumList.setAdapter(new AlbumAdapter(albumList,context));
-        rcv_albumList.addItemDecoration(new SpacesItemDecoration(20, spanColumns));
+        rcv_albumList.addItemDecoration(new SpacesItemDecoration(20, 1));
 
 //        InitSampleTest();
         //
@@ -100,14 +101,6 @@ public class AlbumsFragment extends Fragment {
         return layout;
     }
 
-//    private void readData(){
-//        String data=readFile(filename);
-//        if(data.equals("")){
-//            albumList=new ArrayList<Album>();
-//        } else {
-//            albumList= gson.fromJson(data, new TypeToken<List<Album>>(){}.getType());
-//        }
-//    }
     private void readData(){
         MainActivity ma= (MainActivity) context;
         albumList=new ArrayList<Album>();
@@ -148,20 +141,6 @@ public class AlbumsFragment extends Fragment {
 
 
 
-    private void InitSampleTest(){
-        ArrayList<String> path=new ArrayList<String>();
-        albumList.clear();
-//        path.add("path1");
-//        path.add("path2");
-//        albumList.add(new Album("Album1",path));
-//        albumList.add(new Album("Album2",path));
-//        albumList.add(new Album("Album3",path));
-//        albumList.add(new Album("Album4",path));
-//        albumList.add(new Album("Album5",path));
-//        albumList.add(new Album("Album6",path));
-//        albumList.add(new Album("Album7",path));
-//        albumList.add(new Album("Album8",path));
-    }
     private void showNewFolderDialog(){
         NewFolderDialog dialog=new NewFolderDialog(context);
         dialog.show();

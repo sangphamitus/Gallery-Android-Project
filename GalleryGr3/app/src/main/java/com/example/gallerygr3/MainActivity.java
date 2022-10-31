@@ -3,12 +3,18 @@ package com.example.gallerygr3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+
+import android.os.Build;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,9 +86,21 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     Class[] arrFrag = new Class[3];
 
+
+    public void askForPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                startActivity(intent);
+                return;
+            }
+        }
+    }
+
     String deleteNotify="";
 
     public ArrayList<String> chooseToDeleteInList=new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +110,20 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         context= this;
 
         ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
+
+                        Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                }, 1);
+
+
+
                         Manifest.permission.CAMERA,
                         Manifest.permission.INTERNET
                 }, 1);
+
 
 
 
@@ -235,6 +262,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     }
 
 
+
     private void showCustomDialogBox()
     {
         final Dialog customDialog = new Dialog( context );
@@ -273,18 +301,24 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
         customDialog.show();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                readFolder();
+                askForPermissions();
+
                 readFolder(Picture);
                 readFolder(DCIM);
 //                getSupportFragmentManager().beginTransaction()
 //             .setReorderingAllowed(true)
 //               .replace(R.id.fragment_container, arrFrag[0], null)
 //                .commit();
+
                 getSupportFragmentManager().beginTransaction()
                         .setReorderingAllowed(true)
                         .replace(R.id.fragment_container, ImageDisplay.newInstance(), null)
@@ -309,6 +343,10 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
+
+   // protected void readFolder() {
+    
+
     @Override
     public void removeImageUpdate(String[] input)
     {
@@ -317,6 +355,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             FileInPaths.remove(name);
 
         }
+
 
     }
     @Override
