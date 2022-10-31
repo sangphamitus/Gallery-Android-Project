@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
@@ -30,7 +32,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textView.setText(albumList.get(position).name);
+        holder.albumName.setText(albumList.get(position).name);
+
+        holder.albumImagesCount.setText(String.format(context.getString(R.string.album_image_count),albumList.get(position).imagePaths.size()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,13 +54,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
-        TextView textView;
+        TextView albumName;
+        TextView albumImagesCount;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView=itemView.findViewById(R.id.album_image);
             imageView.setImageResource(R.drawable.ic_baseline_folder_24);
-            textView=itemView.findViewById(R.id.album_name);
+            albumName =itemView.findViewById(R.id.album_name);
+            albumImagesCount=itemView.findViewById(R.id.album_images_count);
         }
     }
 }

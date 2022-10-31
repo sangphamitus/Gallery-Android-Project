@@ -4,11 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SelectedPicture">
+    tools:context=".SelectedPicture"
+    >
+
+
+
+    <RelativeLayout
+        android:translationZ="100dp"
+        android:layout_alignParentTop="true"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#AFACB0"
+        android:gravity="center_vertical"
+        android:id="@+id/topNavSinglePic">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#AFACB0"
+            android:src="@drawable/ic_baseline_arrow_back_24" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="#AFACB0"
+            android:gravity="right"
+            android:src="@drawable/ic_baseline_info_24" />
+    </RelativeLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/main_viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:clickable="true">
 
+
+    </androidx.viewpager2.widget.ViewPager2>
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:id="@+id/bottomNavSinglePic"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#AFACB0"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            tools:override="true">
+
+            <ImageButton
+                android:id="@+id/shareBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#AFACB0"
+                android:src="@drawable/ic_baseline_share_24" />
+
+            <ImageButton
+                android:id="@+id/editBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#AFACB0"
+                android:src="@drawable/ic_baseline_edit_24" />
+
+            <ImageButton
+                android:id="@+id/deleteSingleBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#AFACB0"
+                android:src="@drawable/ic_baseline_delete_white_24" />
+
+            <ImageButton
+                android:id="@+id/rotateBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#AFACB0"
+                android:src="@drawable/ic_baseline_screen_rotation_24" />
+
+            <ImageButton
+                android:id="@+id/moreBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#AFACB0"
+                android:src="@drawable/ic_baseline_more_horiz_24" />
+
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

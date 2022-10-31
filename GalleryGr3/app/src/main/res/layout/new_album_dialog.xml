@@ -42,11 +42,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/new_alubum_button"
+            android:id="@+id/new_album_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:layout_marginStart="32dp"
-            android:text="Add" />
+            android:layout_marginEnd="32dp"
+            android:text="Cancle" />
 
         <Space
             android:layout_width="wrap_content"
@@ -54,12 +56,13 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/new_album_cancel"
+            android:id="@+id/new_alubum_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:text="Cancle" />
+            android:text="Add" />
+
     </LinearLayout>
 
 </LinearLayout>
