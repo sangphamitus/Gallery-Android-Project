@@ -388,7 +388,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 .build();
         ImageLoader.getInstance().init(config);
 
+
+        myStateInfo=savedInstanceState;
+        Context context= getActivity();
+
         this.context= getActivity();
+
 
         images =((MainActivity)context).getFileinDir();
 
@@ -752,6 +757,14 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
+
+
+
+
+                     //   myStateInfo= new Bundle();
+                      //   onCreate(myStateInfo);
+                        onCreateView(myStateinflater,myStatecontainer,myStateInfo);
+
                     }
                 }
             });
