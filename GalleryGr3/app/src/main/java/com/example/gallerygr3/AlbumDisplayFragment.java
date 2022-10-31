@@ -322,18 +322,7 @@ public class AlbumDisplayFragment extends Fragment {
         }
     }
 
-
-    public void askForPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!Environment.isExternalStorageManager()) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                startActivity(intent);
-                return;
-            }
-        }
-    }
     public String moveFile(String filePath, String newFolderLocation){
-        askForPermissions();
 
         Path from= Paths.get(filePath);
         String newFileName=ImageDisplay.generateFileName()+"."+getExtension(from.getFileName().toString());
@@ -348,7 +337,6 @@ public class AlbumDisplayFragment extends Fragment {
         }
     }
     public String copyFile(String filePath,String newFolderLocation){
-        askForPermissions();
 
         Path from= Paths.get(filePath);
         String newFileName=ImageDisplay.generateFileName()+"."+getExtension(from.getFileName().toString());

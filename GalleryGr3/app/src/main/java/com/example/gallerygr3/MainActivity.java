@@ -3,7 +3,10 @@ package com.example.gallerygr3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,7 +56,15 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     Class[] arrFrag = new Class[3];
 
-
+    public void askForPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                startActivity(intent);
+                return;
+            }
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +72,13 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
 
         ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                new String[]{
                         Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.MANAGE_EXTERNAL_STORAGE
                 }, 1);
+
 
       //  SD = Environment.getExternalStorageDirectory().getAbsolutePath();
         DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
@@ -106,6 +119,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         setCurrentDirectory(Picture);
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -113,6 +127,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readFolder();
+                askForPermissions();
                 getSupportFragmentManager().beginTransaction()
              .setReorderingAllowed(true)
                .replace(R.id.fragment_container, arrFrag[0], null)
