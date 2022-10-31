@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SelectedPicture"
-    android:orientation="vertical"
-    android:stretchColumns="2">
+    >
+
+
 
     <RelativeLayout
+        android:translationZ="100dp"
+        android:layout_alignParentTop="true"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#AFACB0"
@@ -30,79 +34,82 @@
             android:backgroundTint="#AFACB0"
             android:gravity="right"
             android:src="@drawable/ic_baseline_info_24" />
-
     </RelativeLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/main_viewPager"
-        android:layout_weight="1"
-        android:clickable="true">
-    </androidx.viewpager2.widget.ViewPager2>
-
-    <RelativeLayout
         android:layout_width="match_parent"
-        android:background="#AFACB0"
-        android:layout_height="60dp"
-        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:clickable="true">
+
+
+    </androidx.viewpager2.widget.ViewPager2>
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
         android:id="@+id/bottomNavSinglePic"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#AFACB0"
+        android:gravity="center">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            tools:override="true">
 
             <ImageButton
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:id="@+id/shareBtn"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:backgroundTint="#AFACB0"
                 android:src="@drawable/ic_baseline_share_24" />
 
             <ImageButton
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:id="@+id/editBtn"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:backgroundTint="#AFACB0"
                 android:src="@drawable/ic_baseline_edit_24" />
 
             <ImageButton
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:id="@+id/deleteSingleBtn"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:backgroundTint="#AFACB0"
                 android:src="@drawable/ic_baseline_delete_white_24" />
 
             <ImageButton
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:id="@+id/rotateBtn"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:backgroundTint="#AFACB0"
                 android:src="@drawable/ic_baseline_screen_rotation_24" />
 
             <ImageButton
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:id="@+id/moreBtn"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:backgroundTint="#AFACB0"
                 android:src="@drawable/ic_baseline_more_horiz_24" />
 
         </LinearLayout>
     </RelativeLayout>
-
-</TableLayout>
+</RelativeLayout>

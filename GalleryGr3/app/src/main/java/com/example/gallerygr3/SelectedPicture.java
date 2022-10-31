@@ -159,6 +159,29 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         viewPager2.setCurrentItem(currentPosition ,false);
     }
 
+    @Override
+    public void showNav() {
+
+        if(!displayNavBars){
+            topNav.setVisibility(View.VISIBLE);
+            bottomNav.setVisibility(View.VISIBLE);
+            displayNavBars = true;
+        }else {
+            displayNavBars = false;
+            bottomNav.setVisibility(View.INVISIBLE);
+            topNav.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void hiddenNav() {
+//        displayNavBars = false;
+//        topNav.setVisibility(View.INVISIBLE);
+//        topNav.setVisibility(View.INVISIBLE);
+
+        return;
+    }
+
     private void showCustomDialogBoxInSelectedPicture()
     {
         final Dialog customDialog = new Dialog( this );
