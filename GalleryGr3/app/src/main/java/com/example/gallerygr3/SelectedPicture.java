@@ -3,15 +3,27 @@ package com.example.gallerygr3;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.MotionEvent;
+
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.MediaStore;
+
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +38,17 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<String> images;
     MediaPlayer mediaPlayer;
 
+    ImageButton backBtn;
+    ImageButton deleteBtn;
+    String currentSelectedName;
+    int currentPosition;
+    MainActivity main;
 
+    RelativeLayout topNav;
+    RelativeLayout bottomNav;
+
+    boolean displayNavBars = true;
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,9 +56,47 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
         viewPager2=(ViewPager2)findViewById(R.id.main_viewPager) ;
 
+        //xử lí nút back toàn màn hình
+        backBtn=(ImageButton) findViewById(R.id.backButton);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectedPicture.super.onBackPressed();
+            }
+        });
+
+        deleteBtn=(ImageButton) findViewById(R.id.deleteSingleBtn);
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCustomDialogBoxInSelectedPicture();
+            }
+        });
+
+        topNav = (RelativeLayout) findViewById(R.id.topNavSinglePic);
+        bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
+
+        //PHẦN NÀY ĐỂ ẨN HIỆN TASK BAR TRONG SINGLE IMG - CHUA LAM DUOC
+
+//        viewPager2.getChildAt(viewPager2.getCurrentItem()).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                if (displayNavBars ==false){
+//////                    topNav.setVisibility(View.VISIBLE);
+//////                    topNav.setVisibility(View.VISIBLE);
+////                    topNav.setBackgroundColor(Color.RED);
+////                    displayNavBars = true;
+////
+////                }
+////                else if(displayNavBars ==true){
+////                    displayNavBars = false;
+////                    topNav.setVisibility(View.INVISIBLE);
+////                    topNav.setVisibility(View.INVISIBLE);
+////                }
+//                Toast.makeText(getApplicationContext(), "123", Toast.LENGTH_SHORT).show();
+//            }
+//        });
         //get img and name data
-
-
         Intent intent = getIntent();
         if(intent.getExtras()!=null){
 
@@ -74,12 +134,14 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                     super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                    String temp=aa.getItem(position).getSelectedName();
+                    setCurrentSelectedName(aa.getItem(position).getSelectedName());
+                    setCurrentPosition(pos);
                     aa.BackToInit();
 
                 }
             });
         }
-
     }
 
     @Override
@@ -92,5 +154,78 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     public void allowSwipe() {
         viewPager2.setUserInputEnabled(true);
         return;
+    }
+
+    @Override
+    public void setCurrentSelectedName(String name){
+        this.currentSelectedName = name;
+    }
+    @Override
+    public void setCurrentPosition(int pos){
+        this.currentPosition = pos;
+    }
+    @Override
+    public void removeImageUpdate(String input){
+        listItem.remove(currentPosition);
+        viewPagerAdapter aa=new viewPagerAdapter(listItem,this);
+        viewPager2.setAdapter(aa);
+        viewPager2.setCurrentItem(currentPosition ,false);
+    }
+
+    @Override
+    public void showNav() {
+
+        if(!displayNavBars){
+            topNav.setVisibility(View.VISIBLE);
+            bottomNav.setVisibility(View.VISIBLE);
+            displayNavBars = true;
+        }else {
+            displayNavBars = false;
+            bottomNav.setVisibility(View.INVISIBLE);
+            topNav.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void hiddenNav() {
+//        displayNavBars = false;
+//        topNav.setVisibility(View.INVISIBLE);
+//        topNav.setVisibility(View.INVISIBLE);
+
+        return;
+    }
+
+    private void showCustomDialogBoxInSelectedPicture()
+    {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Delete confirm");
+
+        customDialog.setContentView(R.layout.delete_dialog_notify);
+
+        ((TextView) customDialog.findViewById(R.id.deleteNotify))
+                .setText("Do you want to delete in your device ?");
+
+        ((Button) customDialog.findViewById(R.id.cancelDelete))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        ((Button) customDialog.findViewById(R.id.confirmDelete))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDelete.DeleteImage(currentSelectedName);
+                        removeImageUpdate(currentSelectedName);
+                        //cập nhật lại danh sách trong ImageDisplay
+                        ic.deleteClicked(currentSelectedName);
+                        customDialog.dismiss();
+                    }
+                });
+        customDialog.show();
     }
 }

@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
+
     private void showSliderDiaglogBox(){
         final Dialog customDialog = new Dialog( context );
         customDialog.setTitle("Create Slider with Music");
@@ -260,7 +261,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         customDialog.show();
 
     }
-
 
 
     private void showCustomDialogBox()
@@ -353,9 +353,15 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
-
         }
 
+
+    }
+    @Override
+    public void removeImageUpdate(String input)
+    {
+
+            FileInPaths.remove(input);
 
     }
     @Override
