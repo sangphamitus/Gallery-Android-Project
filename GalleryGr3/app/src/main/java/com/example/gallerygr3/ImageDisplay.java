@@ -12,10 +12,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-
+import com.example.gallerygr3.ImageDelete;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -23,10 +26,12 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
 import android.graphics.Matrix;
 
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +45,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -50,8 +56,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.webkit.DownloadListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -64,10 +75,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.FileOutputStream;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
 
 /*
 * File imgFile= new File(Images.get(position));
@@ -77,8 +94,13 @@ import java.io.File;
 * */
 
 
-public class ImageDisplay extends Fragment {
+
+public class ImageDisplay extends Fragment implements chooseAndDelete{
     Context context;
+
+    private static ImageDisplay INSTANCE = null;
+
+
     ImageButton changeBtn;
     FloatingActionButton fab_camera,fab_expand,fab_url;
     GridView gridView;
@@ -90,8 +112,14 @@ public class ImageDisplay extends Fragment {
     Bundle myStateInfo;
     LayoutInflater myStateinflater;
     ViewGroup myStatecontainer;
-    ImageDisplay.CustomAdapter customAdapter=null;
-    ImageDisplay.ListAdapter listAdapter=null;
+     ImageDisplay.CustomAdapter customAdapter=null;
+     ImageDisplay.ListAdapter listAdapter=null;
+
+    boolean isHolding=false;
+
+    ArrayList<String> selectedImages=new ArrayList<>();
+
+
     private static final int CAMERA_REQUEST = 1888;
 
 
@@ -99,30 +127,40 @@ public class ImageDisplay extends Fragment {
     // Create default options which will be used for every
 //  displayImage(...) call if no options will be passed to this method
 
-    public ImageDisplay() {
+    private ImageDisplay() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static ImageDisplay newInstance(String param1, String param2) {
-        ImageDisplay fragment = new ImageDisplay();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+    public static ImageDisplay newInstance() {
+        if(INSTANCE==null)
+        {
+            synchronized (ImageDisplay.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ImageDisplay();
+                }
+            }
+        }
+
+        return INSTANCE;
     }
 
     public class CustomAdapter extends BaseAdapter {
         private ArrayList<String> imageNames;
         private ArrayList<String> imagePhotos;
+
         private Context context;
         private LayoutInflater layoutInflater;
+
         private class ViewHolder{
             ImageView imageView;
+            CheckBox check;
         }
 
-        public CustomAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, Context context) {
+        public CustomAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, @NonNull Context context) {
             this.imageNames = imageNames;
             this.imagePhotos = imagePhotos;
+
             this.context = context;
             this.layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -145,18 +183,82 @@ public class ImageDisplay extends Fragment {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            ViewHolder viewHolder=null;
+           ViewHolder viewHolder=null;
 //            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             if(view == null){
                 view =layoutInflater.inflate(R.layout.row_item,viewGroup,false);
                 viewHolder=new ViewHolder();
                 viewHolder.imageView=view.findViewById(R.id.imageView);
+                viewHolder.check=view.findViewById(R.id.checkImage);
                 view.setTag(viewHolder);
             } else {
                 viewHolder=(ViewHolder) view.getTag();
+
+            }
+            if(isHolding)
+            {
+                int currentView=i;
+                viewHolder.check.setVisibility(View.VISIBLE);
+
+                if(selectedImages.contains(imagePhotos.get(i))) {
+                    viewHolder.check.setChecked(true);
+                }else
+                {
+                    viewHolder.check.setChecked(false);
+                }
+
+                viewHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(compoundButton.isPressed())
+                        {
+                            if(currentView<imagePhotos.size()) {
+
+                                if (b) {
+                                    if (!selectedImages.contains(imagePhotos.get(currentView))) {
+                                        selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(imagePhotos.get(currentView),"choose");
+                                        //selectedImages.add(imagePhotos.get(currentView));
+                                    }
+
+                                } else {
+                                    if (selectedImages.contains(imagePhotos.get(currentView))) {
+                                        selectedImages=  ((MainActivity)getContext()).adjustChooseToDeleteInList(imagePhotos.get(currentView),"unchoose");
+
+                                        //selectedImages.remove(imagePhotos.get(currentView));
+                                    }
+
+
+                                }
+                                ((MainActivity) getContext()).SelectedTextChange();
+                                customAdapter.notifyDataSetChanged();
+                                listAdapter.notifyDataSetChanged();
+
+                            }
+                        }
+
+                    }
+                });
+            }
+            else
+            {
+                viewHolder.check.setVisibility(View.INVISIBLE);
             }
 //            viewHolder.imageView.setImageBitmap(myBitmap);
+//            if(isHolding)
+//            {
+//               //viewHolder.check.setVisibility(View.VISIBLE);
+//                viewHolder.check.setChecked(checkPhoto.get(i));
+//                viewHolder.imageView.setClickable(true);
+//
+//            }
+//            else
+//            {
+//               // viewHolder.check.setVisibility(View.INVISIBLE);
+//
+//            }
             File imgFile= new File(imagePhotos.get(i));
+
+
             ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
 
             return view;
@@ -174,6 +276,7 @@ public class ImageDisplay extends Fragment {
         private class ViewHolder{
             TextView textView;
             ImageView imageView;
+            CheckBox check;
         }
 
         public ListAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, Context context) {
@@ -207,13 +310,60 @@ public class ImageDisplay extends Fragment {
                 viewHolder=new ViewHolder();
                 viewHolder.imageView=view.findViewById(R.id.imageView);
                 viewHolder.textView=view.findViewById(R.id.tvName);
+                viewHolder.check=view.findViewById(R.id.checkImage);
                 view.setTag(viewHolder);
             } else {
                 viewHolder=(ViewHolder) view.getTag();
             }
             TextView tvName = viewHolder.textView;
             tvName.setText(imageNames.get(i));
+            if(isHolding)
+            {
+                int currentView=i;
+                viewHolder.check.setVisibility(View.VISIBLE);
 
+                if(selectedImages.contains(imagePhotos.get(i))) {
+                    viewHolder.check.setChecked(true);
+                }else
+                {
+                    viewHolder.check.setChecked(false);
+                }
+                viewHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(compoundButton.isPressed())
+                        {
+                            if(currentView<imagePhotos.size()) {
+
+                                if (b) {
+                                    if (!selectedImages.contains(imagePhotos.get(currentView))) {
+                                        selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(imagePhotos.get(currentView),"choose");
+                                        //selectedImages.add(imagePhotos.get(currentView));
+                                    }
+
+                                } else {
+                                    if (selectedImages.contains(imagePhotos.get(currentView))) {
+                                        selectedImages=  ((MainActivity)getContext()).adjustChooseToDeleteInList(imagePhotos.get(currentView),"unchoose");
+
+                                        //selectedImages.remove(imagePhotos.get(currentView));
+                                    }
+
+
+                                }
+                                ((MainActivity) getContext()).SelectedTextChange();
+                                customAdapter.notifyDataSetChanged();
+                                listAdapter.notifyDataSetChanged();
+
+                            }
+                        }
+
+                    }
+                });
+            }
+            else
+            {
+                viewHolder.check.setVisibility(View.INVISIBLE);
+            }
             File imgFile= new File(imagePhotos.get(i));
             ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
             return view;
@@ -241,6 +391,56 @@ public class ImageDisplay extends Fragment {
         this.context= getActivity();
 
         images =((MainActivity)context).getFileinDir();
+
+        //get date
+        ArrayList<Date> listDate= new ArrayList<Date>();
+        for(int i=0;i<images.size();i++){
+            File file = new File(images.get(i));
+            if(file.exists()) //Extra check, Just to validate the given path
+            {
+                ExifInterface intf = null;
+                try
+                {
+                    intf = new ExifInterface(images.get(i));
+                    if(intf != null)
+                    {
+                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+                        Date lastModDate = new Date(file.lastModified());
+                        listDate.add(lastModDate);
+                        Log.i("PHOTO DATE", "Dated : "+ dateString); //Display dateString. You can do/use it your own way
+                    }
+                }
+                catch (IOException e)
+                {
+                }
+                if(intf == null)
+                {
+                    Date lastModDate = new Date(file.lastModified());
+                    Log.i("PHOTO DATE", "Dated : "+ lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+                }
+            }
+        }
+
+        //get object
+        ArrayList<ImageDate> imgDates = new ArrayList<ImageDate>();
+        for(int i=0;i<images.size();i++){
+            ImageDate temp = new ImageDate(images.get(i),listDate.get(i));
+            imgDates.add(temp);
+        }
+
+        //sort obj
+        Collections.sort(imgDates);
+        Collections.reverse(imgDates);
+
+        //change images after sort
+        for(int i=0;i<imgDates.size();i++){
+            images.set(i,imgDates.get(i).getImage());
+        }
+
+//        Collections.sort(images);
+        //checkPhoto=new ArrayList<Boolean>(Arrays.asList(new Boolean[images.size()]));
+        //Collections.fill(checkPhoto, Boolean.FALSE);
+
         //create name array
         names= new ArrayList<String>();
 
@@ -250,6 +450,9 @@ public class ImageDisplay extends Fragment {
 
             String name = getDisplayName(images.get(i));
             names.add(name);
+            // ====================================================
+
+
 
             // ====================================================
         }
@@ -295,16 +498,58 @@ public class ImageDisplay extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedName= images.get(i);
+                String selectedName = images.get(i);
 
 //                int selectedImage = images[i];
+                if (isHolding == false) {
+                    startActivity(new Intent(getActivity(), SelectedPicture.class)
+                            .putExtra("name", selectedName)
+                            .putExtra("images", images)
+                            .putExtra("pos", i));
+                }
+              else {
 
-                startActivity(new Intent(getActivity(), SelectedPicture.class)
-                        .putExtra("name", selectedName)
-                        .putExtra("images",images));
+//                    //view.setFocusable(true);
+//                    if(!selectedImages.contains(selectedName))
+//                    {
+//                      //  selectedImages.add(selectedName) ;
+//                        selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(selectedName,"choose");
+//                    }
+//                    else {
+//                       // selectedImages.remove(selectedName) ;
+//                        selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(selectedName,"unchoose");
+//
+//                    }
+//                    ((MainActivity)getContext()).SelectedTextChange();
+//                    customAdapter.notifyDataSetChanged();
+//                    listAdapter.notifyDataSetChanged();
+//                }
+//                Toast.makeText((MainActivity)getContext(), "choosed ", Toast.LENGTH_SHORT).show();
+                }
             }
 
         });
+
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                isHolding =true;
+                ((MainActivity)getContext()).Holding(isHolding);
+
+                String selectedName= images.get(i);
+
+                selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(selectedName,"choose");
+
+                ((MainActivity)getContext()).SelectedTextChange();
+
+                customAdapter.notifyDataSetChanged();
+                listAdapter.notifyDataSetChanged();
+
+                return true;
+            }
+        });
+
+
 
         changeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -327,6 +572,13 @@ public class ImageDisplay extends Fragment {
                 openCamera();
             }
         });
+
+        fab_url.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showInputDialogBox();
+            }
+        });
         fab_url.setVisibility(View.INVISIBLE);
         fab_camera.setVisibility(View.INVISIBLE);
         fab_expand.setOnClickListener(new View.OnClickListener() {
@@ -344,6 +596,128 @@ public class ImageDisplay extends Fragment {
 
         return view;
 //        return inflater.inflate(R.layout.fragment_image_display, container, false);
+    }
+
+    private void showInputDialogBox()
+    {
+        final String[] url_input = {"",""};
+        final Dialog customDialog = new Dialog( getContext());
+        customDialog.setTitle("Delete confirm");
+
+        customDialog.setContentView(R.layout.url_download_diagbox);
+
+        ((Button) customDialog.findViewById(R.id.download_url_cancel))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        ((Button) customDialog.findViewById(R.id.download_url_confirm))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        url_input[0] = ((EditText) customDialog.findViewById(R.id.download_url_input)).getText().toString();
+                        url_input[1] =((EditText) customDialog.findViewById(R.id.download_url_rename)).getText().toString();
+                        Toast.makeText(INSTANCE.getContext(), url_input[0], Toast.LENGTH_SHORT).show();
+                        String[] ArrInput=DownloadImageFromURL(url_input[0].trim(),url_input[1].trim());
+                        ((MainActivity)getContext()).addImageUpdate(ArrInput);
+                        customAdapter.notifyDataSetChanged();
+                        listAdapter.notifyDataSetChanged();
+                        customDialog.dismiss();
+                    }
+                });
+
+        customDialog.show();
+    }
+
+    private String[] DownloadImageFromURL(String input,String fileName)
+    {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(input));
+        String[] result=new String[1];
+        String fileExtension=input.substring(input.lastIndexOf("."));
+        while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
+            fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+        }
+
+        if (fileName.length()==0){
+            fileName= (new Date()).toString();
+
+        }
+        String fullNameFile=((MainActivity)getContext()).getPictureDirectory() + "/" + fileName + "." + fileExtension;
+        request.setDescription("Downloading " + input + "...");
+        request.setTitle(input);
+       // request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationUri(Uri.fromFile(new File(fullNameFile)));
+        DownloadManager manager = (DownloadManager) INSTANCE.getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        manager.enqueue(request);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        Notification noti = new NotificationCompat.Builder((MainActivity)getContext(),"Download " +fullNameFile )
+                .setContentText("Downloaded item")
+                .setSmallIcon(R.drawable.ic_launcher_background)
+
+                .build();
+
+
+
+        result[0]=fullNameFile;
+        return result;
+    }
+
+
+    @Override
+    public  void deleteClicked()
+    {
+
+        isHolding =false;
+        ((MainActivity)getContext()).Holding(isHolding);
+        selectedImages = ((MainActivity)getContext()).chooseToDeleteInList();
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void  clearClicked()
+    {
+        isHolding =false;
+        ((MainActivity)getContext()).Holding(isHolding);
+       // Collections.fill(checkPhoto,Boolean.FALSE);
+
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public void  selectAllClicked()
+    {
+        isHolding =true;
+        ((MainActivity)getContext()).Holding(isHolding);
+//        if(selectedImages.size()==images.size())
+//        {
+//            //selectedImages.clear();
+//           // Collections.fill(checkPhoto,Boolean.FALSE);
+//
+//        }
+//        else
+//        {
+//            //Collections.fill(checkPhoto,Boolean.TRUE);
+//
+//        }
+//        else
+//        {
+//            selectedImages.clear();
+//            for(String name:images)
+//            {
+//                selectedImages.add(name);
+//            }
+//
+//        }
+        selectedImages= ((MainActivity)getContext()).chooseToDeleteInList();
+        ((MainActivity)getContext()).SelectedTextChange();
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
     }
 
 
