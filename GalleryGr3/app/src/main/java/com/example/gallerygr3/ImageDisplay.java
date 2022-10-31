@@ -388,13 +388,13 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 .build();
         ImageLoader.getInstance().init(config);
 
-<<<<<<< HEAD
+
         myStateInfo=savedInstanceState;
         Context context= getActivity();
-=======
+
         this.context= getActivity();
 
->>>>>>> cf219d457f4eb2f9b0370acadd4230fb71474bb8
+
         images =((MainActivity)context).getFileinDir();
 
         //get date
@@ -757,16 +757,14 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
-<<<<<<< HEAD
 
-                        customAdapter.changeDataSource(images);
-                        listAdapter.changeDataSource(images);
+
+
 
                      //   myStateInfo= new Bundle();
                       //   onCreate(myStateInfo);
                         onCreateView(myStateinflater,myStatecontainer,myStateInfo);
-=======
->>>>>>> cf219d457f4eb2f9b0370acadd4230fb71474bb8
+
                     }
                 }
             });

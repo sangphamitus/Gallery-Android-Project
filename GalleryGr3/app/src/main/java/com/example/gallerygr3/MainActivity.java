@@ -115,11 +115,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
 
-                        Manifest.permission.MANAGE_EXTERNAL_STORAGE
-                }, 1);
-
-
-
                         Manifest.permission.CAMERA,
                         Manifest.permission.INTERNET
                 }, 1);
@@ -309,9 +304,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                readFolder();
                 askForPermissions();
-
                 readFolder(Picture);
                 readFolder(DCIM);
 //                getSupportFragmentManager().beginTransaction()
