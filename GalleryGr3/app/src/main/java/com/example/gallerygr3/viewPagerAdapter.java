@@ -55,6 +55,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         this.arrayItems = arrayItems;
     }
 
+
     // handle zoom event and swipe event var
     private static final long DOUBLE_PRESS_INTERVAL = 250; // in millis
     private long lastPressTime;
