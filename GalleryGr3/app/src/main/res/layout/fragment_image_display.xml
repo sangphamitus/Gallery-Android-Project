@@ -12,9 +12,7 @@
         android:layout_height="match_parent"
         tools:context=".ImageDisplay"
         android:id="@+id/imagedisplay">
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MainActivity"
@@ -35,19 +33,20 @@
                         android:paddingStart="20sp">
 
                     </TextView>
+
                     <ImageButton
                         android:id="@+id/resizeView"
                         android:layout_width="95dp"
                         android:layout_height="50dp"
                         android:layout_gravity="right"
+                        android:background="@color/white"
+                        android:padding="8dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/resizeicon" />
+                        android:src="@drawable/menu" />
 
                 </TableRow>
 
             </TableLayout>
-
-
             <GridView
                 android:id="@+id/gridView"
                 android:layout_width="wrap_content"
@@ -62,18 +61,18 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:elevation="6dp"
         >
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:padding="10dp"
             android:layout_alignParentEnd="true"
-            android:orientation="vertical">
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/fab_url"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,28 +82,25 @@
                 android:clickable="true"
                 android:contentDescription="Url"
                 android:src="@android:drawable/stat_sys_download"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                app:elevation="0dp"
-
                 app:backgroundTint="#DAE5D0"
-                />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                app:elevation="0dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/fab_Camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/fab_Expand"
+                android:layout_above="@id/fab_expand"
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="26dp"
                 android:clickable="true"
                 android:contentDescription="Camera"
                 android:src="@android:drawable/ic_menu_camera"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                app:elevation="0dp"
-                app:backgroundTint="#DAE5D0"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+                app:backgroundTint="#DAE5D0"
+                app:elevation="0dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_Expand"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/fab_expand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -113,9 +109,8 @@
                 android:clickable="true"
                 android:contentDescription="Expand"
                 android:src="@android:drawable/ic_menu_add"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                app:elevation="0dp"
-                app:backgroundTint="#DAE5D0" />
+                app:backgroundTint="#DAE5D0"
+                app:elevation="0dp" />
         </LinearLayout>
 
     </RelativeLayout>

@@ -21,7 +21,7 @@
                 android:layout_width="300px"
                 android:layout_height="150dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_background" />
+                android:src="@drawable/placehoder" />
 
             <TextView
                 android:id="@+id/tvName"
@@ -29,8 +29,25 @@
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="15dp"
                 android:text="xin chao moi nguoi"
-                android:textSize="22dp" />
+                android:textSize="18dp"
+                android:layout_weight="1"
+                android:ellipsize="none"
+                android:maxLines="2"
+                android:scrollHorizontally="false"
+                />
         </TableRow>
     </TableLayout>
+    <CheckBox
+        android:id="@+id/checkImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:button="@drawable/custom_checkbox"
+        android:visibility="visible"
+        android:clickable="true"
+        android:checked="false"
+        android:gravity="bottom"
+        >
+
+    </CheckBox>
 
 </androidx.cardview.widget.CardView>

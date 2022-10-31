@@ -14,6 +14,14 @@ public interface MainCallBack {
     public String getPictureDirectory();
 
     public ArrayList<String> getFileinDir();
+    public void removeImageUpdate(String[] input);
+    public void removeImageUpdate(String input);
+    public void Holding(boolean isHolding);
+    public void SelectedTextChange();
+    public ArrayList<String> chooseToDeleteInList();
+    public ArrayList<String> adjustChooseToDeleteInList(String ListInp,String type );
+    public void clearChooseToDeleteInList();
+    public void addImageUpdate(String[] input);
 
 
 }
