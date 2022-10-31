@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Music Slider"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="bold">
+
+    </TextView>
+
+
+    <RadioGroup
+        android:id="@+id/musicGroup"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <RadioButton
+            android:checked="true"
+            android:id="@+id/music1"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bai1"/>
+        <RadioButton
+            android:id="@+id/music2"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bai2"/>
+        <RadioButton
+            android:id="@+id/music3"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bai3"/>
+    </RadioGroup>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="0,1"
+        android:paddingHorizontal="30dp">
+        <TableRow>
+            <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="cancel"
+                android:backgroundTint="@color/cancel_delete"
+                android:textColor="@color/black"
+                android:id="@+id/cancelSlider"
+                android:layout_marginHorizontal="20dp"> </Button>
+
+            <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirm"
+                android:backgroundTint="@color/confirm_delete"
+                android:textColor="@color/white"
+                android:id="@+id/comfirmSlider"
+                android:layout_marginHorizontal="20dp"
+                > </Button>
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

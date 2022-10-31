@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<viewPagerItem> listItem;
     String[] names;
     ArrayList<String> images;
+    MediaPlayer mediaPlayer;
 
 
     @Override
@@ -62,11 +65,17 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             viewPager2.setClipChildren(false);
             viewPager2.setOffscreenPageLimit(2);
             viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+//            viewPager2.playSoundEffect(R.raw.musicc);
+//            viewPager2.playSoundEffect();
+//            mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.musicc);
+//            mediaPlayer.start();
+
             viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                     super.onPageScrolled(position, positionOffset, positionOffsetPixels);
                     aa.BackToInit();
+
                 }
             });
         }
