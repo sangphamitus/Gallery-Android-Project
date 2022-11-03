@@ -5,41 +5,36 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.MotionEvent;
 
 import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.provider.MediaStore;
 
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
 
     ViewPager2 viewPager2;
     ArrayList<viewPagerItem> listItem;
-    String[] names;
-    ArrayList<String> images;
+    String[] paths;
+    String[] dates;
+    int[] size;
+    ArrayList<String> imagesPath;
+    ArrayList<String> imagesDate;
+    ArrayList<Integer> imagesSize;
     MediaPlayer mediaPlayer;
 
     ImageButton backBtn;
     ImageButton deleteBtn;
+    ImageButton infoBtn;
     String currentSelectedName;
     int currentPosition;
     MainActivity main;
@@ -73,47 +68,46 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             }
         });
 
+        infoBtn = (ImageButton)findViewById(R.id.infoBtn) ;
+        infoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCustomDialogBoxInformation();
+            }
+        });
+
         topNav = (RelativeLayout) findViewById(R.id.topNavSinglePic);
         bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
-
-        //PHẦN NÀY ĐỂ ẨN HIỆN TASK BAR TRONG SINGLE IMG - CHUA LAM DUOC
-
-//        viewPager2.getChildAt(viewPager2.getCurrentItem()).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                if (displayNavBars ==false){
-//////                    topNav.setVisibility(View.VISIBLE);
-//////                    topNav.setVisibility(View.VISIBLE);
-////                    topNav.setBackgroundColor(Color.RED);
-////                    displayNavBars = true;
-////
-////                }
-////                else if(displayNavBars ==true){
-////                    displayNavBars = false;
-////                    topNav.setVisibility(View.INVISIBLE);
-////                    topNav.setVisibility(View.INVISIBLE);
-////                }
-//                Toast.makeText(getApplicationContext(), "123", Toast.LENGTH_SHORT).show();
-//            }
-//        });
         //get img and name data
         Intent intent = getIntent();
         if(intent.getExtras()!=null){
 
             //cut name
-            String selectedName = intent.getStringExtra("name");
-            ArrayList<String> images = intent.getStringArrayListExtra("images");
+            imagesPath = intent.getStringArrayListExtra("images");
+            imagesDate = intent.getStringArrayListExtra("dates");
+            imagesSize = intent.getIntegerArrayListExtra("size");
             int pos = intent.getIntExtra("pos",0);
 
-            names= new String[images.size()];
-            // fix name from data
-            for(int i=0;i<images.size();i++){
-                names[i]=images.get(i);
+
+            paths = new String[imagesPath.size()];
+            for(int i = 0; i< imagesPath.size(); i++){
+                paths[i]= imagesPath.get(i);
             }
 
+            dates= new String[imagesDate.size()];
+            for(int i = 0; i< imagesDate.size(); i++){
+                dates[i]=imagesDate.get(i);
+            }
+
+            size= new int[imagesSize.size()];
+            for(int i = 0; i< imagesSize.size(); i++){
+                size[i]=imagesSize.get(i);
+            }
+
+
             listItem=new  ArrayList<viewPagerItem> ();
-            for(int i=0;i<images.size();i++){
-                viewPagerItem item = new viewPagerItem(names[i]);
+            for(int i = 0; i< imagesPath.size(); i++){
+                viewPagerItem item = new viewPagerItem(paths[i]);
                 listItem.add(item);
             }
 
@@ -136,7 +130,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     super.onPageScrolled(position, positionOffset, positionOffsetPixels);
                     String temp=aa.getItem(position).getSelectedName();
                     setCurrentSelectedName(aa.getItem(position).getSelectedName());
-                    setCurrentPosition(pos);
+                    setCurrentPosition(position);
+
                     aa.BackToInit();
 
                 }
@@ -166,6 +161,11 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     }
     @Override
     public void removeImageUpdate(String input){
+        //xoas trong selectedImage
+        deleteArrayByPossision(paths, currentPosition);
+        deleteArrayByPossision(dates, currentPosition);
+//        deleteArrayByPossision(size, currentPosition);
+        //xóa trong adepter
         listItem.remove(currentPosition);
         viewPagerAdapter aa=new viewPagerAdapter(listItem,this);
         viewPager2.setAdapter(aa);
@@ -188,10 +188,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
     @Override
     public void hiddenNav() {
-//        displayNavBars = false;
-//        topNav.setVisibility(View.INVISIBLE);
-//        topNav.setVisibility(View.INVISIBLE);
-
         return;
     }
 
@@ -227,5 +223,42 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     }
                 });
         customDialog.show();
+    }
+
+
+    private void showCustomDialogBoxInformation()
+    {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Information of Picture");
+
+        customDialog.setContentView(R.layout.infomation_picture_dialog);
+//
+        ((TextView) customDialog.findViewById(R.id.photoName))
+                .setText(ImageDisplay.getDisplayName(paths[currentPosition]));
+        ((TextView) customDialog.findViewById(R.id.photoPath))
+                .setText(paths[currentPosition]);
+        ((TextView) customDialog.findViewById(R.id.photoLastModified))
+                .setText(dates[currentPosition]);
+        ((TextView) customDialog.findViewById(R.id.photoSize))
+                .setText(size[currentPosition]+" bytes");
+//        Toast.makeText(this, imagesSize[currentPosition]+"", Toast.LENGTH_SHORT).show();
+        ((Button) customDialog.findViewById(R.id.ok_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        customDialog.show();
+    }
+    public void deleteArrayByPossision(String[]arr, int pos){
+        int size = arr.length;
+        if(pos != arr.length - 1 ){
+            for(int i=pos; i < size - 1; i++){
+                arr[pos] = arr[pos+1];
+            }
+        }
     }
 }

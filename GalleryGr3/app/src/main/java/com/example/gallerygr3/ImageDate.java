@@ -1,5 +1,8 @@
 package com.example.gallerygr3;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class ImageDate implements Comparable<ImageDate>{
@@ -27,9 +30,15 @@ public class ImageDate implements Comparable<ImageDate>{
         this.date = date;
     }
 
+    public String dayToString(){
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        return dateFormat.format(this.date);
+    }
     @Override
     public int compareTo(ImageDate imageDate) {
         return this.date.compareTo(imageDate.date);
     }
+
 
 }
