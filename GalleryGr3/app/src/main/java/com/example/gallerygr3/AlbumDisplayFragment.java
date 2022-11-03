@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -248,7 +248,6 @@ public class AlbumDisplayFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         //
-                        Toast.makeText(context,"Clicked",Toast.LENGTH_SHORT).show();
                         //
                         ViewHolder viewHolder1=(ViewHolder) view.getTag();
                         if(viewHolder1.checkBox.isChecked()){
@@ -343,7 +342,6 @@ public class AlbumDisplayFragment extends Fragment {
         Path to=Paths.get(newFolderLocation+"/"+newFileName);
         try {
             Files.copy(from,to,StandardCopyOption.REPLACE_EXISTING);
-            Toast.makeText(context,"copy "+newFileName,Toast.LENGTH_SHORT).show();
             return newFileName;
         } catch (IOException e) {
             e.printStackTrace();
