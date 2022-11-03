@@ -37,6 +37,8 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -106,6 +108,22 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .delayBeforeLoading(0)
+                .resetViewBeforeLoading(true)
+                .showImageOnLoading(R.drawable.placehoder)
+                .showImageForEmptyUri(R.drawable.error_image)
+                .showImageOnFail(R.drawable.error_image)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        ImageLoader.getInstance().init(config);
+
+
+
         context= this;
 
         ActivityCompat.requestPermissions(MainActivity.this,
@@ -165,14 +183,14 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             @Override
             public void onClick(View view) {
                ImageDisplay ic= ImageDisplay.newInstance();
-               if(chooseToDeleteInList.size()==FileInPaths.size())
+               if(chooseToDeleteInList.size()==ic.images.size())
                {
                    chooseToDeleteInList.clear();
 
                }
                else
                {
-                   chooseToDeleteInList=new ArrayList<String >(FileInPaths);
+                   chooseToDeleteInList=new ArrayList<String >(ic.images);
 
                }
                 ic.selectAllClicked();
@@ -511,6 +529,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 }
                 else
                 {
+                    ImageDisplay.restoreINSTANCE();
                     getSupportFragmentManager().beginTransaction()
                             .setReorderingAllowed(true)
                             .replace(R.id.fragment_container, ImageDisplay.newInstance(), null)

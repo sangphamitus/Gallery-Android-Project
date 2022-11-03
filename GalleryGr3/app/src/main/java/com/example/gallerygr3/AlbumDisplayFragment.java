@@ -2,9 +2,7 @@ package com.example.gallerygr3;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,13 +45,14 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Use the {@link AlbumDisplayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlbumDisplayFragment extends Fragment {
+public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongClickCallback {
     Context context;
     ImageButton back_button,resize_button;
     TextView album_name,album_images_count;
     RecyclerView listView;
     Album album;
     FloatingActionButton add_images;
+    LinearLayout header;
     ArrayList<String> addedPaths=new ArrayList<String>();
     int min_spanColumns=3;
     int spanColumns =min_spanColumns;
@@ -88,6 +85,9 @@ public class AlbumDisplayFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         CoordinatorLayout layout= (CoordinatorLayout) inflater.inflate(R.layout.fragment_album_display,container,false);
+
+        header=layout.findViewById(R.id.album_header);
+
         back_button=layout.findViewById(R.id.album_display_back);
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,12 +105,13 @@ public class AlbumDisplayFragment extends Fragment {
         album_images_count=layout.findViewById(R.id.album_images_count3);
         album_images_count.setText(String.format(context.getString(R.string.album_image_count),album.imagePaths.size()));
 
-        listView=layout.findViewById(R.id.album_display_list);
-        listView.setAdapter( new AlbumDisplayAdapter(album.imagePaths));
 
-        layoutManager=new GridLayoutManager(context, spanColumns);
-        listView.setLayoutManager(layoutManager);
-        listView.addItemDecoration(new SpacesItemDecoration(20,spanColumns));
+//        listView=layout.findViewById(R.id.album_display_list);
+//        listView.setAdapter( new AlbumDisplayAdapter(album.imagePaths));
+//
+//        layoutManager=new GridLayoutManager(context, spanColumns);
+//        listView.setLayoutManager(layoutManager);
+//        listView.addItemDecoration(new SpacesItemDecoration(20,spanColumns));
 
         add_images=layout.findViewById(R.id.add_image);
         add_images.setOnClickListener(new View.OnClickListener() {
@@ -121,24 +122,60 @@ public class AlbumDisplayFragment extends Fragment {
             }
         });
 
+
+        ImageDisplay.changeINSTANCE();
+        ImageDisplay.newInstance().setImagesData(album.imagePaths);
+        ImageDisplay.newInstance().setLongClickCallBack(this);
+
+        getChildFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.album_display_list,ImageDisplay.newInstance(),null)
+                .commit();
+
         resize_button=layout.findViewById(R.id.resizeBtn);
         resize_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                spanColumns=spanColumns%max_spanColumns +1;
+                ImageDisplay.newInstance().numCol=ImageDisplay.newInstance().numCol%5+1;
+                if(ImageDisplay.newInstance().numCol==1){
+//                    numCol=2;
+                    ImageDisplay.newInstance().gridView.setAdapter(ImageDisplay.newInstance().listAdapter);
 
-                if(spanColumns < 2)
-                {
-                    spanColumns=min_spanColumns;
+                } else if(ImageDisplay.newInstance().numCol == 2) {
+                    ImageDisplay.newInstance().gridView.setAdapter(ImageDisplay.newInstance().customAdapter);
                 }
-                layoutManager.setSpanCount(spanColumns);
-                listView.removeItemDecorationAt(0);
-                listView.addItemDecoration(new SpacesItemDecoration(20,spanColumns));
+                ImageDisplay.newInstance().gridView.setNumColumns(ImageDisplay.newInstance().numCol);
             }
         });
-
         return layout;
     }
+
+    @Override
+    public void onDestroyView() {
+        ImageDisplay.restoreINSTANCE();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ImageDisplay.newInstance().header.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLongClick() {
+        ViewGroup.LayoutParams params=header.getLayoutParams();
+        params.height= (int) (60 * getResources().getDisplayMetrics().density);
+        header.setLayoutParams(params);
+    }
+
+    @Override
+    public void afterLongClick() {
+        ViewGroup.LayoutParams params=header.getLayoutParams();
+        params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+        header.setLayoutParams(params);
+    }
+
 
     private class AlbumDisplayAdapter extends RecyclerView.Adapter<AlbumDisplayAdapter.ViewHolder>{
         ArrayList<String> albumPaths;
@@ -276,6 +313,8 @@ public class AlbumDisplayFragment extends Fragment {
         @Override
         public void dismiss() {
             super.dismiss();
+            ImageDisplay.newInstance().customAdapter.notifyDataSetChanged();
+            ImageDisplay.newInstance().listAdapter.notifyDataSetChanged();
             album_images_count.setText(String.format(context.getString(R.string.album_image_count),album.imagePaths.size()));
         }
 
@@ -291,8 +330,9 @@ public class AlbumDisplayFragment extends Fragment {
                     for (int i=0;i < addedPaths.size();i++){
                         String newFileName=moveFile(addedPaths.get(i),folderPath);
                         album.imagePaths.add(folderPath+"/"+newFileName);
-                        listView.getAdapter().notifyItemChanged(album.imagePaths.size()-1);
+                        ((MainActivity)context).FileInPaths.add(folderPath+"/"+newFileName);
                         ((MainActivity)context).FileInPaths.remove(addedPaths.get(i));
+                        album.imagePaths.remove(addedPaths.get(i));
                     }
 
                     dismiss();
@@ -310,9 +350,7 @@ public class AlbumDisplayFragment extends Fragment {
                         String newFileName=copyFile(addedPaths.get(i),folderPath);
                         album.imagePaths.add(folderPath+"/"+newFileName);
                     }
-                    if(from <= to){
-                        listView.getAdapter().notifyItemRangeChanged(from,to);
-                    }
+
                     dismiss();
                 }
             });
