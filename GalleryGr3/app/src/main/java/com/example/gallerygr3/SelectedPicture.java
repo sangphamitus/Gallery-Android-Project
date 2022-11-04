@@ -5,8 +5,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.WallpaperManager;
 import android.content.Intent;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import android.media.MediaPlayer;
@@ -14,10 +17,13 @@ import android.media.MediaPlayer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
@@ -31,10 +37,15 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<String> imagesDate;
     ArrayList<Integer> imagesSize;
     MediaPlayer mediaPlayer;
+    LinearLayout subInfo;
+    Button changeWallpaper;
+    Button changeWallpaperLock;
+    Button changeFileName;
 
     ImageButton backBtn;
     ImageButton deleteBtn;
     ImageButton infoBtn;
+    ImageButton moreBtn;
     String currentSelectedName;
     int currentPosition;
     MainActivity main;
@@ -43,11 +54,13 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     RelativeLayout bottomNav;
 
     boolean displayNavBars = true;
+    boolean displaySubBar = false;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_picture);
+
 
         viewPager2=(ViewPager2)findViewById(R.id.main_viewPager) ;
 
@@ -75,13 +88,68 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 showCustomDialogBoxInformation();
             }
         });
+        subInfo = (LinearLayout)findViewById(R.id.subInfo);
+        moreBtn = (ImageButton)findViewById(R.id.moreBtn);
+        moreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(displaySubBar){
+                    subInfo.setVisibility(View.INVISIBLE);
+                    displaySubBar=false;
+                }
+                else{
+                    subInfo.setVisibility(View.VISIBLE);
+                    displaySubBar=true;
+                }
+            }
+        });
+
+
+        ///////////////////SUBNAV
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
+        changeWallpaper = (Button)findViewById(R.id.changeWallpaper);
+        changeWallpaperLock = (Button)findViewById(R.id.changeWallpaperLock);
+        changeFileName = (Button)findViewById(R.id.changeNameFile);
+        changeWallpaper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    //set màn hình chinhs
+                    wallpaperManager.setBitmap(getItemBitmap(currentSelectedName));
+                    showDialogSuccessChange("Change Wallpaper Successfully");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                    subInfo.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        changeWallpaperLock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    //set màn hình khóa
+                    wallpaperManager.setBitmap(getItemBitmap(currentSelectedName), null, false, WallpaperManager.FLAG_LOCK);
+                    showDialogSuccessChange("Change Lock sceen Wallpaper Successfully");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                subInfo.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        changeFileName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         topNav = (RelativeLayout) findViewById(R.id.topNavSinglePic);
         bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
         //get img and name data
         Intent intent = getIntent();
         if(intent.getExtras()!=null){
-
             //cut name
             imagesPath = intent.getStringArrayListExtra("images");
             imagesDate = intent.getStringArrayListExtra("dates");
@@ -104,8 +172,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 size[i]=imagesSize.get(i);
             }
 
-
-            listItem=new  ArrayList<viewPagerItem> ();
+            listItem= new  ArrayList<viewPagerItem> ();
             for(int i = 0; i< imagesPath.size(); i++){
                 viewPagerItem item = new viewPagerItem(paths[i]);
                 listItem.add(item);
@@ -181,8 +248,10 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             displayNavBars = true;
         }else {
             displayNavBars = false;
+            displaySubBar = false;
             bottomNav.setVisibility(View.INVISIBLE);
             topNav.setVisibility(View.INVISIBLE);
+            subInfo.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -253,6 +322,48 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
         customDialog.show();
     }
+
+    private void showDialogSuccessChange(String message)
+    {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Change Wallpaper");
+
+        customDialog.setContentView(R.layout.show_success_dialog);
+//
+        ((TextView) customDialog.findViewById(R.id.messageShow))
+                .setText(message);
+
+        ((Button) customDialog.findViewById(R.id.ok_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        customDialog.show();
+    }
+    private void showDialogRename()
+    {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Change Wallpaper");
+
+        customDialog.setContentView(R.layout.edit_text_dialog);
+
+
+        ((Button) customDialog.findViewById(R.id.ok_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        /////////////////////////thực hiện đổi tên tại đây
+                        customDialog.dismiss();
+                    }
+                });
+
+        customDialog.show();
+    }
     public void deleteArrayByPossision(String[]arr, int pos){
         int size = arr.length;
         if(pos != arr.length - 1 ){
@@ -260,5 +371,9 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 arr[pos] = arr[pos+1];
             }
         }
+    }
+    public Bitmap getItemBitmap(String selectedName) {
+        File imgFile= new File(selectedName);
+        return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
     }
 }
