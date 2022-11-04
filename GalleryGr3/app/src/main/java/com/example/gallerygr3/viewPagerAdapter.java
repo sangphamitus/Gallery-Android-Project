@@ -2,6 +2,8 @@ package com.example.gallerygr3;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -17,11 +19,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Optional;
 
 public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.ViewHolder> implements ZoomCallBack{
     ArrayList<viewPagerItem> arrayItems;
@@ -31,6 +37,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     @SuppressWarnings("unused")
     Context context;
     private static final float MIN_ZOOM = 1f,MAX_ZOOM = 1f;
+
 
     // These matrices will be used to scale points of the image
     Matrix matrix = new Matrix();
@@ -55,6 +62,9 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         this.arrayItems = arrayItems;
     }
 
+    float totalRotate=0;
+    int rotatePos=-1;
+    ArrayList<ViewHolder> TemplateView= new ArrayList<ViewHolder>();
 
     // handle zoom event and swipe event var
     private static final long DOUBLE_PRESS_INTERVAL = 250; // in millis
@@ -72,13 +82,17 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         return new ViewHolder(view);
     }
 
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         viewPagerItem item= arrayItems.get(position);
-        holder.img.setImageBitmap(item.getItemBitmap());
 
+        holder.img.setImageBitmap(item.getItemBitmap());
+        TemplateView.add( holder);
      //   holder.txtName.setText(item.getSelectedName());
+
         holder.img.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -87,8 +101,6 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                 view = (ImageView) v;
                 view.setScaleType(ImageView.ScaleType.MATRIX);
                 float scale;
-
-                dumpEvent(event);
 
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK)
@@ -197,12 +209,61 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         if(view==null) return;
         view.setScaleType(ImageView.ScaleType.MATRIX);
 
-
         view.setImageMatrix(initMatrix);
         view.setScaleType(ImageView.ScaleType.FIT_CENTER);
         initMatrix=null;
     }
+    @Override
+    public Bitmap RotateDegree(String currentImg,float degree,int pos)
+    {
 
+        if(rotatePos!=pos)
+        {
+            totalRotate=0;
+            rotatePos= pos;
+        }
+        if(degree==0)
+        {
+            totalRotate=degree;
+        }
+        else
+        {
+            totalRotate+=degree;
+        }
+
+        ImageView setimg=null;
+        for (int i=0;i<TemplateView.size();i++)
+        {
+            if(TemplateView.get(i).getAdapterPosition()==pos)
+            {
+                setimg= (ImageView) TemplateView.get(i).itemView.findViewById(R.id.imageView);
+            }
+        }
+
+
+        File imgFile= new File(currentImg);
+        Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        imageShoot=ImageUltility.rotateImage(imageShoot,totalRotate);
+
+        setimg.setImageBitmap(imageShoot);
+        //Toast.makeText(main, ""+pos+": "+currentImg, Toast.LENGTH_SHORT).show();
+        return imageShoot;
+    }
+@Override
+    public void setImageView(String currentImg,int pos)
+    {
+        ImageView setimg=null;
+        for (int i=0;i<TemplateView.size();i++)
+        {
+            if(TemplateView.get(i).getAdapterPosition()==pos)
+            {
+                setimg= (ImageView) TemplateView.get(i).itemView.findViewById(R.id.imageView);
+            }
+        }
+        File imgFile= new File( currentImg);
+        Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        setimg.setImageBitmap(imageShoot);
+    }
     @Override
     public int getItemCount() {
         return arrayItems.size();
@@ -246,32 +307,5 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     }
 
     /** Show an event in the LogCat view, for debugging */
-    private void dumpEvent(MotionEvent event)
-    {
-        String names[] = { "DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE","POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?" };
-        StringBuilder sb = new StringBuilder();
-        int action = event.getAction();
-        int actionCode = action & MotionEvent.ACTION_MASK;
-        sb.append("event ACTION_").append(names[actionCode]);
 
-        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_POINTER_UP)
-        {
-            sb.append("(pid ").append(action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
-            sb.append(")");
-        }
-
-        sb.append("[");
-        for (int i = 0; i < event.getPointerCount(); i++)
-        {
-            sb.append("#").append(i);
-            sb.append("(pid ").append(event.getPointerId(i));
-            sb.append(")=").append((int) event.getX(i));
-            sb.append(",").append((int) event.getY(i));
-            if (i + 1 < event.getPointerCount())
-                sb.append(";");
-        }
-
-        sb.append("]");
-        Log.d("Touch Events ---------", sb.toString());
-    }
 }
