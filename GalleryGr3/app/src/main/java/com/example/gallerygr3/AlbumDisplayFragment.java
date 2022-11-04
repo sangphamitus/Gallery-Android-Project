@@ -248,8 +248,14 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
         }
         private class ImageChoosingAdapter extends BaseAdapter {
             ArrayList<String> allImagePaths;
+            ArrayList<Boolean> checkBoxValues;
             public ImageChoosingAdapter(ArrayList<String> allImagePaths){
                 this.allImagePaths=allImagePaths;
+
+                checkBoxValues=new ArrayList<>();
+                for (int i=0;i<allImagePaths.size(); i++){
+                    checkBoxValues.add(false);
+                }
             }
 
             @Override
@@ -276,6 +282,7 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
                     viewHolder=new ViewHolder();
                     viewHolder.imageView=view.findViewById(R.id.image_to_choose);
                     viewHolder.checkBox=view.findViewById(R.id.image_check_box);
+                    viewHolder.checkBox.setChecked(checkBoxValues.get(i));
                     view.setTag(viewHolder);
                 } else {
                     viewHolder=(ViewHolder) view.getTag();
@@ -288,15 +295,20 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
                         //
                         ViewHolder viewHolder1=(ViewHolder) view.getTag();
                         if(viewHolder1.checkBox.isChecked()){
-                            viewHolder1.checkBox.setChecked(false);
+                            checkBoxValues.remove(i);
+                            checkBoxValues.add(i,false);
+                            viewHolder1.checkBox.setChecked(checkBoxValues.get(i));
                             addedPaths.remove(allImagePaths.get(i));
                         } else {
-                            viewHolder1.checkBox.setChecked(true);
+                            checkBoxValues.remove(i);
+                            checkBoxValues.add(i,true);
+                            viewHolder1.checkBox.setChecked(checkBoxValues.get(i));
                             addedPaths.add(allImagePaths.get(i));
                         }
                     }
                 });
 
+                viewHolder.checkBox.setChecked(checkBoxValues.get(i));
                 File imgFile= new File(allImagePaths.get(i));
                 ImageLoader.getInstance().displayImage(String.valueOf(
                         Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
