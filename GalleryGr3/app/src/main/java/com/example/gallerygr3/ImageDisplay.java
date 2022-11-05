@@ -510,7 +510,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     startActivity(new Intent(getActivity(), SelectedPicture.class)
                             .putExtra("name", selectedName)
                             .putExtra("images", images)
-                            .putExtra("pos", i));
+                            .putExtra("pos", i)
+                            );
                 }
               else {
 
@@ -844,4 +845,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         displayName+="."+ArrayName[1];
         return displayName;
     }
+
+
+
 }
