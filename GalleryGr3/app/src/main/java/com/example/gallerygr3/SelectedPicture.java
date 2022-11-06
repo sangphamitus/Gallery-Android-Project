@@ -16,6 +16,7 @@ import android.media.MediaPlayer;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -77,7 +78,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showCustomDialogBoxInSelectedPicture();
+                showCustomDialogBoxDelete();
             }
         });
 
@@ -105,11 +106,12 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         });
 
 
-        ///////////////////SUBNAV
+       //SUBNAV
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
         changeWallpaper = (Button)findViewById(R.id.changeWallpaper);
         changeWallpaperLock = (Button)findViewById(R.id.changeWallpaperLock);
         changeFileName = (Button)findViewById(R.id.changeNameFile);
+
         changeWallpaper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,7 +125,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     subInfo.setVisibility(View.INVISIBLE);
             }
         });
-
         changeWallpaperLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,11 +138,12 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 subInfo.setVisibility(View.INVISIBLE);
             }
         });
-
         changeFileName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                displaySubBar=false;
+                subInfo.setVisibility(View.INVISIBLE);
+                showDialogRename();
             }
         });
 
@@ -229,14 +231,18 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     @Override
     public void removeImageUpdate(String input){
         //xoas trong selectedImage
-        deleteArrayByPossision(paths, currentPosition);
-        deleteArrayByPossision(dates, currentPosition);
-//        deleteArrayByPossision(size, currentPosition);
+        deleteStringArrayByPossision(paths, currentPosition);
+        deleteStringArrayByPossision(dates, currentPosition);
+        deleteIntergerArrayByPossision(size, currentPosition);
         //xóa trong adepter
         listItem.remove(currentPosition);
         viewPagerAdapter aa=new viewPagerAdapter(listItem,this);
         viewPager2.setAdapter(aa);
         viewPager2.setCurrentItem(currentPosition ,false);
+    }
+    public void renameImageUpdate(String input){
+        //sửa lại tên local trong adepter
+        paths[currentPosition] = paths[currentPosition].substring(0, paths[currentPosition].lastIndexOf("/")+1) + input;
     }
 
     @Override
@@ -260,7 +266,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         return;
     }
 
-    private void showCustomDialogBoxInSelectedPicture()
+    private void showCustomDialogBoxDelete()
     {
         final Dialog customDialog = new Dialog( this );
         customDialog.setTitle("Delete confirm");
@@ -303,13 +309,13 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         customDialog.setContentView(R.layout.infomation_picture_dialog);
 //
         ((TextView) customDialog.findViewById(R.id.photoName))
-                .setText(ImageDisplay.getDisplayName(paths[currentPosition]));
+                .setText(shortenName(ImageDisplay.getDisplayName(paths[currentPosition])));
         ((TextView) customDialog.findViewById(R.id.photoPath))
                 .setText(paths[currentPosition]);
         ((TextView) customDialog.findViewById(R.id.photoLastModified))
                 .setText(dates[currentPosition]);
         ((TextView) customDialog.findViewById(R.id.photoSize))
-                .setText(size[currentPosition]+" bytes");
+                .setText(size[currentPosition]*1.0/1024+" kb");
 //        Toast.makeText(this, imagesSize[currentPosition]+"", Toast.LENGTH_SHORT).show();
         ((Button) customDialog.findViewById(R.id.ok_button))
                 .setOnClickListener(new View.OnClickListener() {
@@ -326,7 +332,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     private void showDialogSuccessChange(String message)
     {
         final Dialog customDialog = new Dialog( this );
-        customDialog.setTitle("Change Wallpaper");
+        customDialog.setTitle("Message");
 
         customDialog.setContentView(R.layout.show_success_dialog);
 //
@@ -356,15 +362,36 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //donothing
-                        /////////////////////////thực hiện đổi tên tại đây
+                        //thực hiện đổi tên tại đây
+
+                        ImageDisplay ic= ImageDisplay.newInstance();
+                        //ham nay lam sau chu khong bo
+                        //cập nhật lại danh sách trong ImageDisplay
+                        EditText editText = customDialog.findViewById(R.id.editChangeFileName);
+                        String fileExtension=paths[currentPosition].substring(paths[currentPosition].lastIndexOf("."));
+                        while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
+                            fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+                        }
+                        String newName = editText.getText()+fileExtension;
+
                         customDialog.dismiss();
+                        ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
+                        renameImageUpdate(newName);
+
+                        showDialogSuccessChange("File name change successfully !");
                     }
                 });
 
         customDialog.show();
     }
-    public void deleteArrayByPossision(String[]arr, int pos){
+    public void deleteStringArrayByPossision(String[]arr, int pos){
+        int size = arr.length;
+        if(pos != arr.length - 1 ){
+            for(int i=pos; i < size - 1; i++){
+                arr[pos] = arr[pos+1];
+            }
+        }
+    }public void deleteIntergerArrayByPossision(int[]arr, int pos){
         int size = arr.length;
         if(pos != arr.length - 1 ){
             for(int i=pos; i < size - 1; i++){
@@ -375,5 +402,22 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     public Bitmap getItemBitmap(String selectedName) {
         File imgFile= new File(selectedName);
         return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+    }
+    public String shortenName(String name){
+        String[] ArrayName= name.split("\\.");
+        String displayName="";
+
+        if (ArrayName[0].length() > 25)
+        {
+            displayName = ArrayName[0].substring(0, 10);
+            displayName+="...";
+            displayName += ArrayName[0].substring(ArrayName[0].length()-10);
+        }
+        else
+        {
+            displayName = ArrayName[0];
+        }
+        displayName+="."+ArrayName[1];
+        return displayName;
     }
 }
