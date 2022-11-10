@@ -15,6 +15,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 
+import android.app.WallpaperManager;
+import android.content.Intent;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+
 import android.content.ClipData;
 
 import android.content.Context;
@@ -31,6 +38,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
+
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -45,7 +53,9 @@ import android.media.MediaPlayer;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import android.media.MediaPlayer;
@@ -59,8 +69,13 @@ import android.widget.Toast;
 
 
 import java.io.File;
+import java.io.IOException;
+
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Array;
+
 import java.util.ArrayList;
 
 public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
@@ -76,6 +91,10 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<String> imagesDate;
     ArrayList<Integer> imagesSize;
     MediaPlayer mediaPlayer;
+    LinearLayout subInfo;
+    Button changeWallpaper;
+    Button changeWallpaperLock;
+    Button changeFileName;
 
 
     ImageButton backBtn;
@@ -87,13 +106,17 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
     ImageButton infoBtn;
 
-    
+    ImageButton moreBtn;
+   
 
+
+   
     ImageButton deleteBtn,editBtn;
     public ImageButton rotateBtn;
 
     String currentSelectedName=null;
     int currentPosition=-1;
+
 
     MainActivity main;
     viewPagerAdapter aa =null;
@@ -107,12 +130,14 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
 
     boolean displayNavBars = true;
+    boolean displaySubBar = false;
     @SuppressLint("ClickableViewAccessibility")
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_picture);
+
 
         viewPager2=(ViewPager2)findViewById(R.id.main_viewPager) ;
 
@@ -130,7 +155,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showCustomDialogBoxInSelectedPicture();
+                showCustomDialogBoxDelete();
             }
         });
 
@@ -181,6 +206,63 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
             }
         });
+        subInfo = (LinearLayout)findViewById(R.id.subInfo);
+        moreBtn = (ImageButton)findViewById(R.id.moreBtn);
+        moreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(displaySubBar){
+                    subInfo.setVisibility(View.INVISIBLE);
+                    displaySubBar=false;
+                }
+                else{
+                    subInfo.setVisibility(View.VISIBLE);
+                    displaySubBar=true;
+                }
+            }
+        });
+
+
+       //SUBNAV
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
+        changeWallpaper = (Button)findViewById(R.id.changeWallpaper);
+        changeWallpaperLock = (Button)findViewById(R.id.changeWallpaperLock);
+        changeFileName = (Button)findViewById(R.id.changeNameFile);
+
+        changeWallpaper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    //set màn hình chinhs
+                    wallpaperManager.setBitmap(getItemBitmap(currentSelectedName));
+                    showDialogSuccessChange("Change Wallpaper Successfully");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                    subInfo.setVisibility(View.INVISIBLE);
+            }
+        });
+        changeWallpaperLock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    //set màn hình khóa
+                    wallpaperManager.setBitmap(getItemBitmap(currentSelectedName), null, false, WallpaperManager.FLAG_LOCK);
+                    showDialogSuccessChange("Change Lock sceen Wallpaper Successfully");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                subInfo.setVisibility(View.INVISIBLE);
+            }
+        });
+        changeFileName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displaySubBar=false;
+                subInfo.setVisibility(View.INVISIBLE);
+                showDialogRename();
+            }
+        });
 
         topNav = (RelativeLayout) findViewById(R.id.topNavSinglePic);
         bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
@@ -189,7 +271,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
         Intent intent = getIntent();
         if(intent.getExtras()!=null){
-
             //cut name
             imagesPath = intent.getStringArrayListExtra("images");
             imagesDate = intent.getStringArrayListExtra("dates");
@@ -221,8 +302,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 size[i]=imagesSize.get(i);
             }
 
-
-            listItem=new  ArrayList<viewPagerItem> ();
+            listItem= new  ArrayList<viewPagerItem> ();
             for(int i = 0; i< imagesPath.size(); i++){
                 viewPagerItem item = new viewPagerItem(paths[i]);
                 listItem.add(item);
@@ -360,9 +440,9 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     @Override
     public void removeImageUpdate(String input){
         //xoas trong selectedImage
-        deleteArrayByPossision(paths, currentPosition);
-        deleteArrayByPossision(dates, currentPosition);
-//        deleteArrayByPossision(size, currentPosition);
+        deleteStringArrayByPossision(paths, currentPosition);
+        deleteStringArrayByPossision(dates, currentPosition);
+        deleteIntergerArrayByPossision(size, currentPosition);
         //xóa trong adepter
         listItem.remove(currentPosition);
 //         aa=new viewPagerAdapter(listItem,this);
@@ -371,6 +451,10 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         viewPager2.setCurrentItem(currentPosition ,false);
         aa.notifyDataSetChanged();
 
+    }
+    public void renameImageUpdate(String input){
+        //sửa lại tên local trong adepter
+        paths[currentPosition] = paths[currentPosition].substring(0, paths[currentPosition].lastIndexOf("/")+1) + input;
     }
 
     @Override
@@ -382,8 +466,10 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             displayNavBars = true;
         }else {
             displayNavBars = false;
+            displaySubBar = false;
             bottomNav.setVisibility(View.INVISIBLE);
             topNav.setVisibility(View.INVISIBLE);
+            subInfo.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -392,6 +478,41 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         return;
     }
 
+    private void showCustomDialogBoxDelete()
+      {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Delete confirm");
+
+        customDialog.setContentView(R.layout.delete_dialog_notify);
+
+        ((TextView) customDialog.findViewById(R.id.deleteNotify))
+                .setText("Do you want to delete in your device ?");
+
+        ((Button) customDialog.findViewById(R.id.cancelDelete))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        ((Button) customDialog.findViewById(R.id.confirmDelete))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDelete.DeleteImage(currentSelectedName);
+                        removeImageUpdate(currentSelectedName);
+                        //cập nhật lại danh sách trong ImageDisplay
+                        ic.deleteClicked(currentSelectedName);
+                        customDialog.dismiss();
+                    }
+                });
+        customDialog.show();
+    }
+
+
     @Override
     public void notifyChanged() {
         aa.notifyDataSetChanged();
@@ -399,6 +520,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
 
     private void showCustomDialogBoxInSelectedPicture()
+
     {
         final Dialog customDialog = new Dialog( this );
         customDialog.setTitle("Delete confirm");
@@ -441,13 +563,13 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         customDialog.setContentView(R.layout.infomation_picture_dialog);
 //
         ((TextView) customDialog.findViewById(R.id.photoName))
-                .setText(ImageDisplay.getDisplayName(paths[currentPosition]));
+                .setText(shortenName(ImageDisplay.getDisplayName(paths[currentPosition])));
         ((TextView) customDialog.findViewById(R.id.photoPath))
                 .setText(paths[currentPosition]);
         ((TextView) customDialog.findViewById(R.id.photoLastModified))
                 .setText(dates[currentPosition]);
         ((TextView) customDialog.findViewById(R.id.photoSize))
-                .setText(size[currentPosition]+" bytes");
+                .setText(size[currentPosition]*1.0/1024+" kb");
 //        Toast.makeText(this, imagesSize[currentPosition]+"", Toast.LENGTH_SHORT).show();
         ((Button) customDialog.findViewById(R.id.ok_button))
         .setOnClickListener(new View.OnClickListener() {
@@ -502,7 +624,70 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         rotateImage=null;
         customDialog.show();
     }
-    public void deleteArrayByPossision(String[]arr, int pos){
+
+    private void showDialogSuccessChange(String message)
+    {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Message");
+
+        customDialog.setContentView(R.layout.show_success_dialog);
+//
+        ((TextView) customDialog.findViewById(R.id.messageShow))
+                .setText(message);
+
+        ((Button) customDialog.findViewById(R.id.ok_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        customDialog.show();
+    }
+    private void showDialogRename()
+    {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Change Wallpaper");
+
+        customDialog.setContentView(R.layout.edit_text_dialog);
+
+
+        ((Button) customDialog.findViewById(R.id.ok_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //thực hiện đổi tên tại đây
+
+                        ImageDisplay ic= ImageDisplay.newInstance();
+                        //ham nay lam sau chu khong bo
+                        //cập nhật lại danh sách trong ImageDisplay
+                        EditText editText = customDialog.findViewById(R.id.editChangeFileName);
+                        String fileExtension=paths[currentPosition].substring(paths[currentPosition].lastIndexOf("."));
+                        while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
+                            fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+                        }
+                        String newName = editText.getText()+fileExtension;
+
+                        customDialog.dismiss();
+                        ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
+                        renameImageUpdate(newName);
+
+                        showDialogSuccessChange("File name change successfully !");
+                    }
+                });
+
+        customDialog.show();
+    }
+    public void deleteStringArrayByPossision(String[]arr, int pos){
+        int size = arr.length;
+        if(pos != arr.length - 1 ){
+            for(int i=pos; i < size - 1; i++){
+                arr[pos] = arr[pos+1];
+            }
+        }
+    }public void deleteIntergerArrayByPossision(int[]arr, int pos){
         int size = arr.length;
         if(pos != arr.length - 1 ){
             for(int i=pos; i < size - 1; i++){
@@ -510,8 +695,27 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             }
         }
     }
+
+    public Bitmap getItemBitmap(String selectedName) {
+        File imgFile= new File(selectedName);
+        return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+    }
+    public String shortenName(String name){
+        String[] ArrayName= name.split("\\.");
+        String displayName="";
+
+        if (ArrayName[0].length() > 25)
+        {
+            displayName = ArrayName[0].substring(0, 10);
+            displayName+="...";
+            displayName += ArrayName[0].substring(ArrayName[0].length()-10);
+        }
+        else
+        {
+            displayName = ArrayName[0];
+        }
+        displayName+="."+ArrayName[1];
+        return displayName;
+    }
 }
-
-
-       
 

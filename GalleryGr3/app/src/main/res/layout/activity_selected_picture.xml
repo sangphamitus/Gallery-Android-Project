@@ -6,9 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".SelectedPicture"
     >
-
-
-
     <RelativeLayout
         android:translationZ="100dp"
         android:layout_alignParentTop="true"
@@ -44,13 +41,50 @@
         android:layout_weight="2"
         android:clickable="true">
 
-
     </androidx.viewpager2.widget.ViewPager2>
+    <LinearLayout
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomNavSinglePic"
+        android:layout_alignRight="@+id/bottomNavSinglePic"
+        android:background="#AFACB0"
+        android:orientation="vertical"
+        android:id="@+id/subInfo"
+        android:visibility="invisible"
+        >
+<!--        android:visibility="invisible"-->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đổi tên file"
+            android:id="@+id/changeNameFile"
+            android:textAllCaps="false"
+            android:backgroundTint="#AFACB0"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thay đổi màn hình chính"
+            android:id="@+id/changeWallpaper"
+            android:textAllCaps="false"
+            android:backgroundTint="#AFACB0"
+            android:gravity="left"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thay đổi màn hình khóa"
+            android:id="@+id/changeWallpaperLock"
+            android:textAllCaps="false"
+            android:backgroundTint="#AFACB0"
+            />
+    </LinearLayout>
+
     <RelativeLayout
-        android:layout_alignParentBottom="true"
         android:id="@+id/bottomNavSinglePic"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
         android:background="#AFACB0"
         android:gravity="center">
 
@@ -112,5 +146,7 @@
                 android:src="@drawable/ic_baseline_more_horiz_24" />
 
         </LinearLayout>
+
     </RelativeLayout>
+
 </RelativeLayout>
