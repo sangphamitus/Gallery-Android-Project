@@ -99,8 +99,14 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     ViewGroup myStatecontainer;
     ImageDisplay.CustomAdapter customAdapter=null;
     ImageDisplay.ListAdapter listAdapter=null;
+
+    ArrayList<ImageDate> imgDates;
+    ArrayList<String> dates;
+    ArrayList<Integer> size;
+
     TableLayout header;
     LongClickCallback callback=null;
+
 
     boolean isHolding=false;
     public static boolean isMain=true;
@@ -391,6 +397,76 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         if(images == null) {setImagesData (((MainActivity)context).getFileinDir());}
 
 
+        images =((MainActivity)context).getFileinDir();
+
+        //get date
+        ArrayList<Date> listDate= new ArrayList<Date>();
+        size = new ArrayList<Integer>(images.size());
+        for(int i=0;i<images.size();i++){
+            File file = new File(images.get(i));
+            if(file.exists()) //Extra check, Just to validate the given path
+            {
+                ExifInterface intf = null;
+                try
+                {
+                    intf = new ExifInterface(images.get(i));
+                    if(intf != null)
+                    {
+                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+                        Date lastModDate = new Date(file.lastModified());
+                        size.add( ((Number)file.length()).intValue());
+                        listDate.add(lastModDate);
+                        Log.i("PHOTO DATE", "Dated : "+ dateString); //Display dateString. You can do/use it your own way
+                    }
+                }
+                catch (IOException e)
+                {
+                }
+                if(intf == null)
+                {
+                    Date lastModDate = new Date(file.lastModified());
+                    Log.i("PHOTO DATE", "Dated : "+ lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+                }
+            }
+        }
+        imgDates = new ArrayList<ImageDate>();
+        dates = new ArrayList<String>();
+        //get object
+        for(int i=0;i<images.size();i++){
+            ImageDate temp = new ImageDate(images.get(i),listDate.get(i));
+            imgDates.add(temp);
+            dates.add(temp.dayToString());
+        }
+
+
+        //sort obj
+        Collections.sort(imgDates);
+        Collections.reverse(imgDates);
+
+        //change images after sort
+        for(int i=0;i<imgDates.size();i++){
+            images.set(i,imgDates.get(i).getImage());
+        }
+
+//        Collections.sort(images);
+        //checkPhoto=new ArrayList<Boolean>(Arrays.asList(new Boolean[images.size()]));
+        //Collections.fill(checkPhoto, Boolean.FALSE);
+
+        //create name array
+        names= new ArrayList<String>();
+
+        for(int i=0;i<images.size();i++){
+
+            // get name from file ===================================
+// t biet ly do roi
+            String temp = images.get(i);
+            String name = getDisplayName(images.get(i));
+        // ba chaams thi van dc ma
+// nhma problem la no ko hien len co 3 cham nhu z
+            names.add(name);//thấy cái names không
+            // ====================================================
+        }
+ 
     }
 
     @Override
@@ -432,13 +508,13 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedName = images.get(i);
 
 //                int selectedImage = images[i];
                 if (isHolding == false) {
                     startActivity(new Intent(getActivity(), SelectedPicture.class)
-                            .putExtra("name", selectedName)
+                            .putExtra("size", size)//này là em bỏ qua cái selected nè
                             .putExtra("images", images)
+                            .putExtra("dates", dates)
                             .putExtra("pos", i));
                 }
               else {
@@ -629,6 +705,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         if(callback !=null){callback.afterLongClick();}
     }
+
+    public void notifyChanged()
+    {
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+    }
     @Override
     public void  selectAllClicked()
     {
@@ -673,8 +755,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
                         File imgFile= new File(namePictureShoot);
                         Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        imageShoot=rotateImage(imageShoot,90);
-                        saveImage(imageShoot,namePictureShoot);
+                        imageShoot=ImageUltility.rotateImage(imageShoot,90);
+                        ImageDelete.saveImage(imageShoot,namePictureShoot);
 
                         images.add(namePictureShoot);
                         names.add(getDisplayName(namePictureShoot));
@@ -687,28 +769,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     }
                 }
             });
-    private void saveImage(Bitmap finalBitmap,String imagePath) {
 
-        File myFile = new File(imagePath);
 
-        if (myFile.exists()) myFile.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(myFile);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public static Bitmap rotateImage(Bitmap bmpSrc, float degrees) {
-        int w = bmpSrc.getWidth();
-        int h = bmpSrc.getHeight();
-        Matrix mtx = new Matrix();
-        mtx.postRotate(degrees);
-        Bitmap bmpTrg = Bitmap.createBitmap(bmpSrc, 0, 0, w, h, mtx, true);
-        return bmpTrg;
-    }
     private void openCamera()  {
         // Ask permission
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -743,7 +805,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         return uri;
     }
-    private String getDisplayName(String path){
+    public static String getDisplayName(String path){
         int getPositionFolderName= path.lastIndexOf("/");
         String name= path.substring(getPositionFolderName + 1);
 
@@ -763,6 +825,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         displayName+="."+ArrayName[1];
         return displayName;
     }
+
 
     public void setImagesData(ArrayList<String> images) {
         this.images=images;
@@ -838,4 +901,5 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     public void unhideHeader(){
         header.setVisibility(View.VISIBLE);
     }
+
 }

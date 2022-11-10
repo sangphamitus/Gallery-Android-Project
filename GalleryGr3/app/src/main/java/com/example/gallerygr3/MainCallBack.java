@@ -22,4 +22,8 @@ public interface MainCallBack {
     public void clearChooseToDeleteInList();
     public void addImageUpdate(String[] input);
 
+
+    public void shareImages(ArrayList<String> paths);
+
+
 }

@@ -4,7 +4,9 @@ package com.example.gallerygr3;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 
 import android.app.AlertDialog;
@@ -34,6 +36,7 @@ import android.os.Environment;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -41,6 +44,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     TextView informationSelected;
 
     FloatingActionButton createSliderBtn;
+    FloatingActionButton shareMultipleBtn;
 
 
 
@@ -157,7 +162,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         cancelBtn=(FloatingActionButton) findViewById(R.id.clear);
         selectAll=(FloatingActionButton) findViewById(R.id.selectAll);
         createSliderBtn=(FloatingActionButton)findViewById(R.id.createSliderBtn);
-
+        shareMultipleBtn=(FloatingActionButton)findViewById(R.id.shareMultipleBtn);
         informationSelected=(TextView)findViewById(R.id.infomationText);
 
 
@@ -205,6 +210,21 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             }
         });
 
+        shareMultipleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Share multiple", Toast.LENGTH_SHORT).show();
+                String[] select = chooseToDeleteInList.toArray
+                        (new String[chooseToDeleteInList.size()]);
+                ArrayList<String> paths= new ArrayList<String>();
+
+                for(int i=0;i< select.length;i++){
+                    paths.add(select[i]);
+                }
+                shareImages(paths);
+            }
+        });
+
         arrSelectedIcon[0] = R.drawable.ic_baseline_photo_selected;
         arrSelectedIcon[1] = R.drawable.ic_baseline_photo_library_selected;
         arrSelectedIcon[2] = R.drawable.ic_baseline_settings_selected;
@@ -227,8 +247,60 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 //
         setCurrentDirectory(Picture);
 
-
     }
+
+
+    @Override
+    public void shareImages(ArrayList<String> paths){
+
+        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+
+        for(int i=0;i<paths.size();i++){
+            bitmaps.add(BitmapFactory.decodeFile(paths.get(i)));
+        }
+
+
+        try {
+            ArrayList<Uri> uris = new ArrayList<>();
+
+            for(int i =0;i<paths.size();i++){
+                File file = new File(paths.get(i));
+                FileOutputStream fOut = new FileOutputStream(file);
+                bitmaps.get(i).compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.flush();
+                fOut.close();
+                file.setReadable(true,false);
+
+                Uri uri = FileProvider.getUriForFile(this,
+                        "com.example.gallerygr3.provider", file);
+                uris.add(uri);
+            }
+            Intent intent = null;
+
+            if(paths.size()==1){
+                intent = new Intent(Intent.ACTION_SEND);
+            }else{
+                intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            }
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if(paths.size()==1) {
+                intent.putExtra(Intent.EXTRA_STREAM, uris.get(0));
+            }else{
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+
+            }
+
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setType("image/*");
+            startActivity(Intent.createChooser(intent, "Share file via"));
+
+        }
+        catch (Exception e){
+//            Toast.makeText(main, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void showSliderDiaglogBox(){
         final Dialog customDialog = new Dialog( context );
@@ -373,6 +445,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         }
 
     }
+
     @Override
     public void Holding(boolean isHolding)
     {
