@@ -119,7 +119,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
     //universal-image-loader
     // Create default options which will be used for every
-//  displayImage(...) call if no options will be passed to this method
+    //  displayImage(...) call if no options will be passed to this method
 
     private ImageDisplay() {
         // Required empty public constructor
@@ -238,8 +238,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
                                 }
                                 ((MainActivity) getContext()).SelectedTextChange();
-                                customAdapter.notifyDataSetChanged();
-                                listAdapter.notifyDataSetChanged();
+                                notifyChangeGridLayout();
 
                             }
                         }
@@ -367,8 +366,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
                                 }
                                 ((MainActivity) getContext()).SelectedTextChange();
-                                customAdapter.notifyDataSetChanged();
-                                listAdapter.notifyDataSetChanged();
+                                notifyChangeGridLayout();
 
                             }
                         }
@@ -437,7 +435,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             imgDates.add(temp);
             dates.add(temp.dayToString());
         }
-
 
         //sort obj
         Collections.sort(imgDates);
@@ -531,14 +528,15 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 //
 //                    }
 //                    ((MainActivity)getContext()).SelectedTextChange();
-//                    customAdapter.notifyDataSetChanged();
-//                    listAdapter.notifyDataSetChanged();
+//                    notifyChangeGridLayout()
 //                }
 //                Toast.makeText((MainActivity)getContext(), "choosed ", Toast.LENGTH_SHORT).show();
                 }
             }
 
         });
+
+
 
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -552,8 +550,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
                 ((MainActivity)getContext()).SelectedTextChange();
 
-                customAdapter.notifyDataSetChanged();
-                listAdapter.notifyDataSetChanged();
+                notifyChangeGridLayout();
 
                 if(callback != null){callback.onLongClick();}
 
@@ -638,8 +635,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                         Toast.makeText(INSTANCE.getContext(), url_input[0], Toast.LENGTH_SHORT).show();
                         String[] ArrInput=DownloadImageFromURL(url_input[0].trim(),url_input[1].trim());
                         ((MainActivity)getContext()).addImageUpdate(ArrInput);
-                        customAdapter.notifyDataSetChanged();
-                        listAdapter.notifyDataSetChanged();
+                        notifyChangeGridLayout();
                         customDialog.dismiss();
                     }
                 });
@@ -689,15 +685,18 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         isHolding =false;
         ((MainActivity)getContext()).Holding(isHolding);
         selectedImages = ((MainActivity)getContext()).chooseToDeleteInList();
-        customAdapter.notifyDataSetChanged();
-        listAdapter.notifyDataSetChanged();
+        notifyChangeGridLayout();
     }
     @Override
-    public  void deleteClicked(String file)
+    public void deleteClicked(String file)
     {
         ((MainActivity)getContext()).removeImageUpdate(file);
-        customAdapter.notifyDataSetChanged();
-        listAdapter.notifyDataSetChanged();
+        notifyChangeGridLayout();
+    }
+    @Override
+    public void renameClicked(String file, String newFile)
+    {
+        ((MainActivity)getContext()).renameImageUpdate(file, newFile);
     }
 
     @Override
@@ -706,6 +705,9 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         isHolding =false;
         ((MainActivity)getContext()).Holding(isHolding);
        // Collections.fill(checkPhoto,Boolean.FALSE);
+
+
+        notifyChangeGridLayout();
 
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
@@ -717,7 +719,10 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     {
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
+
     }
+
+
     @Override
     public void  selectAllClicked()
     {
@@ -745,8 +750,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 //        }
         selectedImages= ((MainActivity)getContext()).chooseToDeleteInList();
         ((MainActivity)getContext()).SelectedTextChange();
-        customAdapter.notifyDataSetChanged();
-        listAdapter.notifyDataSetChanged();
+        notifyChangeGridLayout();
     }
 
 
@@ -768,8 +772,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                         images.add(namePictureShoot);
                         names.add(getDisplayName(namePictureShoot));
 
-                        customAdapter.notifyDataSetChanged();
-                        listAdapter.notifyDataSetChanged();
+                        notifyChangeGridLayout();
 
 
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
@@ -816,21 +819,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         int getPositionFolderName= path.lastIndexOf("/");
         String name= path.substring(getPositionFolderName + 1);
 
-        String[] ArrayName= name.split("\\.");
-        String displayName="";
+        return name;
+    }
 
-        if (ArrayName[0].length() > 10)
-        {
-            displayName = ArrayName[0].substring(0, 5);
-            displayName+="...";
-            displayName += ArrayName[0].substring(ArrayName[0].length()-5);
-        }
-        else
-        {
-            displayName = ArrayName[0];
-        }
-        displayName+="."+ArrayName[1];
-        return displayName;
+    public void notifyChangeGridLayout(){
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
     }
 
 
@@ -908,5 +902,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     public void unhideHeader(){
         header.setVisibility(View.VISIBLE);
     }
+
 
 }

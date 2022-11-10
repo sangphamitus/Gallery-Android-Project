@@ -4,9 +4,13 @@ package com.example.gallerygr3;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+
+import android.media.Image;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+
 import android.os.Build;
 
 import android.app.AlertDialog;
@@ -420,9 +424,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
-
-   // protected void readFolder() {
-
     @Override
     public void removeImageUpdate(String[] input)
     {
@@ -437,9 +438,20 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     public void removeImageUpdate(String input)
     {
 
+
         FileInPaths.remove(input);
 
+
     }
+
+    @Override
+    public void renameImageUpdate(String oldName, String newName)
+    {
+        changeFileInFolder(Picture, oldName, newName);
+        changeFileInFolder(DCIM, oldName, newName);
+
+    }
+
     @Override
     public void addImageUpdate(String[] input)
     {
@@ -540,6 +552,46 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
         }
 
+    private void changeFileInFolder(String Dir, String oldName, String newName) {
+
+        File sdFile = new File(Dir);
+        File[] foldersSD = sdFile.listFiles();
+
+        try {
+            for (File file : foldersSD) {
+                if (file.isDirectory()) {
+                    //get absolute
+                    //do nothing
+                    changeFileInFolder(file.getAbsolutePath(), oldName,newName);
+
+                } else {
+                    for (String extension : ImageExtensions) {
+                        if(file.getAbsolutePath().toLowerCase().endsWith(extension)){
+
+                            if (oldName.equals(file.getName())) {
+                                File from = new File(Dir+"/"+oldName);
+                                File to = new File(Dir+"/"+newName);
+                                from.renameTo(to);
+                                FileInPaths.remove(Dir+"/"+oldName);
+                                FileInPaths.add(Dir+"/"+newName);
+                                Toast.makeText(this, "doi xong", Toast.LENGTH_SHORT).show();
+
+                                ImageDisplay ic= ImageDisplay.newInstance();
+                                ic.notifyChangeGridLayout();
+                                break;
+
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            //do nothing
+        }
+
+    }
+
 
 
     @Override
@@ -599,11 +651,10 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 selectedTab = thisIndex;
                 if(thisIndex!=0)
                 {
-
-                getSupportFragmentManager().beginTransaction()
-                        .setReorderingAllowed(true)
-                        .replace(R.id.fragment_container, arrFrag[thisIndex], null)
-                        .commit();
+                    getSupportFragmentManager().beginTransaction()
+                            .setReorderingAllowed(true)
+                            .replace(R.id.fragment_container, arrFrag[thisIndex], null)
+                            .commit();
                 }
                 else
                 {
