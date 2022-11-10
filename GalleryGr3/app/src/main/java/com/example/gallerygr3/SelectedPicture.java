@@ -14,6 +14,7 @@ import android.app.Dialog;
 import android.content.Intent;
 
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
 
@@ -385,8 +386,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         rotateImage=null;
         customDialog.show();
     }
-
-}
     public void deleteArrayByPossision(String[]arr, int pos){
         int size = arr.length;
         if(pos != arr.length - 1 ){
@@ -395,5 +394,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             }
         }
     }
+}
+
 
        
