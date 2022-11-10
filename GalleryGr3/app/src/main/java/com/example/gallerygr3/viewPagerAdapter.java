@@ -267,6 +267,10 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         return arrayItems.size();
     }
 
+    public viewPagerItem getItem(int position) {
+        return arrayItems.get(position);
+    }
+
     public class ViewHolder  extends RecyclerView.ViewHolder{
         ImageView img;
     //    TextView txtName;
