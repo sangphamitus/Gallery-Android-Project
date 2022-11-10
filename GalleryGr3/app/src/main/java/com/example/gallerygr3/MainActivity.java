@@ -4,13 +4,18 @@ package com.example.gallerygr3;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+
 import android.media.Image;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+
 import android.os.Build;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -35,11 +40,15 @@ import android.os.Environment;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,6 +76,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     TextView informationSelected;
 
     FloatingActionButton createSliderBtn;
+    FloatingActionButton shareMultipleBtn;
 
 
 
@@ -107,6 +117,22 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .delayBeforeLoading(0)
+                .resetViewBeforeLoading(true)
+                .showImageOnLoading(R.drawable.placehoder)
+                .showImageForEmptyUri(R.drawable.error_image)
+                .showImageOnFail(R.drawable.error_image)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        ImageLoader.getInstance().init(config);
+
+
+
         context= this;
 
         ActivityCompat.requestPermissions(MainActivity.this,
@@ -114,8 +140,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-
-                        Manifest.permission.CAMERA,
                         Manifest.permission.INTERNET
                 }, 1);
 
@@ -142,7 +166,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         cancelBtn=(FloatingActionButton) findViewById(R.id.clear);
         selectAll=(FloatingActionButton) findViewById(R.id.selectAll);
         createSliderBtn=(FloatingActionButton)findViewById(R.id.createSliderBtn);
-
+        shareMultipleBtn=(FloatingActionButton)findViewById(R.id.shareMultipleBtn);
         informationSelected=(TextView)findViewById(R.id.infomationText);
 
 
@@ -168,14 +192,14 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             @Override
             public void onClick(View view) {
                ImageDisplay ic= ImageDisplay.newInstance();
-               if(chooseToDeleteInList.size()==FileInPaths.size())
+               if(chooseToDeleteInList.size()==ic.images.size())
                {
                    chooseToDeleteInList.clear();
 
                }
                else
                {
-                   chooseToDeleteInList=new ArrayList<String >(FileInPaths);
+                   chooseToDeleteInList=new ArrayList<String >(ic.images);
 
                }
                 ic.selectAllClicked();
@@ -187,6 +211,21 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             public void onClick(View view) {
                 Toast.makeText(context, "create sliderrrrr", Toast.LENGTH_SHORT).show();
                 showSliderDiaglogBox();
+            }
+        });
+
+        shareMultipleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Share multiple", Toast.LENGTH_SHORT).show();
+                String[] select = chooseToDeleteInList.toArray
+                        (new String[chooseToDeleteInList.size()]);
+                ArrayList<String> paths= new ArrayList<String>();
+
+                for(int i=0;i< select.length;i++){
+                    paths.add(select[i]);
+                }
+                shareImages(paths);
             }
         });
 
@@ -212,7 +251,58 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 //
         setCurrentDirectory(Picture);
 
+    }
 
+
+    @Override
+    public void shareImages(ArrayList<String> paths){
+
+        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+
+        for(int i=0;i<paths.size();i++){
+            bitmaps.add(BitmapFactory.decodeFile(paths.get(i)));
+        }
+
+
+        try {
+            ArrayList<Uri> uris = new ArrayList<>();
+
+            for(int i =0;i<paths.size();i++){
+                File file = new File(paths.get(i));
+                FileOutputStream fOut = new FileOutputStream(file);
+                bitmaps.get(i).compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.flush();
+                fOut.close();
+                file.setReadable(true,false);
+
+                Uri uri = FileProvider.getUriForFile(this,
+                        "com.example.gallerygr3.provider", file);
+                uris.add(uri);
+            }
+            Intent intent = null;
+
+            if(paths.size()==1){
+                intent = new Intent(Intent.ACTION_SEND);
+            }else{
+                intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            }
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if(paths.size()==1) {
+                intent.putExtra(Intent.EXTRA_STREAM, uris.get(0));
+            }else{
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+
+            }
+
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setType("image/*");
+            startActivity(Intent.createChooser(intent, "Share file via"));
+
+        }
+        catch (Exception e){
+//            Toast.makeText(main, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -256,6 +346,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         customDialog.show();
 
     }
+
 
 
     private void showCustomDialogBox()
@@ -305,6 +396,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 askForPermissions();
+
                 readFolder(Picture);
                 readFolder(DCIM);
 
@@ -345,7 +437,10 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     @Override
     public void removeImageUpdate(String input)
     {
-            FileInPaths.remove(input);
+
+
+        FileInPaths.remove(input);
+
 
     }
 
@@ -367,6 +462,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         }
 
     }
+
     @Override
     public void Holding(boolean isHolding)
     {
@@ -562,6 +658,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 }
                 else
                 {
+                    ImageDisplay.restoreINSTANCE();
                     getSupportFragmentManager().beginTransaction()
                             .setReorderingAllowed(true)
                             .replace(R.id.fragment_container, ImageDisplay.newInstance(), null)

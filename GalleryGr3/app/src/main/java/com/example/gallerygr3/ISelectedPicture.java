@@ -12,4 +12,7 @@ public interface ISelectedPicture {
     public void showNav();
     public void hiddenNav();
 
+    public void notifyChanged();
+
+
 }
