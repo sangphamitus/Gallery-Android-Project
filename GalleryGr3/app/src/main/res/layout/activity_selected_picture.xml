@@ -33,7 +33,8 @@
             android:layout_marginRight="20dp"
             android:backgroundTint="#AFACB0"
             android:gravity="right"
-            android:src="@drawable/ic_baseline_info_24" />
+            android:src="@drawable/ic_baseline_info_24"
+            android:id="@+id/infoBtn"/>
     </RelativeLayout>
 
     <androidx.viewpager2.widget.ViewPager2
