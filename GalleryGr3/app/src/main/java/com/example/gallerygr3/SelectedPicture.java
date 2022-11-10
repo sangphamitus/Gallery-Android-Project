@@ -6,18 +6,40 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+
+import android.content.ClipData;
+
+import android.content.Context;
+
 import android.content.Intent;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import android.graphics.Color;
+
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
+import android.view.MotionEvent;
+
 import android.graphics.ColorSpace;
 
 import android.os.Bundle;
+
 
 import android.media.MediaPlayer;
 
@@ -25,9 +47,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.ImageView;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
@@ -37,13 +70,19 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<viewPagerItem> listItem;
     String[] paths;
     String[] dates;
+    String[] names;
     int[] size;
     ArrayList<String> imagesPath;
     ArrayList<String> imagesDate;
     ArrayList<Integer> imagesSize;
     MediaPlayer mediaPlayer;
 
+
     ImageButton backBtn;
+
+    ImageButton shareBtn;
+
+   
 
 
     ImageButton infoBtn;
@@ -67,18 +106,16 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     String imageRotated=null;
 
 
-
-
-
-
     boolean displayNavBars = true;
     @SuppressLint("ClickableViewAccessibility")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_picture);
 
         viewPager2=(ViewPager2)findViewById(R.id.main_viewPager) ;
+
 
         //xử lí nút back toàn màn hình
         backBtn=(ImageButton) findViewById(R.id.backButton);
@@ -96,6 +133,12 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 showCustomDialogBoxInSelectedPicture();
             }
         });
+
+
+
+
+        topNav = (RelativeLayout) findViewById(R.id.topNavSinglePic);
+        bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
 
 
         infoBtn = (ImageButton)findViewById(R.id.infoBtn) ;
@@ -142,6 +185,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         topNav = (RelativeLayout) findViewById(R.id.topNavSinglePic);
         bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
         //get img and name data
+
+
         Intent intent = getIntent();
         if(intent.getExtras()!=null){
 
@@ -150,6 +195,15 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             imagesDate = intent.getStringArrayListExtra("dates");
             imagesSize = intent.getIntegerArrayListExtra("size");
             int pos = intent.getIntExtra("pos",0);
+            String selectedName = intent.getStringExtra("name");
+            ArrayList<String> images = intent.getStringArrayListExtra("images");
+
+
+            names= new String[images.size()];
+            // fix name from data
+            for(int i=0;i<images.size();i++){
+                names[i]=images.get(i);
+            }
 
 
             paths = new String[imagesPath.size()];
@@ -180,17 +234,15 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             viewPager2.setCurrentItem(pos,false);
             viewPager2.setClipToPadding(false);
             viewPager2.setClipChildren(false);
-            viewPager2.setOffscreenPageLimit(2);
+            viewPager2.setOffscreenPageLimit(1);
             viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-//            viewPager2.playSoundEffect(R.raw.musicc);
-//            viewPager2.playSoundEffect();
-//            mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.musicc);
-//            mediaPlayer.start();
+
 
             viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                     super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+
 
                     if(haveRotate && position!=currentPosition)
                     {
@@ -202,11 +254,25 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     setCurrentSelectedName(aa.getItem(position).getSelectedName());
                     setCurrentPosition(position);
 
+
                     aa.BackToInit();
 
                 }
             });
+
+            shareBtn=(ImageButton)findViewById(R.id.shareBtn);
+            shareBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    ArrayList<String> listPaths= new ArrayList<String>();
+                    listPaths.add(names[currentPosition]);
+                    shareSingleImages(listPaths);
+                }
+            });
+
         }
+
     }
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -216,10 +282,61 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
 
+
                         aa.notifyDataSetChanged();
                     }
                 }
             });
+
+    public void shareSingleImages(ArrayList<String> paths){
+
+        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+
+        for(int i=0;i<paths.size();i++){
+            bitmaps.add(BitmapFactory.decodeFile(paths.get(i)));
+        }
+
+
+        try {
+            ArrayList<Uri> uris = new ArrayList<>();
+
+            for(int i =0;i<paths.size();i++){
+                File file = new File(paths.get(i));
+                FileOutputStream fOut = new FileOutputStream(file);
+                bitmaps.get(i).compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.flush();
+                fOut.close();
+                file.setReadable(true,false);
+
+                Uri uri = FileProvider.getUriForFile(getApplicationContext(),
+                        "com.example.gallerygr3.provider", file);
+                uris.add(uri);
+            }
+            Intent intent = null;
+
+            if(paths.size()==1){
+                intent = new Intent(Intent.ACTION_SEND);
+            }else{
+                intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            }
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if(paths.size()==1) {
+                intent.putExtra(Intent.EXTRA_STREAM, uris.get(0));
+            }else{
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+
+            }
+
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setType("image/*");
+            startActivity(Intent.createChooser(intent, "Share file via"));
+
+        }
+        catch (Exception e){
+//            Toast.makeText(main, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public void preventSwipe() {
         viewPager2.setUserInputEnabled(false);
@@ -385,8 +502,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         rotateImage=null;
         customDialog.show();
     }
-
-}
     public void deleteArrayByPossision(String[]arr, int pos){
         int size = arr.length;
         if(pos != arr.length - 1 ){
@@ -395,5 +510,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             }
         }
     }
+}
+
 
        
+

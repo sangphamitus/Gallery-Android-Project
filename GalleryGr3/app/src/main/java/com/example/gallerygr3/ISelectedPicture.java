@@ -14,4 +14,5 @@ public interface ISelectedPicture {
 
     public void notifyChanged();
 
+
 }

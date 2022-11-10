@@ -20,17 +20,20 @@
             android:orientation="vertical">
 
             <TableLayout
+                android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="0">
+
                 <TableRow>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:textSize="30sp"
-                        android:text="Gallery"
                         android:gravity="center_vertical"
-                        android:paddingStart="20sp">
+                        android:paddingStart="20sp"
+                        android:text="Gallery"
+                        android:textSize="30sp">
 
                     </TextView>
 
@@ -47,10 +50,11 @@
                 </TableRow>
 
             </TableLayout>
+
             <GridView
                 android:id="@+id/gridView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:horizontalSpacing="4dp"
                 android:numColumns="4"
                 android:verticalSpacing="4dp" />
