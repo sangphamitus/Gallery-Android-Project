@@ -186,6 +186,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 someActivityResultLauncher.launch(intent);
 
 
+
             }
         });
         rotateBtn=(ImageButton) findViewById(R.id.rotateBtn);

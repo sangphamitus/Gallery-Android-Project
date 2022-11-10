@@ -62,9 +62,13 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
             public void onClick(View view) {
 
                 ImageDelete.saveImage(editedImage,imgName);
+                ImageDisplay ic= ImageDisplay.newInstance();
+                ic.notifyChangeGridLayout();
                 Intent intent = new Intent();
                 setResult(RESULT_OK,intent );
+
                 finish();
+
 
             }
         });
