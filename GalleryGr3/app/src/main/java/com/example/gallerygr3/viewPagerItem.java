@@ -7,7 +7,7 @@ import java.io.File;
 
 public class viewPagerItem {
     String selectedName;
-    Bitmap itemBitmap;
+    Bitmap itemBitmap=null;
     public viewPagerItem(String selectedName) {
         this.selectedName = selectedName;
 
@@ -18,8 +18,11 @@ public class viewPagerItem {
     }
 
     public Bitmap getItemBitmap() {
-        File imgFile= new File(selectedName);
-        itemBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+        if(itemBitmap==null){
+            File imgFile= new File(selectedName);
+            itemBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        }
         return itemBitmap;
     }
 }
