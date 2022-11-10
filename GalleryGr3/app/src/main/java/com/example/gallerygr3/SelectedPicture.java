@@ -10,11 +10,13 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 
 import android.content.ClipData;
+
 import android.content.Context;
 
 import android.content.Intent;
@@ -22,6 +24,7 @@ import android.content.Intent;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import android.graphics.Color;
 
 import android.graphics.drawable.BitmapDrawable;
@@ -44,6 +47,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.ImageView;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +76,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<String> imagesDate;
     ArrayList<Integer> imagesSize;
     MediaPlayer mediaPlayer;
+
 
     ImageButton backBtn;
 
@@ -97,12 +108,14 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
     boolean displayNavBars = true;
     @SuppressLint("ClickableViewAccessibility")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_picture);
 
         viewPager2=(ViewPager2)findViewById(R.id.main_viewPager) ;
+
 
         //xử lí nút back toàn màn hình
         backBtn=(ImageButton) findViewById(R.id.backButton);
@@ -173,6 +186,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
         //get img and name data
 
+
         Intent intent = getIntent();
         if(intent.getExtras()!=null){
 
@@ -229,6 +243,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                     super.onPageScrolled(position, positionOffset, positionOffsetPixels);
 
+
                     if(haveRotate && position!=currentPosition)
                     {
                         showCustomDialogBoxInRotatePicture(rotateImage,imageRotated);
@@ -238,6 +253,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     String temp=aa.getItem(position).getSelectedName();
                     setCurrentSelectedName(aa.getItem(position).getSelectedName());
                     setCurrentPosition(position);
+
 
                     aa.BackToInit();
 
@@ -256,6 +272,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             });
 
         }
+
     }
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -497,3 +514,4 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
 
        
+

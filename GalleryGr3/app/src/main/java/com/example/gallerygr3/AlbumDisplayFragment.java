@@ -2,9 +2,7 @@ package com.example.gallerygr3;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,13 +45,14 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Use the {@link AlbumDisplayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlbumDisplayFragment extends Fragment {
+public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongClickCallback {
     Context context;
     ImageButton back_button,resize_button;
     TextView album_name,album_images_count;
     RecyclerView listView;
     Album album;
     FloatingActionButton add_images;
+    LinearLayout header;
     ArrayList<String> addedPaths=new ArrayList<String>();
     int min_spanColumns=3;
     int spanColumns =min_spanColumns;
@@ -88,6 +85,9 @@ public class AlbumDisplayFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         CoordinatorLayout layout= (CoordinatorLayout) inflater.inflate(R.layout.fragment_album_display,container,false);
+
+        header=layout.findViewById(R.id.album_header);
+
         back_button=layout.findViewById(R.id.album_display_back);
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,12 +105,13 @@ public class AlbumDisplayFragment extends Fragment {
         album_images_count=layout.findViewById(R.id.album_images_count3);
         album_images_count.setText(String.format(context.getString(R.string.album_image_count),album.imagePaths.size()));
 
-        listView=layout.findViewById(R.id.album_display_list);
-        listView.setAdapter( new AlbumDisplayAdapter(album.imagePaths));
 
-        layoutManager=new GridLayoutManager(context, spanColumns);
-        listView.setLayoutManager(layoutManager);
-        listView.addItemDecoration(new SpacesItemDecoration(20,spanColumns));
+//        listView=layout.findViewById(R.id.album_display_list);
+//        listView.setAdapter( new AlbumDisplayAdapter(album.imagePaths));
+//
+//        layoutManager=new GridLayoutManager(context, spanColumns);
+//        listView.setLayoutManager(layoutManager);
+//        listView.addItemDecoration(new SpacesItemDecoration(20,spanColumns));
 
         add_images=layout.findViewById(R.id.add_image);
         add_images.setOnClickListener(new View.OnClickListener() {
@@ -121,24 +122,60 @@ public class AlbumDisplayFragment extends Fragment {
             }
         });
 
+
+        ImageDisplay.changeINSTANCE();
+        ImageDisplay.newInstance().setImagesData(album.imagePaths);
+        ImageDisplay.newInstance().setLongClickCallBack(this);
+
+        getChildFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.album_display_list,ImageDisplay.newInstance(),null)
+                .commit();
+
         resize_button=layout.findViewById(R.id.resizeBtn);
         resize_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                spanColumns=spanColumns%max_spanColumns +1;
+                ImageDisplay.newInstance().numCol=ImageDisplay.newInstance().numCol%5+1;
+                if(ImageDisplay.newInstance().numCol==1){
+//                    numCol=2;
+                    ImageDisplay.newInstance().gridView.setAdapter(ImageDisplay.newInstance().listAdapter);
 
-                if(spanColumns < 2)
-                {
-                    spanColumns=min_spanColumns;
+                } else if(ImageDisplay.newInstance().numCol == 2) {
+                    ImageDisplay.newInstance().gridView.setAdapter(ImageDisplay.newInstance().customAdapter);
                 }
-                layoutManager.setSpanCount(spanColumns);
-                listView.removeItemDecorationAt(0);
-                listView.addItemDecoration(new SpacesItemDecoration(20,spanColumns));
+                ImageDisplay.newInstance().gridView.setNumColumns(ImageDisplay.newInstance().numCol);
             }
         });
-
         return layout;
     }
+
+    @Override
+    public void onDestroyView() {
+        ImageDisplay.restoreINSTANCE();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ImageDisplay.newInstance().header.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLongClick() {
+        ViewGroup.LayoutParams params=header.getLayoutParams();
+        params.height= (int) (60 * getResources().getDisplayMetrics().density);
+        header.setLayoutParams(params);
+    }
+
+    @Override
+    public void afterLongClick() {
+        ViewGroup.LayoutParams params=header.getLayoutParams();
+        params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
+        header.setLayoutParams(params);
+    }
+
 
     private class AlbumDisplayAdapter extends RecyclerView.Adapter<AlbumDisplayAdapter.ViewHolder>{
         ArrayList<String> albumPaths;
@@ -211,8 +248,14 @@ public class AlbumDisplayFragment extends Fragment {
         }
         private class ImageChoosingAdapter extends BaseAdapter {
             ArrayList<String> allImagePaths;
+            ArrayList<Boolean> checkBoxValues;
             public ImageChoosingAdapter(ArrayList<String> allImagePaths){
                 this.allImagePaths=allImagePaths;
+
+                checkBoxValues=new ArrayList<>();
+                for (int i=0;i<allImagePaths.size(); i++){
+                    checkBoxValues.add(false);
+                }
             }
 
             @Override
@@ -239,6 +282,7 @@ public class AlbumDisplayFragment extends Fragment {
                     viewHolder=new ViewHolder();
                     viewHolder.imageView=view.findViewById(R.id.image_to_choose);
                     viewHolder.checkBox=view.findViewById(R.id.image_check_box);
+                    viewHolder.checkBox.setChecked(checkBoxValues.get(i));
                     view.setTag(viewHolder);
                 } else {
                     viewHolder=(ViewHolder) view.getTag();
@@ -248,19 +292,23 @@ public class AlbumDisplayFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         //
-                        Toast.makeText(context,"Clicked",Toast.LENGTH_SHORT).show();
                         //
                         ViewHolder viewHolder1=(ViewHolder) view.getTag();
                         if(viewHolder1.checkBox.isChecked()){
-                            viewHolder1.checkBox.setChecked(false);
+                            checkBoxValues.remove(i);
+                            checkBoxValues.add(i,false);
+                            viewHolder1.checkBox.setChecked(checkBoxValues.get(i));
                             addedPaths.remove(allImagePaths.get(i));
                         } else {
-                            viewHolder1.checkBox.setChecked(true);
+                            checkBoxValues.remove(i);
+                            checkBoxValues.add(i,true);
+                            viewHolder1.checkBox.setChecked(checkBoxValues.get(i));
                             addedPaths.add(allImagePaths.get(i));
                         }
                     }
                 });
 
+                viewHolder.checkBox.setChecked(checkBoxValues.get(i));
                 File imgFile= new File(allImagePaths.get(i));
                 ImageLoader.getInstance().displayImage(String.valueOf(
                         Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
@@ -277,6 +325,8 @@ public class AlbumDisplayFragment extends Fragment {
         @Override
         public void dismiss() {
             super.dismiss();
+            ImageDisplay.newInstance().customAdapter.notifyDataSetChanged();
+            ImageDisplay.newInstance().listAdapter.notifyDataSetChanged();
             album_images_count.setText(String.format(context.getString(R.string.album_image_count),album.imagePaths.size()));
         }
 
@@ -292,8 +342,9 @@ public class AlbumDisplayFragment extends Fragment {
                     for (int i=0;i < addedPaths.size();i++){
                         String newFileName=moveFile(addedPaths.get(i),folderPath);
                         album.imagePaths.add(folderPath+"/"+newFileName);
-                        listView.getAdapter().notifyItemChanged(album.imagePaths.size()-1);
+                        ((MainActivity)context).FileInPaths.add(folderPath+"/"+newFileName);
                         ((MainActivity)context).FileInPaths.remove(addedPaths.get(i));
+                        album.imagePaths.remove(addedPaths.get(i));
                     }
 
                     dismiss();
@@ -311,9 +362,7 @@ public class AlbumDisplayFragment extends Fragment {
                         String newFileName=copyFile(addedPaths.get(i),folderPath);
                         album.imagePaths.add(folderPath+"/"+newFileName);
                     }
-                    if(from <= to){
-                        listView.getAdapter().notifyItemRangeChanged(from,to);
-                    }
+
                     dismiss();
                 }
             });
@@ -343,7 +392,6 @@ public class AlbumDisplayFragment extends Fragment {
         Path to=Paths.get(newFolderLocation+"/"+newFileName);
         try {
             Files.copy(from,to,StandardCopyOption.REPLACE_EXISTING);
-            Toast.makeText(context,"copy "+newFileName,Toast.LENGTH_SHORT).show();
             return newFileName;
         } catch (IOException e) {
             e.printStackTrace();

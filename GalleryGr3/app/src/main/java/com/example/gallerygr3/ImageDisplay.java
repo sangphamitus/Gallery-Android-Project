@@ -4,17 +4,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.gallerygr3.SelectedPicture;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import com.example.gallerygr3.ImageDelete;
+
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DownloadManager;
@@ -23,17 +19,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
-
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 
 import android.graphics.Matrix;
 
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.graphics.Bitmap;
@@ -55,8 +46,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.webkit.DownloadListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -66,11 +55,9 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import org.jetbrains.annotations.Nullable;
 
 
 import java.io.FileOutputStream;
@@ -80,11 +67,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.Timer;
 
 /*
 * File imgFile= new File(Images.get(position));
@@ -99,6 +83,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     Context context;
 
     private static ImageDisplay INSTANCE = null;
+    private static ImageDisplay MAIN_INSTANCE=null;
 
 
     ImageButton changeBtn;
@@ -114,11 +99,17 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     ViewGroup myStatecontainer;
     ImageDisplay.CustomAdapter customAdapter=null;
     ImageDisplay.ListAdapter listAdapter=null;
+
     ArrayList<ImageDate> imgDates;
     ArrayList<String> dates;
     ArrayList<Integer> size;
 
+    TableLayout header;
+    LongClickCallback callback=null;
+
+
     boolean isHolding=false;
+    public static boolean isMain=true;
 
     ArrayList<String> selectedImages=new ArrayList<>();
 
@@ -146,6 +137,20 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         }
 
         return INSTANCE;
+    }
+    public static void changeINSTANCE(){
+        if(isMain)
+        {
+            MAIN_INSTANCE=INSTANCE;
+            isMain=false;
+            INSTANCE=null;
+        }
+    }
+    public static void restoreINSTANCE(){
+        if(!isMain){
+            INSTANCE=MAIN_INSTANCE;
+            isMain=true;
+        }
     }
 
     public class CustomAdapter extends BaseAdapter {
@@ -271,6 +276,14 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
     }
 
+    public interface LongClickCallback {
+        void onLongClick();
+        void afterLongClick();
+    }
+    public void setLongClickCallBack(LongClickCallback callback){
+        this.callback=callback;
+    }
+
     public class ListAdapter extends BaseAdapter{
         private ArrayList<String> imageNames;
         private ArrayList<String> imagePhotos;
@@ -377,25 +390,11 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Sử dụng thư viện univeral-image-loader
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .delayBeforeLoading(0)
-                .resetViewBeforeLoading(true)
-                .showImageOnLoading(R.drawable.placehoder)
-                .showImageForEmptyUri(R.drawable.error_image)
-                .showImageOnFail(R.drawable.error_image)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader.getInstance().init(config);
 
-
-        myStateInfo=savedInstanceState;
-        Context context= getActivity();
 
         this.context= getActivity();
+
+        if(images == null) {setImagesData (((MainActivity)context).getFileinDir());}
 
 
         images =((MainActivity)context).getFileinDir();
@@ -467,6 +466,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             names.add(name);//thấy cái names không
             // ====================================================
         }
+ 
     }
 
     @Override
@@ -475,7 +475,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         //
         Toast.makeText(getContext(),"ImageDisplay oncreatview",Toast.LENGTH_SHORT).show();
         // Get images
-
         // Inflate the layout for this fragment
         myStateinflater=inflater;
         myStatecontainer=container;
@@ -556,6 +555,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 customAdapter.notifyDataSetChanged();
                 listAdapter.notifyDataSetChanged();
 
+                if(callback != null){callback.onLongClick();}
+
                 return true;
             }
         });
@@ -604,6 +605,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 }
             }
         });
+
+        header=(TableLayout) view.findViewById(R.id.header);
 
         return view;
 //        return inflater.inflate(R.layout.fragment_image_display, container, false);
@@ -691,14 +694,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     }
 
     @Override
-    public  void deleteClicked(String file)
-    {
-        ((MainActivity)getContext()).removeImageUpdate(file);
-        customAdapter.notifyDataSetChanged();
-        listAdapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void  clearClicked()
     {
         isHolding =false;
@@ -707,6 +702,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
+
+        if(callback !=null){callback.afterLongClick();}
     }
 
     public void notifyChanged()
@@ -769,14 +766,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
-
-
-
-
-                     //   myStateInfo= new Bundle();
-                      //   onCreate(myStateInfo);
-                        onCreateView(myStateinflater,myStatecontainer,myStateInfo);
-
                     }
                 }
             });
@@ -838,5 +827,79 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     }
 
 
+    public void setImagesData(ArrayList<String> images) {
+        this.images=images;
+
+        //get date
+        ArrayList<Date> listDate= new ArrayList<Date>();
+        for(int i=0;i<this.images.size();i++){
+            File file = new File(this.images.get(i));
+            if(file.exists()) //Extra check, Just to validate the given path
+            {
+                ExifInterface intf = null;
+                try
+                {
+                    intf = new ExifInterface(this.images.get(i));
+                    if(intf != null)
+                    {
+                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+                        Date lastModDate = new Date(file.lastModified());
+                        listDate.add(lastModDate);
+                        Log.i("PHOTO DATE", "Dated : "+ dateString); //Display dateString. You can do/use it your own way
+                    }
+                }
+                catch (IOException e)
+                {
+                }
+                if(intf == null)
+                {
+                    Date lastModDate = new Date(file.lastModified());
+                    Log.i("PHOTO DATE", "Dated : "+ lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+                }
+            }
+        }
+
+        //get object
+        ArrayList<ImageDate> imgDates = new ArrayList<ImageDate>();
+        for(int i=0;i<this.images.size();i++){
+            ImageDate temp = new ImageDate(this.images.get(i),listDate.get(i));
+            imgDates.add(temp);
+        }
+
+        //sort obj
+        Collections.sort(imgDates);
+        Collections.reverse(imgDates);
+
+        //change images after sort
+        for(int i=0;i<imgDates.size();i++){
+            this.images.set(i,imgDates.get(i).getImage());
+        }
+
+//        Collections.sort(images);
+        //checkPhoto=new ArrayList<Boolean>(Arrays.asList(new Boolean[images.size()]));
+        //Collections.fill(checkPhoto, Boolean.FALSE);
+
+        //create name array
+        names= new ArrayList<String>();
+
+        for(int i=0;i<this.images.size();i++){
+
+            // get name from file ===================================
+
+            String name = getDisplayName(this.images.get(i));
+            names.add(name);
+            // ====================================================
+
+
+
+            // ====================================================
+        }
+    }
+    public void hideHeader(){
+        header.setVisibility(View.INVISIBLE);
+    }
+    public void unhideHeader(){
+        header.setVisibility(View.VISIBLE);
+    }
 
 }

@@ -124,8 +124,6 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                         else {     // If not double click....
 //                            BackToInit();
                             mHasDoubleClicked = false;
-                            main.showNav();
-
                         };
                         // record the last time the menu button was pressed.
                         lastPressTime = pressTime;
@@ -279,10 +277,6 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
            // txtName=itemView.findViewById(R.id.tvName);
 
         }
-    }
-
-    public viewPagerItem getItem(int i) {
-        return arrayItems.get(i);
     }
 
     private float spacing(MotionEvent event)

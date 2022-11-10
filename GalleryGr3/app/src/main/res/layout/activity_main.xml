@@ -28,17 +28,17 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/round_navbar"
         android:elevation="10dp"
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:visibility="invisible"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
+        android:visibility="invisible"
         android:weightSum="3"
         app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center_horizontal"
 
-         >
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        >
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
 
             android:id="@+id/selectAll"
             android:layout_width="wrap_content"
@@ -51,11 +51,9 @@
             android:src="@drawable/ic_baseline_playlist_add_check_24"
             app:backgroundTint="#FFFFFF"
 
-            app:elevation="0dp"
-            />
+            app:elevation="0dp" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
 
             android:id="@+id/clear"
             android:layout_width="wrap_content"
@@ -68,16 +66,17 @@
             android:clickable="true"
 
             android:src="@drawable/ic_baseline_clear_24"
-            app:backgroundTint="#FFFFFF" app:elevation="0dp"/>
+            app:backgroundTint="#FFFFFF"
+            app:elevation="0dp" />
 
         <TextView
             android:id="@+id/infomationText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="selected 0 images"
-            android:textColor="@color/black"
             android:layout_centerHorizontal="true"
             android:layout_marginVertical="10dp"
+            android:text="selected 0 images"
+            android:textColor="@color/black"
             android:textSize="20dp">
 
         </TextView>

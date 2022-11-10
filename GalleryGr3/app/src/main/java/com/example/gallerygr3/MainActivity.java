@@ -11,8 +11,7 @@ import android.os.Build;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -41,6 +40,8 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -112,6 +113,22 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .delayBeforeLoading(0)
+                .resetViewBeforeLoading(true)
+                .showImageOnLoading(R.drawable.placehoder)
+                .showImageForEmptyUri(R.drawable.error_image)
+                .showImageOnFail(R.drawable.error_image)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+                .defaultDisplayImageOptions(defaultOptions)
+                .build();
+        ImageLoader.getInstance().init(config);
+
+
+
         context= this;
 
         ActivityCompat.requestPermissions(MainActivity.this,
@@ -119,8 +136,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-
-                        Manifest.permission.CAMERA,
                         Manifest.permission.INTERNET
                 }, 1);
 
@@ -173,14 +188,14 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             @Override
             public void onClick(View view) {
                ImageDisplay ic= ImageDisplay.newInstance();
-               if(chooseToDeleteInList.size()==FileInPaths.size())
+               if(chooseToDeleteInList.size()==ic.images.size())
                {
                    chooseToDeleteInList.clear();
 
                }
                else
                {
-                   chooseToDeleteInList=new ArrayList<String >(FileInPaths);
+                   chooseToDeleteInList=new ArrayList<String >(ic.images);
 
                }
                 ic.selectAllClicked();
@@ -234,6 +249,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     }
 
+
     @Override
     public void shareImages(ArrayList<String> paths){
 
@@ -285,6 +301,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         }
     }
 
+
     private void showSliderDiaglogBox(){
         final Dialog customDialog = new Dialog( context );
         customDialog.setTitle("Create Slider with Music");
@@ -325,6 +342,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         customDialog.show();
 
     }
+
 
 
     private void showCustomDialogBox()
@@ -374,12 +392,9 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 askForPermissions();
+
                 readFolder(Picture);
                 readFolder(DCIM);
-//                getSupportFragmentManager().beginTransaction()
-//             .setReorderingAllowed(true)
-//               .replace(R.id.fragment_container, arrFrag[0], null)
-//                .commit();
 
                 getSupportFragmentManager().beginTransaction()
                         .setReorderingAllowed(true)
@@ -415,15 +430,9 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
+
         }
 
-
-    }
-    @Override
-    public void removeImageUpdate(String input)
-    {
-
-            FileInPaths.remove(input);
 
     }
     @Override
@@ -593,6 +602,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 }
                 else
                 {
+                    ImageDisplay.restoreINSTANCE();
                     getSupportFragmentManager().beginTransaction()
                             .setReorderingAllowed(true)
                             .replace(R.id.fragment_container, ImageDisplay.newInstance(), null)
