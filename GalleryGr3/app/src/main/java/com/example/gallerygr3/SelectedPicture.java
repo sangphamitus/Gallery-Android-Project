@@ -21,6 +21,7 @@ import android.content.Intent;
 
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import android.graphics.drawable.BitmapDrawable;
@@ -59,6 +60,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<viewPagerItem> listItem;
     String[] paths;
     String[] dates;
+    String[] names;
     int[] size;
     ArrayList<String> imagesPath;
     ArrayList<String> imagesDate;
@@ -93,10 +95,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     String imageRotated=null;
 
 
-
-
-
-
     boolean displayNavBars = true;
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -122,8 +120,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 showCustomDialogBoxInSelectedPicture();
             }
         });
-
-
 
 
 
@@ -185,6 +181,15 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             imagesDate = intent.getStringArrayListExtra("dates");
             imagesSize = intent.getIntegerArrayListExtra("size");
             int pos = intent.getIntExtra("pos",0);
+            String selectedName = intent.getStringExtra("name");
+            ArrayList<String> images = intent.getStringArrayListExtra("images");
+
+
+            names= new String[images.size()];
+            // fix name from data
+            for(int i=0;i<images.size();i++){
+                names[i]=images.get(i);
+            }
 
 
             paths = new String[imagesPath.size()];
