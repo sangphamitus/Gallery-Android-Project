@@ -708,6 +708,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
     }
+
+    public void notifyChanged()
+    {
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+    }
     @Override
     public void  selectAllClicked()
     {
@@ -752,8 +758,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
                         File imgFile= new File(namePictureShoot);
                         Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        imageShoot=rotateImage(imageShoot,90);
-                        saveImage(imageShoot,namePictureShoot);
+                        imageShoot=ImageUltility.rotateImage(imageShoot,90);
+                        ImageDelete.saveImage(imageShoot,namePictureShoot);
 
                         images.add(namePictureShoot);
                         names.add(getDisplayName(namePictureShoot));
@@ -774,28 +780,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     }
                 }
             });
-    private void saveImage(Bitmap finalBitmap,String imagePath) {
 
-        File myFile = new File(imagePath);
 
-        if (myFile.exists()) myFile.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(myFile);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public static Bitmap rotateImage(Bitmap bmpSrc, float degrees) {
-        int w = bmpSrc.getWidth();
-        int h = bmpSrc.getHeight();
-        Matrix mtx = new Matrix();
-        mtx.postRotate(degrees);
-        Bitmap bmpTrg = Bitmap.createBitmap(bmpSrc, 0, 0, w, h, mtx, true);
-        return bmpTrg;
-    }
     private void openCamera()  {
         // Ask permission
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

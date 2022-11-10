@@ -34,6 +34,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SliderMusic" />
+        <activity
+            android:name=".EditImage"/>
     </application>
 
 </manifest>

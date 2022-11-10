@@ -1,11 +1,21 @@
 package com.example.gallerygr3;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+
+
+import android.graphics.Color;
+import android.graphics.ColorSpace;
 
 import android.os.Bundle;
 
@@ -22,6 +32,7 @@ import java.util.ArrayList;
 
 public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
 
+
     ViewPager2 viewPager2;
     ArrayList<viewPagerItem> listItem;
     String[] paths;
@@ -33,14 +44,32 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     MediaPlayer mediaPlayer;
 
     ImageButton backBtn;
-    ImageButton deleteBtn;
-    ImageButton infoBtn;
-    String currentSelectedName;
-    int currentPosition;
-    MainActivity main;
 
+
+    ImageButton infoBtn;
+
+    
+
+    ImageButton deleteBtn,editBtn;
+    public ImageButton rotateBtn;
+
+    String currentSelectedName=null;
+    int currentPosition=-1;
+
+    MainActivity main;
+    viewPagerAdapter aa =null;
+
+    Boolean haveRotate=false;
     RelativeLayout topNav;
     RelativeLayout bottomNav;
+
+    Bitmap rotateImage=null;
+    String imageRotated=null;
+
+
+
+
+
 
     boolean displayNavBars = true;
     @SuppressLint("ClickableViewAccessibility")
@@ -68,11 +97,45 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             }
         });
 
+
         infoBtn = (ImageButton)findViewById(R.id.infoBtn) ;
         infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showCustomDialogBoxInformation();
+                    }
+        });
+
+        editBtn=(ImageButton) findViewById(R.id.editBtn);
+       editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "edit", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getApplicationContext(), EditImage.class);
+                intent.putExtra("imgPath", currentSelectedName);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                someActivityResultLauncher.launch(intent);
+
+
+            }
+        });
+        rotateBtn=(ImageButton) findViewById(R.id.rotateBtn);
+        rotateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+//                viewPagerItem out= aa.getItem(currentPosition);
+//
+//                File imgFile= new File(currentSelectedName);
+//                Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//                imageShoot=ImageUltility.rotateImage(imageShoot,90);
+//                aa.SetBitmap(imageShoot,currentPosition);
+                Toast.makeText(getApplicationContext(), ""+currentPosition, Toast.LENGTH_SHORT).show();
+                haveRotate=true;
+                imageRotated=currentSelectedName;
+                rotateImage=aa.RotateDegree(currentSelectedName,90,currentPosition);
+
             }
         });
 
@@ -110,8 +173,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 viewPagerItem item = new viewPagerItem(paths[i]);
                 listItem.add(item);
             }
-
-            viewPagerAdapter aa=new viewPagerAdapter(listItem,this);
+            if(aa==null)
+            aa=new viewPagerAdapter(listItem,this);
 
             viewPager2.setAdapter(aa);
             viewPager2.setCurrentItem(pos,false);
@@ -128,6 +191,13 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                     super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+
+                    if(haveRotate && position!=currentPosition)
+                    {
+                        showCustomDialogBoxInRotatePicture(rotateImage,imageRotated);
+                      aa.RotateDegree(currentSelectedName,0,currentPosition);
+
+                    }
                     String temp=aa.getItem(position).getSelectedName();
                     setCurrentSelectedName(aa.getItem(position).getSelectedName());
                     setCurrentPosition(position);
@@ -138,7 +208,18 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             });
         }
     }
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // There are no request codes
 
+                        aa.notifyDataSetChanged();
+                    }
+                }
+            });
     @Override
     public void preventSwipe() {
         viewPager2.setUserInputEnabled(false);
@@ -167,9 +248,12 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 //        deleteArrayByPossision(size, currentPosition);
         //xóa trong adepter
         listItem.remove(currentPosition);
-        viewPagerAdapter aa=new viewPagerAdapter(listItem,this);
-        viewPager2.setAdapter(aa);
+//         aa=new viewPagerAdapter(listItem,this);
+//        viewPager2.setAdapter(aa);
+//
         viewPager2.setCurrentItem(currentPosition ,false);
+        aa.notifyDataSetChanged();
+
     }
 
     @Override
@@ -190,6 +274,12 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     public void hiddenNav() {
         return;
     }
+
+    @Override
+    public void notifyChanged() {
+        aa.notifyDataSetChanged();
+    }
+
 
     private void showCustomDialogBoxInSelectedPicture()
     {
@@ -243,6 +333,29 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 .setText(size[currentPosition]+" bytes");
 //        Toast.makeText(this, imagesSize[currentPosition]+"", Toast.LENGTH_SHORT).show();
         ((Button) customDialog.findViewById(R.id.ok_button))
+        .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+    customDialog.show();
+    }
+    private void showCustomDialogBoxInRotatePicture(Bitmap rotateImage2,String imageRotated2)
+    {
+        final Dialog customDialog = new Dialog( this );
+        customDialog.setTitle("Change confirm");
+
+        customDialog.setContentView(R.layout.delete_dialog_notify);
+
+        ((TextView) customDialog.findViewById(R.id.deleteNotify))
+                .setText("Do you want to save your change ?");
+        ((TextView) customDialog.findViewById(R.id.titleBox))
+                .setText("Change");
+
+        ((Button) customDialog.findViewById(R.id.cancelDelete))
+
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -251,8 +364,29 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     }
                 });
 
+
+    ((Button) customDialog.findViewById(R.id.confirmDelete))
+                .setText("Change");
+        ((Button) customDialog.findViewById(R.id.confirmDelete))
+
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if( rotateImage2!=null && imageRotated2!=null)
+                        ImageDelete.saveImage(rotateImage2,imageRotated2);
+                        aa.notifyDataSetChanged();
+
+                        Toast.makeText(getApplicationContext(), "Changed", Toast.LENGTH_SHORT).show();
+                        customDialog.dismiss();
+                    }
+                });
+        haveRotate=false;
+        imageRotated=null;
+        rotateImage=null;
         customDialog.show();
     }
+
+}
     public void deleteArrayByPossision(String[]arr, int pos){
         int size = arr.length;
         if(pos != arr.length - 1 ){
@@ -261,4 +395,5 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             }
         }
     }
-}
+
+       
