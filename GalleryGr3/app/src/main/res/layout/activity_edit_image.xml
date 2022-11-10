@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_nav"
+        android:background="#444"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cancel"
+            android:id="@+id/edit_cancel_btn"
+            android:layout_alignParentStart="true"
+
+            >
+
+        </Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="reset"
+            android:id="@+id/edit_reset_btn"
+            android:layout_toStartOf="@+id/edit_confirm_btn"
+
+            >
+
+        </Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="confirm"
+            android:id="@+id/edit_confirm_btn"
+            android:layout_alignParentEnd="true"
+
+            >
+
+        </Button>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:paddingHorizontal="20dp"
+        android:background="#eeeeee"
+        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/edit_image_object"
+            android:src="@drawable/error_image">
+
+        </ImageView>
+    </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:id="@+id/edit_central_btn"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transform"
+                android:id="@+id/edit_transform_btn"
+                android:layout_marginHorizontal="10dp"
+                ></Button>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="filter"
+                android:id="@+id/edit_filter_btn"
+                android:layout_marginHorizontal="10dp"
+                >
+
+            </Button>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Blur"
+                android:id="@+id/blur_btn"
+                android:layout_marginHorizontal="10dp">
+            </Button>
+
+
+        </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/fragment_function_btns"
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        >
+
+    </FrameLayout>
+
+
+</LinearLayout>

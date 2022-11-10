@@ -11,7 +11,8 @@
         android:text="Delete"
         android:textAlignment="center"
         android:textSize="30dp"
-        android:textStyle="bold">
+        android:textStyle="bold"
+        android:id="@+id/titleBox">
 
     </TextView>
     <TextView

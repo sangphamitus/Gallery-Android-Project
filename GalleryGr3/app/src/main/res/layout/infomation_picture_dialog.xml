@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="15dp"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Information"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textStyle="bold">
+
+    </TextView>
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+        <TableRow>
+            <TextView android:text="Image Name:"
+                android:textSize="15dp"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:gravity="right"/>
+
+            <TextView
+                android:textSize="15dp"
+                android:padding="5dp"
+                android:id="@+id/photoName"
+                android:layout_width="fill_parent"
+                android:layout_weight="1"
+                />
+        </TableRow>
+        <TableRow>
+            <TextView android:text="Image Path:"
+                android:textSize="15dp"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:gravity="right"/>
+
+            <TextView
+                android:id="@+id/photoPath"
+                android:padding="5dp"
+                android:textSize="15dp"
+                android:layout_width="fill_parent"
+                android:layout_weight="1"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="Last Modified:"
+                android:textSize="15dp"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:gravity="right"/>
+
+            <TextView
+                android:textSize="15dp"
+                android:padding="5dp"
+                android:id="@+id/photoLastModified"
+                />
+        </TableRow>
+        <TableRow>
+            <TextView android:text="Size:"
+                android:textSize="15dp"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:gravity="right"/>
+
+            <TextView
+                android:textSize="15dp"
+                android:padding="5dp"
+                android:id="@+id/photoSize"
+                />
+        </TableRow>
+    </TableLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK"
+        android:backgroundTint="@color/confirm_delete"
+        android:textColor="@color/white"
+        android:id="@+id/ok_button"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

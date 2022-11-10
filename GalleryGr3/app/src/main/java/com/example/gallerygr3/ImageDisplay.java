@@ -112,8 +112,11 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     Bundle myStateInfo;
     LayoutInflater myStateinflater;
     ViewGroup myStatecontainer;
-     ImageDisplay.CustomAdapter customAdapter=null;
-     ImageDisplay.ListAdapter listAdapter=null;
+    ImageDisplay.CustomAdapter customAdapter=null;
+    ImageDisplay.ListAdapter listAdapter=null;
+    ArrayList<ImageDate> imgDates;
+    ArrayList<String> dates;
+    ArrayList<Integer> size;
 
     boolean isHolding=false;
 
@@ -399,6 +402,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         //get date
         ArrayList<Date> listDate= new ArrayList<Date>();
+        size = new ArrayList<Integer>(images.size());
         for(int i=0;i<images.size();i++){
             File file = new File(images.get(i));
             if(file.exists()) //Extra check, Just to validate the given path
@@ -411,6 +415,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     {
                         String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
                         Date lastModDate = new Date(file.lastModified());
+                        size.add( ((Number)file.length()).intValue());
                         listDate.add(lastModDate);
                         Log.i("PHOTO DATE", "Dated : "+ dateString); //Display dateString. You can do/use it your own way
                     }
@@ -425,13 +430,15 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 }
             }
         }
-
+        imgDates = new ArrayList<ImageDate>();
+        dates = new ArrayList<String>();
         //get object
-        ArrayList<ImageDate> imgDates = new ArrayList<ImageDate>();
         for(int i=0;i<images.size();i++){
             ImageDate temp = new ImageDate(images.get(i),listDate.get(i));
             imgDates.add(temp);
+            dates.add(temp.dayToString());
         }
+
 
         //sort obj
         Collections.sort(imgDates);
@@ -452,13 +459,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         for(int i=0;i<images.size();i++){
 
             // get name from file ===================================
-
+// t biet ly do roi
+            String temp = images.get(i);
             String name = getDisplayName(images.get(i));
-            names.add(name);
-            // ====================================================
-
-
-
+        // ba chaams thi van dc ma
+// nhma problem la no ko hien len co 3 cham nhu z
+            names.add(name);//thấy cái names không
             // ====================================================
         }
     }
@@ -503,15 +509,14 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedName = images.get(i);
 
 //                int selectedImage = images[i];
                 if (isHolding == false) {
                     startActivity(new Intent(getActivity(), SelectedPicture.class)
-                            .putExtra("name", selectedName)
+                            .putExtra("size", size)//này là em bỏ qua cái selected nè
                             .putExtra("images", images)
-                            .putExtra("pos", i)
-                            );
+                            .putExtra("dates", dates)
+                            .putExtra("pos", i));
                 }
               else {
 
@@ -703,6 +708,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
     }
+
+    public void notifyChanged()
+    {
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+    }
     @Override
     public void  selectAllClicked()
     {
@@ -747,8 +758,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
                         File imgFile= new File(namePictureShoot);
                         Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        imageShoot=rotateImage(imageShoot,90);
-                        saveImage(imageShoot,namePictureShoot);
+                        imageShoot=ImageUltility.rotateImage(imageShoot,90);
+                        ImageDelete.saveImage(imageShoot,namePictureShoot);
 
                         images.add(namePictureShoot);
                         names.add(getDisplayName(namePictureShoot));
@@ -769,28 +780,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     }
                 }
             });
-    private void saveImage(Bitmap finalBitmap,String imagePath) {
 
-        File myFile = new File(imagePath);
 
-        if (myFile.exists()) myFile.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(myFile);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public static Bitmap rotateImage(Bitmap bmpSrc, float degrees) {
-        int w = bmpSrc.getWidth();
-        int h = bmpSrc.getHeight();
-        Matrix mtx = new Matrix();
-        mtx.postRotate(degrees);
-        Bitmap bmpTrg = Bitmap.createBitmap(bmpSrc, 0, 0, w, h, mtx, true);
-        return bmpTrg;
-    }
     private void openCamera()  {
         // Ask permission
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -825,7 +816,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         return uri;
     }
-    private String getDisplayName(String path){
+    public static String getDisplayName(String path){
         int getPositionFolderName= path.lastIndexOf("/");
         String name= path.substring(getPositionFolderName + 1);
 

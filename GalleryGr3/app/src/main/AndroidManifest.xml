@@ -45,6 +45,8 @@
             android:resource="@xml/paths" />
     </provider>
 
+        <activity
+            android:name=".EditImage"/>
     </application>
 
 </manifest>
