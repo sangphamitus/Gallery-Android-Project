@@ -836,4 +836,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         displayName+="."+ArrayName[1];
         return displayName;
     }
+
+
+
 }
