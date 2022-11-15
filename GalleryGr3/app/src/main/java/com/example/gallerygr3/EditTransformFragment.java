@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -18,9 +19,9 @@ public class EditTransformFragment extends Fragment {
     Context context=null;
     String message="";
 
-    Button verticalBtn;
-    Button horizontalBtn;
-    Button backBtn;
+    ImageButton verticalBtn;
+    ImageButton horizontalBtn;
+    ImageButton backBtn;
 
 
     public static EditTransformFragment newInstance()
@@ -49,7 +50,7 @@ public class EditTransformFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.edit_transform_fragment,null);
 
-        verticalBtn = (Button) layout.findViewById(R.id.vertical_flip);
+        verticalBtn = (ImageButton) layout.findViewById(R.id.vertical_flip);
         verticalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,7 +59,7 @@ public class EditTransformFragment extends Fragment {
             }
         });
 
-        horizontalBtn = (Button) layout.findViewById(R.id.horizontal_flip);
+        horizontalBtn = (ImageButton) layout.findViewById(R.id.horizontal_flip);
         horizontalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,7 +67,7 @@ public class EditTransformFragment extends Fragment {
             }
         });
 
-        backBtn =(Button) layout.findViewById(R.id.back_edit_btn);
+        backBtn =(ImageButton) layout.findViewById(R.id.back_edit_btn);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

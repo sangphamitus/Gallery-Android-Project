@@ -228,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="Albums"
-                android:textColor="@color/albums"
+                android:textColor="@color/photos"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
@@ -258,7 +258,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="Settings"
-                android:textColor="@color/settings"
+                android:textColor="@color/photos"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone" />

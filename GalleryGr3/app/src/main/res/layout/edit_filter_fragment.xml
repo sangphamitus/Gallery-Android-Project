@@ -2,7 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:paddingBottom="50dp"
+    >
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,26 +16,36 @@
             android:layout_height="wrap_content"
             android:id="@+id/filterList"
             android:orientation="horizontal">
-
         </LinearLayout>
     </HorizontalScrollView>
     <LinearLayout
+        android:paddingTop="20dp"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back"
-            android:id="@+id/backBtns">
 
-        </Button>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Confirm"
-            android:id="@+id/confirmBtns">
+        <ImageButton
+            android:layout_marginHorizontal="35dp"
+            android:id="@+id/backBtns"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/button_line"
+            android:padding="2dp"
+            android:src="@drawable/ic_baseline_close_24" />
 
-        </Button>
+        <ImageButton
+            android:layout_marginHorizontal="35dp"
+            android:id="@+id/confirmBtns"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/button_line"
+            android:padding="2dp"
+            android:src="@drawable/ic_baseline_check_24" />
     </LinearLayout>
 </LinearLayout>

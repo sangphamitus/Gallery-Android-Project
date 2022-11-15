@@ -20,14 +20,17 @@
             android:orientation="vertical">
 
             <TableLayout
+                android:src="@android:drawable/divider_horizontal_dark"
+                android:padding="10dp"
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="0">
 
                 <TableRow>
-
                     <TextView
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
@@ -39,25 +42,29 @@
 
                     <ImageButton
                         android:id="@+id/resizeView"
-                        android:layout_width="95dp"
-                        android:layout_height="50dp"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
                         android:layout_gravity="right"
-                        android:background="@color/white"
-                        android:padding="8dp"
+                        android:background="@drawable/custom_button"
+                        android:padding="18dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/menu" />
+                        android:src="@drawable/menu"
+                        />
 
                 </TableRow>
 
             </TableLayout>
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
             <GridView
                 android:id="@+id/gridView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:horizontalSpacing="4dp"
+                android:horizontalSpacing="8dp"
                 android:numColumns="4"
-                android:verticalSpacing="4dp" />
+                android:verticalSpacing="8dp" />
 
         </LinearLayout>
     </FrameLayout>
@@ -86,7 +93,7 @@
                 android:clickable="true"
                 android:contentDescription="Url"
                 android:src="@android:drawable/stat_sys_download"
-                app:backgroundTint="#DAE5D0"
+                app:backgroundTint="@color/fab"
 
                 app:elevation="0dp" />
 
@@ -99,8 +106,8 @@
                 android:layout_marginBottom="26dp"
                 android:clickable="true"
                 android:contentDescription="Camera"
+                app:backgroundTint="@color/fab"
                 android:src="@android:drawable/ic_menu_camera"
-                app:backgroundTint="#DAE5D0"
                 app:elevation="0dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -111,9 +118,9 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="6dp"
                 android:clickable="true"
+                app:backgroundTint="@color/red_1"
                 android:contentDescription="Expand"
-                android:src="@android:drawable/ic_menu_add"
-                app:backgroundTint="#DAE5D0"
+                android:src="@drawable/ic_baseline_add_circle_outline_24"
                 app:elevation="0dp" />
         </LinearLayout>
 
