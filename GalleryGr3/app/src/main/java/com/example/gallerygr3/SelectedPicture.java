@@ -92,9 +92,9 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ArrayList<Integer> imagesSize;
     MediaPlayer mediaPlayer;
     LinearLayout subInfo;
-    Button changeWallpaper;
-    Button changeWallpaperLock;
-    Button changeFileName;
+    LinearLayout changeWallpaper;
+    LinearLayout changeWallpaperLock;
+    LinearLayout changeFileName;
 
 
     ImageButton backBtn;
@@ -226,9 +226,9 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
        //SUBNAV
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
-        changeWallpaper = (Button)findViewById(R.id.changeWallpaper);
-        changeWallpaperLock = (Button)findViewById(R.id.changeWallpaperLock);
-        changeFileName = (Button)findViewById(R.id.changeNameFile);
+        changeWallpaper = (LinearLayout)findViewById(R.id.changeWallpaper);
+        changeWallpaperLock = (LinearLayout)findViewById(R.id.changeWallpaperLock);
+        changeFileName = (LinearLayout) findViewById(R.id.changeNameFile);
 
         changeWallpaper.setOnClickListener(new View.OnClickListener() {
             @Override
