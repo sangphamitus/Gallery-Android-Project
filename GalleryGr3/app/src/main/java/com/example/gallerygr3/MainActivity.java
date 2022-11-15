@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     FloatingActionButton shareMultipleBtn;
 
 
-
     String[] ImageExtensions = new String[] {
             ".jpg",
             ".png",
@@ -306,6 +305,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     }
 
 
+
     private void showSliderDiaglogBox(){
         final Dialog customDialog = new Dialog( context );
         customDialog.setTitle("Create Slider with Music");
@@ -434,14 +434,11 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
 
     }
+
     @Override
     public void removeImageUpdate(String input)
     {
-
-
         FileInPaths.remove(input);
-
-
     }
 
     @Override
@@ -537,6 +534,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
                             if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
                                 // addImageView(file.getAbsolutePath());
+                                if(!FileInPaths.contains(file.getAbsolutePath()))
                                 FileInPaths.add(file.getAbsolutePath());
 
                                 break;
@@ -614,7 +612,12 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         folderPaths.remove(folderPaths.size()-1 );
         currentDirectory = folderPaths.get(folderPaths.size()-1);
     }
+    public void readAgain()
+    {
 
+        readFolder(Picture);
+        readFolder(DCIM);
+    }
     @Override
     public ArrayList<String> getFolderPath() {
         return folderPaths;

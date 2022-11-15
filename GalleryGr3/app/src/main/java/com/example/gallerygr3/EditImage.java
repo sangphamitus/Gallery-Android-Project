@@ -37,7 +37,7 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
     EditFilterFragment filterFragment;
     String imgName=null;
 
-    Bitmap editedImage;
+    Bitmap editedImage=null;
 
     Boolean VerticalFlip=false;
     Boolean HorizontalFlip=false;
@@ -61,10 +61,16 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
             @Override
             public void onClick(View view) {
 
-                ImageDelete.saveImage(editedImage,imgName);
-                ImageDisplay ic= ImageDisplay.newInstance();
-                ic.notifyChangeGridLayout();
-                Intent intent = new Intent();
+
+                String[] temp= new String[1];
+                temp[0]=ImageDelete.saveImage(editedImage,imgName);
+
+
+
+              //  ((MainActivity)getApplicationContext()).UpdateChangeImageOnMainActivity();
+
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                intent.putExtra("imgPath", temp[0]);
                 setResult(RESULT_OK,intent );
 
                 finish();

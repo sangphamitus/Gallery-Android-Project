@@ -107,8 +107,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
     ImageButton infoBtn;
 
     ImageButton moreBtn;
-   
 
+    ImageButton saveBtn;
 
    
     ImageButton deleteBtn,editBtn;
@@ -147,10 +147,37 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SelectedPicture.super.onBackPressed();
+
+               SelectedPicture.super.onBackPressed();
             }
         });
+       saveBtn=(ImageButton) findViewById(R.id.saveBtn);
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if( rotateImage!=null && imageRotated!=null)
+//                    showCustomDialogBoxInRotatePicture(rotateImage,imageRotated);
+                if( rotateImage!=null && imageRotated!=null)
 
+                {
+
+                    ImageDelete.saveImage(rotateImage, imageRotated);
+                    Intent intent=new Intent();
+                    setResult(2,intent);
+                    finish();
+
+                    //aa.setImageView(imageRotated,currentPosition);
+                }
+
+                ImageDisplay.newInstance().notifyChangeGridLayout();
+                rotateImage=null;
+                imageRotated=null;
+                haveRotate=false;
+                saveBtn.setVisibility(View.INVISIBLE);
+
+            }
+        });
+        saveBtn.setVisibility(View.INVISIBLE);
         deleteBtn=(ImageButton) findViewById(R.id.deleteSingleBtn);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,9 +227,10 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 //                Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 //                imageShoot=ImageUltility.rotateImage(imageShoot,90);
 //                aa.SetBitmap(imageShoot,currentPosition);
-                Toast.makeText(getApplicationContext(), ""+currentPosition, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(), ""+currentPosition, Toast.LENGTH_SHORT).show();
                 haveRotate=true;
                 imageRotated=currentSelectedName;
+                saveBtn.setVisibility(View.VISIBLE);
                 rotateImage=aa.RotateDegree(currentSelectedName,90,currentPosition);
 
             }
@@ -324,11 +352,10 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                     super.onPageScrolled(position, positionOffset, positionOffsetPixels);
 
-
+                    saveBtn.setVisibility(View.INVISIBLE);
                     if(haveRotate && position!=currentPosition)
                     {
                         showCustomDialogBoxInRotatePicture(rotateImage,imageRotated);
-                      aa.RotateDegree(currentSelectedName,0,currentPosition);
 
                     }
                     String temp=aa.getItem(position).getSelectedName();
@@ -362,11 +389,18 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
+                       String imgName=getIntent().getStringExtra("imgPath");
+                       String[] temp= new String[1];
+                        temp[0]= imgName;
+                        Intent intent=new Intent();
+                        setResult(2,intent);
+                        finish();
 
-
-                        aa.notifyDataSetChanged();
+                        aa.setImageView(currentSelectedName,currentPosition);
+                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ic.setNameAndPhoto();
                     }
-                }
+                                  }
             });
 
     public void shareSingleImages(ArrayList<String> paths){
@@ -612,14 +646,23 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if( rotateImage2!=null && imageRotated2!=null)
-                        ImageDelete.saveImage(rotateImage2,imageRotated2);
-                        aa.notifyDataSetChanged();
+                        if( rotateImage2!=null && imageRotated2!=null) {
+
+                            String[] temp = new String[1];
+                            temp[0] = ImageDelete.saveImage(rotateImage2, imageRotated2);
+                            Intent intent=new Intent();
+                            setResult(2,intent);
+                            finish();
+
+                        }
+                        aa.notifyItemChanged(currentPosition);
+                        ImageDisplay.newInstance().notifyChangeGridLayout();
 
                         Toast.makeText(getApplicationContext(), "Changed", Toast.LENGTH_SHORT).show();
                         customDialog.dismiss();
                     }
                 });
+
         haveRotate=false;
         imageRotated=null;
         rotateImage=null;

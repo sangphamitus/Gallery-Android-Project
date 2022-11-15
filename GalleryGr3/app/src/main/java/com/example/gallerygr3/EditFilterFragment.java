@@ -40,7 +40,7 @@ public class EditFilterFragment extends Fragment {
         {
             instance=new EditFilterFragment(listName,listImage);
         }
-        return instance;
+        return new EditFilterFragment(listName,listImage);
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
