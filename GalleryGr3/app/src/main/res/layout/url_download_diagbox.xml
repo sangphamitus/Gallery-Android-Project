@@ -36,7 +36,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:textSize="16dp"
                 android:id="@+id/download_url_input"
                 android:hint="Enter an url of image to download"
                 />
@@ -53,7 +53,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:textSize="16dp"
                 android:id="@+id/download_url_rename"
                 android:hint="Enter name to rename (Optional)"
                 />
