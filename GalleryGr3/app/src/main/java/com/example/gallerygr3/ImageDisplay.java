@@ -394,9 +394,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         if(images == null) {setImagesData (((MainActivity)context).getFileinDir());}
 
-
-
- 
     }
 
     @Override
@@ -804,6 +801,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         //change images after sort
         for (int i = 0; i < imgDates.size(); i++) {
             this.images.set(i, imgDates.get(i).getImage());
+
         }
 
 //        Collections.sort(images);
@@ -825,6 +823,4 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             // ====================================================
         }
     }
-
-
 }
