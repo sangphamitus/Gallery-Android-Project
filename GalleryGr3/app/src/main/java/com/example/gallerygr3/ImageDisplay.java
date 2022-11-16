@@ -395,74 +395,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         if(images == null) {setImagesData (((MainActivity)context).getFileinDir());}
 
 
-        images =((MainActivity)context).getFileinDir();
 
-        //get date
-        ArrayList<Date> listDate= new ArrayList<Date>();
-        size = new ArrayList<Integer>(images.size());
-        for(int i=0;i<images.size();i++){
-            File file = new File(images.get(i));
-            if(file.exists()) //Extra check, Just to validate the given path
-            {
-                ExifInterface intf = null;
-                try
-                {
-                    intf = new ExifInterface(images.get(i));
-                    if(intf != null)
-                    {
-                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
-                        Date lastModDate = new Date(file.lastModified());
-                        size.add( ((Number)file.length()).intValue());
-                        listDate.add(lastModDate);
-                        Log.i("PHOTO DATE", "Dated : "+ dateString); //Display dateString. You can do/use it your own way
-                    }
-                }
-                catch (IOException e)
-                {
-                }
-                if(intf == null)
-                {
-                    Date lastModDate = new Date(file.lastModified());
-                    Log.i("PHOTO DATE", "Dated : "+ lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
-                }
-            }
-        }
-        imgDates = new ArrayList<ImageDate>();
-        dates = new ArrayList<String>();
-        //get object
-        for(int i=0;i<images.size();i++){
-            ImageDate temp = new ImageDate(images.get(i),listDate.get(i));
-            imgDates.add(temp);
-            dates.add(temp.dayToString());
-        }
-
-        //sort obj
-        Collections.sort(imgDates);
-        Collections.reverse(imgDates);
-
-        //change images after sort
-        for(int i=0;i<imgDates.size();i++){
-            images.set(i,imgDates.get(i).getImage());
-        }
-
-//        Collections.sort(images);
-        //checkPhoto=new ArrayList<Boolean>(Arrays.asList(new Boolean[images.size()]));
-        //Collections.fill(checkPhoto, Boolean.FALSE);
-
-        //create name array
-        names= new ArrayList<String>();
-
-        for(int i=0;i<images.size();i++){
-
-            // get name from file ===================================
-// t biet ly do roi
-            String temp = images.get(i);
-            String name = getDisplayName(images.get(i));
-        // ba chaams thi van dc ma
-// nhma problem la no ko hien len co 3 cham nhu z
-            names.add(name);//thấy cái names không
-            // ====================================================
-        }
  
     }
 
@@ -829,42 +762,39 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 
     public void setImagesData(ArrayList<String> images) {
-        this.images=images;
-
+        this.images = images;
         //get date
-        ArrayList<Date> listDate= new ArrayList<Date>();
-        for(int i=0;i<this.images.size();i++){
+        ArrayList<Date> listDate = new ArrayList<Date>();
+        size = new ArrayList<Integer>(this.images.size());
+        for (int i = 0; i < this.images.size(); i++) {
             File file = new File(this.images.get(i));
-            if(file.exists()) //Extra check, Just to validate the given path
+            if (file.exists()) //Extra check, Just to validate the given path
             {
                 ExifInterface intf = null;
-                try
-                {
+                try {
                     intf = new ExifInterface(this.images.get(i));
-                    if(intf != null)
-                    {
+                    if (intf != null) {
                         String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
                         Date lastModDate = new Date(file.lastModified());
+                        size.add(((Number) file.length()).intValue());
                         listDate.add(lastModDate);
-                        Log.i("PHOTO DATE", "Dated : "+ dateString); //Display dateString. You can do/use it your own way
+                        Log.i("PHOTO DATE", "Dated : " + dateString); //Display dateString. You can do/use it your own way
                     }
+                } catch (IOException e) {
                 }
-                catch (IOException e)
-                {
-                }
-                if(intf == null)
-                {
+                if (intf == null) {
                     Date lastModDate = new Date(file.lastModified());
-                    Log.i("PHOTO DATE", "Dated : "+ lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+                    Log.i("PHOTO DATE", "Dated : " + lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
                 }
             }
         }
-
+        imgDates = new ArrayList<ImageDate>();
+        dates = new ArrayList<String>();
         //get object
-        ArrayList<ImageDate> imgDates = new ArrayList<ImageDate>();
-        for(int i=0;i<this.images.size();i++){
-            ImageDate temp = new ImageDate(this.images.get(i),listDate.get(i));
+        for (int i = 0; i < this.images.size(); i++) {
+            ImageDate temp = new ImageDate(this.images.get(i), listDate.get(i));
             imgDates.add(temp);
+            dates.add(temp.dayToString());
         }
 
         //sort obj
@@ -872,8 +802,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         Collections.reverse(imgDates);
 
         //change images after sort
-        for(int i=0;i<imgDates.size();i++){
-            this.images.set(i,imgDates.get(i).getImage());
+        for (int i = 0; i < imgDates.size(); i++) {
+            this.images.set(i, imgDates.get(i).getImage());
         }
 
 //        Collections.sort(images);
@@ -881,26 +811,19 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         //Collections.fill(checkPhoto, Boolean.FALSE);
 
         //create name array
-        names= new ArrayList<String>();
+        names = new ArrayList<String>();
 
-        for(int i=0;i<this.images.size();i++){
+        for (int i = 0; i < this.images.size(); i++) {
 
             // get name from file ===================================
-
+// t biet ly do roi
+            String temp = this.images.get(i);
             String name = getDisplayName(this.images.get(i));
-            names.add(name);
-            // ====================================================
-
-
-
+            // ba chaams thi van dc ma
+// nhma problem la no ko hien len co 3 cham nhu z
+            names.add(name);//thấy cái names không
             // ====================================================
         }
-    }
-    public void hideHeader(){
-        header.setVisibility(View.INVISIBLE);
-    }
-    public void unhideHeader(){
-        header.setVisibility(View.VISIBLE);
     }
 
 
