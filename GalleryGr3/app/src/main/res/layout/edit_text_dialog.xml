@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="15dp"
+    android:background="@drawable/custom_dialog"
     >
     <TextView
         android:layout_width="match_parent"
@@ -11,23 +11,45 @@
         android:text="Rename File"
         android:textAlignment="center"
         android:textSize="30dp"
-        android:textStyle="bold">
-
-    </TextView>
-    <EditText
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/editChangeFileName"
-        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:layout_marginBottom="12dp"
         />
 
-    <Button
-        android:id="@+id/ok_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:id="@+id/editChangeFileName"
         android:layout_gravity="center"
-        android:backgroundTint="@color/confirm_delete"
-        android:text="OK"
-        android:textColor="@color/white" />
+        android:background="@drawable/custom_row_album"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageButton
+            android:id="@+id/cancel"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_line"
+            android:src="@drawable/ic_baseline_close_24"
+            android:layout_marginRight="20dp"
+            />
+
+        <ImageButton
+            android:id="@+id/ok_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/button_line"
+            android:src="@drawable/ic_baseline_check_24" />
+    </LinearLayout>
 
 </LinearLayout>
