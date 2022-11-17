@@ -78,6 +78,8 @@ import java.io.FileOutputStream;
 import java.lang.reflect.Array;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
 
@@ -99,18 +101,9 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
 
     ImageButton backBtn;
-
     ImageButton shareBtn;
-
-   
-
-
     ImageButton infoBtn;
-
     ImageButton moreBtn;
-   
-
-
    
     ImageButton deleteBtn,editBtn;
     public ImageButton rotateBtn;
@@ -678,21 +671,38 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                         ImageDisplay ic= ImageDisplay.newInstance();
                         //cập nhật lại danh sách trong ImageDisplay
                         EditText editText = customDialog.findViewById(R.id.editChangeFileName);
-                        String fileExtension=paths[currentPosition].substring(paths[currentPosition].lastIndexOf("."));
-                        while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
-                            fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+                        if(!isFileName(editText.getText()+"")){
+                            ((TextView) customDialog.findViewById(R.id.errorName)).setVisibility(View.VISIBLE);
                         }
-                        String newName = editText.getText()+fileExtension;
+                        else{
+                            String fileExtension=paths[currentPosition].substring(paths[currentPosition].lastIndexOf("."));
+                            while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
+                                fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+                            }
+                            String newName = editText.getText()+fileExtension;
+                            customDialog.dismiss();
+                            ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
+                            renameImageUpdate(newName);
 
-                        customDialog.dismiss();
-                        ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
-                        renameImageUpdate(newName);
-
-                        showDialogSuccessChange("File name change successfully !");
+                            showDialogSuccessChange("File name change successfully !");
+                        }
                     }
                 });
 
         customDialog.show();
+    }
+    public boolean isFileName(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            System.out.println("Incorrect format of string");
+            return false;
+        }
+        Pattern p = Pattern.compile("[^A-Za-z0-9. ]");
+        Matcher m = p.matcher(s);
+        boolean b = m.find();
+        if (b)
+            return false;
+        else
+            return true;
     }
     public void deleteStringArrayByPossision(String[]arr, int pos){
         int size = arr.length;
