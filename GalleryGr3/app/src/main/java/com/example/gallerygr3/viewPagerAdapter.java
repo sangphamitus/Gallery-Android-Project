@@ -38,6 +38,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     Context context;
     private static final float MIN_ZOOM = 1f,MAX_ZOOM = 1f;
 
+    static viewPagerAdapter intance=null;
 
     // These matrices will be used to scale points of the image
     Matrix matrix = new Matrix();
@@ -60,6 +61,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
     public viewPagerAdapter(ArrayList<viewPagerItem> arrayItems ,SelectedPicture main) {
         this.main=main;
         this.arrayItems = arrayItems;
+        intance=this;
     }
 
     float totalRotate=0;
@@ -262,6 +264,15 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
         Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
         setimg.setImageBitmap(imageShoot);
     }
+
+
+
+
+    public static void NotifyChanged() {
+        if(intance !=null)
+        intance.notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return arrayItems.size();

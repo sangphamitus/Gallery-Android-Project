@@ -16,6 +16,9 @@ import android.os.Build;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
+import android.content.Context;
+import android.content.DialogInterface;
+
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -78,7 +81,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     FloatingActionButton createSliderBtn;
     FloatingActionButton shareMultipleBtn;
-
 
 
     String[] ImageExtensions = new String[] {
@@ -432,18 +434,15 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
+
         }
 
-
     }
+
     @Override
     public void removeImageUpdate(String input)
     {
-
-
         FileInPaths.remove(input);
-
-
     }
 
     @Override
@@ -539,6 +538,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
                             if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
                                 // addImageView(file.getAbsolutePath());
+                                if(!FileInPaths.contains(file.getAbsolutePath()))
                                 FileInPaths.add(file.getAbsolutePath());
 
                                 break;
@@ -616,7 +616,12 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         folderPaths.remove(folderPaths.size()-1 );
         currentDirectory = folderPaths.get(folderPaths.size()-1);
     }
+    public void readAgain()
+    {
 
+        readFolder(Picture);
+        readFolder(DCIM);
+    }
     @Override
     public ArrayList<String> getFolderPath() {
         return folderPaths;
