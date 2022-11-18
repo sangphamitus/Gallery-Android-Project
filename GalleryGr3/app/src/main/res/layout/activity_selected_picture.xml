@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SelectedPicture"
+    android:background="#ffffff"
     >
     <RelativeLayout
         android:translationZ="100dp"
@@ -12,26 +13,37 @@
         android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#AFACB0"
         android:gravity="center_vertical"
-        android:id="@+id/topNavSinglePic">
+        android:id="@+id/topNavSinglePic"
+        android:background="@color/white"
+        >
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#AFACB0"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_line"
             android:src="@drawable/ic_baseline_arrow_back_24" />
-
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="20dp"
-            android:backgroundTint="#AFACB0"
+
+            android:background="@drawable/button_line"
+            android:id="@+id/saveBtn"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@id/infoBtn"
             android:gravity="right"
-            android:src="@drawable/ic_baseline_info_24"
-            android:id="@+id/infoBtn"/>
+
+            android:src="@drawable/ic_baseline_save_24" />
+        <ImageButton
+
+            android:background="@drawable/button_line"
+            android:id="@+id/infoBtn"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+
+            android:layout_alignParentEnd="true"
+            android:gravity="right"
+            android:src="@drawable/ic_baseline_info_24" />
     </RelativeLayout>
 
     <androidx.viewpager2.widget.ViewPager2
@@ -43,41 +55,81 @@
 
     </androidx.viewpager2.widget.ViewPager2>
     <LinearLayout
-        android:layout_width="220dp"
+        android:background="@drawable/shadow_box"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottomNavSinglePic"
         android:layout_alignRight="@+id/bottomNavSinglePic"
-        android:background="#AFACB0"
         android:orientation="vertical"
         android:id="@+id/subInfo"
         android:visibility="invisible"
         >
-<!--        android:visibility="invisible"-->
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Đổi tên file"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:id="@+id/changeNameFile"
-            android:textAllCaps="false"
-            android:backgroundTint="#AFACB0"
-            />
-        <Button
+            >
+
+            <ImageView
+                android:src="@drawable/rename"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="10dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đổi tên file"
+                android:textSize="15dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Thay đổi màn hình chính"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:id="@+id/changeWallpaper"
-            android:textAllCaps="false"
-            android:backgroundTint="#AFACB0"
-            android:gravity="left"
-            />
-        <Button
+            >
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/image"
+                android:padding="10dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thay đổi màn hình chính"
+                android:textSize="15dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Thay đổi màn hình khóa"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:id="@+id/changeWallpaperLock"
-            android:textAllCaps="false"
-            android:backgroundTint="#AFACB0"
-            />
+            >
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/photos"
+                android:padding="10dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thay đổi màn hình khóa"
+                android:textSize="15dp"
+                />
+        </LinearLayout>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -85,64 +137,76 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:background="#AFACB0"
-        android:gravity="center">
+        android:gravity="center"
+        >
+        <View
+            android:translationZ="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/navbar_fullscreen"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:visibility="visible"
+            android:weightSum="5"
             tools:override="true">
 
             <ImageButton
                 android:id="@+id/shareBtn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="#AFACB0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:background="@drawable/button_line"
                 android:src="@drawable/ic_baseline_share_24" />
 
             <ImageButton
+                android:background="@drawable/button_line"
+
                 android:id="@+id/editBtn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="#AFACB0"
+                android:layout_weight="1"
+
                 android:src="@drawable/ic_baseline_edit_24" />
 
             <ImageButton
+                android:background="@drawable/button_line"
+
                 android:id="@+id/deleteSingleBtn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="#AFACB0"
+                android:layout_weight="1"
+
                 android:src="@drawable/ic_baseline_delete_white_24" />
 
             <ImageButton
+                android:background="@drawable/button_line"
+
                 android:id="@+id/rotateBtn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="#AFACB0"
+                android:layout_weight="1"
+
                 android:src="@drawable/ic_baseline_screen_rotation_24" />
 
             <ImageButton
+                android:background="@drawable/button_line"
                 android:id="@+id/moreBtn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="#AFACB0"
+                android:layout_weight="1"
+
                 android:src="@drawable/ic_baseline_more_horiz_24" />
 
         </LinearLayout>

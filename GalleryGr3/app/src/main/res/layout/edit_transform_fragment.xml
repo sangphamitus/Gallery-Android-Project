@@ -1,40 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:paddingBottom="50dp"
+    android:orientation="vertical"
+    android:background="@color/white"
   >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:gravity="center"
         >
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Vertical"
+
+        <ImageButton
+            android:layout_margin="25dp"
             android:id="@+id/vertical_flip"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="30sp"
-           >
-        </Button>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/button_line"
+            android:padding="2dp"
+            android:src="@drawable/ic_baseline_flip_24"
+            />
 
-        <Button
+        <ImageButton
+            android:layout_margin="25dp"
             android:id="@+id/horizontal_flip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Horizontal"
-            android:layout_marginHorizontal="30sp"
-            ></Button>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/button_line"
+            android:padding="2dp"
+            android:src="@drawable/ic_baseline_flip_24"
+            android:rotation="270"
+            />
     </LinearLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:id="@+id/back_edit_btn"
-        android:layout_gravity="center">
-
-    </Button>
-
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:layout_gravity="center"
+            android:id="@+id/back_edit_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/button_line"
+            android:src="@drawable/ic_baseline_arrow_back_24" />
+    </LinearLayout>
 </LinearLayout>

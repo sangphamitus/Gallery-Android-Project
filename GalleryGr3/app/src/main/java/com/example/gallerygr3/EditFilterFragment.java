@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -27,7 +28,7 @@ public class EditFilterFragment extends Fragment {
     ArrayList<Bitmap> listImage= new ArrayList<Bitmap>();
 
     LinearLayout   filterList;
-    Button backBtn,confirmBtn;
+    ImageButton backBtn,confirmBtn;
     Bitmap chooseFilter=null;
     EditFilterFragment(String[] listName,ArrayList<Bitmap> listImage)
     {
@@ -40,7 +41,7 @@ public class EditFilterFragment extends Fragment {
         {
             instance=new EditFilterFragment(listName,listImage);
         }
-        return instance;
+        return new EditFilterFragment(listName,listImage);
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,8 +61,8 @@ public class EditFilterFragment extends Fragment {
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.edit_filter_fragment,null);
 
         filterList = (LinearLayout) layout.findViewById(R.id.filterList);
-        backBtn=(Button) layout.findViewById(R.id.backBtns);
-        confirmBtn=(Button) layout.findViewById(R.id.confirmBtns);
+        backBtn=(ImageButton) layout.findViewById(R.id.backBtns);
+        confirmBtn=(ImageButton) layout.findViewById(R.id.confirmBtns);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Destop/MOBILE/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable-v24/custom_dialog.xml" value="0.1" />
+        <entry key="..\:/Destop/MOBILE/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_edit_image.xml" value="0.1935185185185185" />
+        <entry key="..\:/Destop/MOBILE/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_selected_picture.xml" value="0.17592592592592593" />
+        <entry key="..\:/Destop/MOBILE/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_slider.xml" value="0.25416666666666665" />
+        <entry key="..\:/Destop/MOBILE/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/edit_text_dialog.xml" value="0.264" />
         <entry key="..\:/Destop/Mobile - GALLERY/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable-v24/ic_baseline_delete_white_24.xml" value="0.1" />
         <entry key="..\:/Destop/Mobile - GALLERY/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable-v24/ic_baseline_info_24.xml" value="0.1" />
         <entry key="..\:/Destop/Mobile - GALLERY/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
@@ -76,11 +81,12 @@
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable/ic_baseline_info_24.xml" value="0.1" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable/ic_baseline_more_horiz_24.xml" value="0.1" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable/ic_baseline_radio_button_unchecked_24.xml" value="0.1" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable/ic_baseline_save_24.xml" value="0.1695" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable/ic_baseline_screen_rotation_24.xml" value="0.1" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.1" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_edit_image.xml" value="0.2" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_main.xml" value="0.1543859649122807" />
-        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_selected_picture.xml" value="0.1" />
+        <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_selected_picture.xml" value="0.4" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/activity_slider.xml" value="0.1" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/delete_dialog_notify.xml" value="0.264" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/edit_blur_fragment.xml" value="0.2" />

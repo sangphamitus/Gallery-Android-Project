@@ -4,7 +4,7 @@ package com.example.gallerygr3;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-
+import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 
 import android.graphics.Bitmap;
@@ -16,6 +16,9 @@ import android.os.Build;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
+import android.content.Context;
+import android.content.DialogInterface;
+
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -23,6 +26,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -77,7 +81,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     FloatingActionButton createSliderBtn;
     FloatingActionButton shareMultipleBtn;
-
 
 
     String[] ImageExtensions = new String[] {
@@ -310,9 +313,9 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         final Dialog customDialog = new Dialog( context );
         customDialog.setTitle("Create Slider with Music");
         customDialog.setContentView(R.layout.slider_diaglog_notify);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-
-        ((Button) customDialog.findViewById(R.id.cancelSlider))
+        ((ImageButton) customDialog.findViewById(R.id.cancelSlider))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -320,7 +323,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     }
                 });
 
-        ((Button) customDialog.findViewById(R.id.comfirmSlider))
+        ((ImageButton) customDialog.findViewById(R.id.comfirmSlider))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -355,11 +358,12 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         customDialog.setTitle("Delete confirm");
 
         customDialog.setContentView(R.layout.delete_dialog_notify);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         ((TextView) customDialog.findViewById(R.id.deleteNotify))
                 .setText("Do you want to delete "+deleteNotify+" image(s) permanently in your device ?");
 
-        ((Button) customDialog.findViewById(R.id.cancelDelete))
+        ((ImageButton) customDialog.findViewById(R.id.cancel_delete))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -368,7 +372,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     }
                 });
 
-        ((Button) customDialog.findViewById(R.id.confirmDelete))
+        ((ImageButton) customDialog.findViewById(R.id.confirmDelete))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -430,18 +434,15 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
+
         }
 
-
     }
+
     @Override
     public void removeImageUpdate(String input)
     {
-
-
         FileInPaths.remove(input);
-
-
     }
 
     @Override
@@ -537,6 +538,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
                             if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
                                 // addImageView(file.getAbsolutePath());
+                                if(!FileInPaths.contains(file.getAbsolutePath()))
                                 FileInPaths.add(file.getAbsolutePath());
 
                                 break;
@@ -614,7 +616,12 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         folderPaths.remove(folderPaths.size()-1 );
         currentDirectory = folderPaths.get(folderPaths.size()-1);
     }
+    public void readAgain()
+    {
 
+        readFolder(Picture);
+        readFolder(DCIM);
+    }
     @Override
     public ArrayList<String> getFolderPath() {
         return folderPaths;

@@ -11,8 +11,10 @@ import android.os.strictmode.ServiceConnectionLeakedViolation;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -26,10 +28,13 @@ import java.util.ArrayList;
 
 public class EditImage extends FragmentActivity implements EditImageCallbacks {
 
-    Button edit_cancel;
-    Button edit_confirm;
-    Button edit_reset;
-    Button transform_btn,filter_btn,blur_btn;
+    ImageButton edit_cancel;
+    ImageButton edit_confirm;
+    ImageButton edit_reset;
+
+    LinearLayout transform_btn,filter_btn,blur_btn;
+//    Button transform_btn,filter_btn,blur_btn;
+
     ImageView edit_img;
     FragmentTransaction ft;
     EditTransformFragment transformFragment;
@@ -37,7 +42,7 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
     EditFilterFragment filterFragment;
     String imgName=null;
 
-    Bitmap editedImage;
+    Bitmap editedImage=null;
 
     Boolean VerticalFlip=false;
     Boolean HorizontalFlip=false;
@@ -48,6 +53,8 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
     FrameLayout fragnemtLayoutDisplay;
     String[] listName= {"No Effect","Forest","Cozy", "Evergreen","Grayscale","Vintage"};
 
+    RelativeLayout edit_nav;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,16 +62,24 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
 
         fragnemtLayoutDisplay = (FrameLayout) findViewById(R.id.fragment_function_btns) ;
         linearView =(LinearLayout) findViewById(R.id.edit_central_btn) ;
-        edit_cancel=(Button) findViewById(R.id.edit_cancel_btn);
-        edit_confirm=(Button) findViewById(R.id.edit_confirm_btn);
+        edit_cancel=(ImageButton) findViewById(R.id.edit_cancel_btn);
+        edit_confirm=(ImageButton) findViewById(R.id.edit_confirm_btn);
+        edit_nav=(RelativeLayout)findViewById(R.id.edit_nav);
+
         edit_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                ImageDelete.saveImage(editedImage,imgName);
-                ImageDisplay ic= ImageDisplay.newInstance();
-                ic.notifyChangeGridLayout();
-                Intent intent = new Intent();
+
+                String[] temp= new String[1];
+                temp[0]=ImageDelete.saveImage(editedImage,imgName);
+
+
+
+              //  ((MainActivity)getApplicationContext()).UpdateChangeImageOnMainActivity();
+
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                intent.putExtra("imgPath", temp[0]);
                 setResult(RESULT_OK,intent );
 
                 finish();
@@ -72,7 +87,7 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
 
             }
         });
-        edit_reset= (Button) findViewById(R.id.edit_reset_btn);
+        edit_reset= (ImageButton) findViewById(R.id.edit_reset_btn);
         edit_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,9 +96,9 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
                 edit_img.setImageBitmap(editedImage);
             }
         });
-        filter_btn=(Button) findViewById(R.id.edit_filter_btn);
-        transform_btn=(Button) findViewById(R.id.edit_transform_btn);
-        blur_btn=(Button) findViewById(R.id.blur_btn);
+        filter_btn=(LinearLayout) findViewById(R.id.edit_filter_btn);
+        transform_btn=(LinearLayout) findViewById(R.id.edit_transform_btn);
+        blur_btn=(LinearLayout) findViewById(R.id.blur_btn);
 
         edit_img=(ImageView) findViewById(R.id.edit_image_object);
 
@@ -106,6 +121,7 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
             public void onClick(View view) {
                 linearView.setVisibility(View.INVISIBLE);
                 fragnemtLayoutDisplay.setVisibility(View.VISIBLE);
+                edit_nav.setVisibility(View.GONE);
                 ft = getSupportFragmentManager().beginTransaction();
                 transformFragment = EditTransformFragment.newInstance();
                 ft.replace(R.id.fragment_function_btns,transformFragment);
@@ -117,6 +133,7 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
             public void onClick(View view) {
                 linearView.setVisibility(View.INVISIBLE);
                 fragnemtLayoutDisplay.setVisibility(View.VISIBLE);
+                edit_nav.setVisibility(View.GONE);
                 ft = getSupportFragmentManager().beginTransaction();
                 blurFragment =EditBlurFragment.newInstance();
                 ft.replace(R.id.fragment_function_btns,blurFragment);
@@ -128,11 +145,13 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
             @Override
             public void onClick(View view) {
                 linearView.setVisibility(View.INVISIBLE);
+                edit_nav.setVisibility(View.GONE);
                 ArrayList<Bitmap> listImage= new ArrayList<Bitmap>();
                 for (int i=0;i<listName.length;i++)
                 {
                     listImage.add(ImageUltility.setFilter(editedImage,listName[i]));
                 }
+
                 fragnemtLayoutDisplay.setVisibility(View.VISIBLE);
                 ft = getSupportFragmentManager().beginTransaction();
                filterFragment =EditFilterFragment.newInstance(listName,listImage);
@@ -140,7 +159,6 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
                 ft.commit();
             }
         });
-
     }
 
 
@@ -192,9 +210,9 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
     @Override
     public void BackFragment() {
         linearView.setVisibility(View.VISIBLE);
-        fragnemtLayoutDisplay.setVisibility(View.INVISIBLE);
+        fragnemtLayoutDisplay.setVisibility(View.GONE);
+        edit_nav.setVisibility(View.VISIBLE);
         edit_img.setImageBitmap(editedImage);
-
     }
 
     @Override

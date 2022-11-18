@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -22,7 +23,7 @@ public class EditBlurFragment extends Fragment {
     EditImage main;
     Context context=null;
 
-    Button backBtn,confirmBtn;
+    ImageButton backBtn,confirmBtn;
     SeekBar seekBar;
     TextView text;
     Bitmap bluredImage;
@@ -32,7 +33,7 @@ public class EditBlurFragment extends Fragment {
         {
            instance=new EditBlurFragment();
         }
-        return instance;
+        return new EditBlurFragment();
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class EditBlurFragment extends Fragment {
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.edit_blur_fragment,null);
 
         seekBar= (SeekBar) layout.findViewById(R.id.edit_blur_amount );
-        backBtn= (Button)layout.findViewById(R.id.blur_back_btns);
+        backBtn= (ImageButton) layout.findViewById(R.id.blur_back_btns);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,7 +62,7 @@ public class EditBlurFragment extends Fragment {
 
             }
         });
-        confirmBtn=(Button) layout.findViewById(R.id.blur_confirm_btns);
+        confirmBtn=(ImageButton) layout.findViewById(R.id.blur_confirm_btns);
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

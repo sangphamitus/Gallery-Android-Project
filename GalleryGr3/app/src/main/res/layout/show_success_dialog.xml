@@ -3,31 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="15dp"
+    android:background="@drawable/custom_dialog"
     >
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Successfull"
+        android:text="Successful"
+        android:layout_marginBottom="12dp"
         android:textAlignment="center"
-        android:textSize="30dp"
-        android:textStyle="bold">
-
-    </TextView>
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:textAllCaps="true"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/messageShow"
         android:layout_gravity="center"
+        android:textSize="16dp"
+        android:layout_marginBottom="16dp"
         android:text="Change Successfully"
         />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OK"
-        android:backgroundTint="@color/confirm_delete"
-        android:textColor="@color/white"
+    <ImageButton
         android:id="@+id/ok_button"
-        android:layout_gravity="center"/>
-
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="@drawable/button_line"
+        android:src="@drawable/ic_baseline_check_24" />
 </LinearLayout>
