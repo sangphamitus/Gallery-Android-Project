@@ -60,6 +60,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 
 import java.io.IOException;
@@ -171,9 +172,13 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
             this.context = context;
             this.layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-
         }
 
+        public void SetImageAndPhoto(ArrayList<String> imageNames, ArrayList<String> imagePhotos ) {
+            this.imageNames = imageNames;
+            this.imagePhotos = imagePhotos;
+            this.notifyDataSetChanged();
+            }
         @Override
         public int getCount() {
             return imagePhotos.size();
@@ -264,9 +269,10 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 //
 //            }
             File imgFile= new File(imagePhotos.get(i));
+         //   viewHolder.imageView.setImageBitmap(BitmapFactory.decodeFile(imagePhotos.get(i)));
+          //  ImageLoader.getInstance().notifyAll();
+          ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
 
-
-            ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
 
             return view;
         }
@@ -438,7 +444,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 //                int selectedImage = images[i];
                 if (isHolding == false) {
-                    startActivity(new Intent(getActivity(), SelectedPicture.class)
+                    someActivityResultLauncher.launch(new Intent(getActivity(), SelectedPicture.class)
                             .putExtra("size", size)//này là em bỏ qua cái selected nè
                             .putExtra("images", images)
                             .putExtra("dates", dates)
@@ -691,6 +697,10 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == 2)
+                    {
+                        ((MainActivity) getContext()).readAgain();
+                    }
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
 
@@ -755,6 +765,11 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     public void notifyChangeGridLayout(){
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
+
+    }
+    public void setNameAndPhoto()
+    {
+        customAdapter.SetImageAndPhoto(names,images);
     }
 
 
