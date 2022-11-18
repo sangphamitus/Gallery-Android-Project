@@ -21,8 +21,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 
+import android.graphics.Color;
 import android.graphics.Matrix;
 
+import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -552,8 +554,10 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         customDialog.setTitle("Delete confirm");
 
         customDialog.setContentView(R.layout.url_download_diagbox);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        ((Button) customDialog.findViewById(R.id.download_url_cancel))
+
+        ((ImageButton) customDialog.findViewById(R.id.download_url_cancel))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -562,7 +566,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     }
                 });
 
-        ((Button) customDialog.findViewById(R.id.download_url_confirm))
+        ((ImageButton) customDialog.findViewById(R.id.download_url_confirm))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

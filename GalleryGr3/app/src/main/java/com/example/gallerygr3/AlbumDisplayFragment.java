@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 
@@ -52,7 +53,7 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
     RecyclerView listView;
     Album album;
     FloatingActionButton add_images;
-    LinearLayout header;
+    TableLayout header;
     ArrayList<String> addedPaths=new ArrayList<String>();
     int min_spanColumns=3;
     int spanColumns =min_spanColumns;
@@ -221,7 +222,7 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
             imageList.setAdapter(new ImageChoosingAdapter(((MainActivity)context).getFileinDir()));
 
 
-            Button add_btn=layout.findViewById(R.id.image_choosing_add);
+            ImageButton add_btn=layout.findViewById(R.id.image_choosing_add);
             add_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -231,7 +232,7 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
                 }
             });
 
-            Button cancel_btn=layout.findViewById(R.id.image_choosing_cancel);
+            ImageButton cancel_btn=layout.findViewById(R.id.image_choosing_cancel);
             cancel_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

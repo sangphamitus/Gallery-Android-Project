@@ -35,6 +35,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
@@ -83,6 +84,8 @@ import java.io.FileOutputStream;
 import java.lang.reflect.Array;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
 
@@ -104,14 +107,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
 
     ImageButton backBtn;
-
     ImageButton shareBtn;
-
-   
-
-
     ImageButton infoBtn;
-
     ImageButton moreBtn;
 
     ImageButton saveBtn;
@@ -527,11 +524,11 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         customDialog.setTitle("Delete confirm");
 
         customDialog.setContentView(R.layout.delete_dialog_notify);
-
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         ((TextView) customDialog.findViewById(R.id.deleteNotify))
                 .setText("Do you want to delete in your device ?");
 
-        ((Button) customDialog.findViewById(R.id.cancelDelete))
+        ((ImageButton) customDialog.findViewById(R.id.cancel_delete))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -540,7 +537,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     }
                 });
 
-        ((Button) customDialog.findViewById(R.id.confirmDelete))
+        ((ImageButton) customDialog.findViewById(R.id.confirmDelete))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -569,11 +566,12 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         customDialog.setTitle("Delete confirm");
 
         customDialog.setContentView(R.layout.delete_dialog_notify);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         ((TextView) customDialog.findViewById(R.id.deleteNotify))
                 .setText("Do you want to delete in your device ?");
 
-        ((Button) customDialog.findViewById(R.id.cancelDelete))
+        ((ImageButton) customDialog.findViewById(R.id.cancel_delete))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -582,7 +580,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     }
                 });
 
-        ((Button) customDialog.findViewById(R.id.confirmDelete))
+        ((ImageButton) customDialog.findViewById(R.id.confirmDelete))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -604,6 +602,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         customDialog.setTitle("Information of Picture");
 
         customDialog.setContentView(R.layout.infomation_picture_dialog);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
 //
         ((TextView) customDialog.findViewById(R.id.photoName))
                 .setText(shortenName(ImageDisplay.getDisplayName(paths[currentPosition])));
@@ -614,7 +614,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         ((TextView) customDialog.findViewById(R.id.photoSize))
                 .setText(size[currentPosition]*1.0/1024+" kb");
 //        Toast.makeText(this, imagesSize[currentPosition]+"", Toast.LENGTH_SHORT).show();
-        ((Button) customDialog.findViewById(R.id.ok_button))
+        ((ImageButton) customDialog.findViewById(R.id.ok_button))
         .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -630,13 +630,14 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         customDialog.setTitle("Change confirm");
 
         customDialog.setContentView(R.layout.delete_dialog_notify);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         ((TextView) customDialog.findViewById(R.id.deleteNotify))
                 .setText("Do you want to save your change ?");
         ((TextView) customDialog.findViewById(R.id.titleBox))
                 .setText("Change");
 
-        ((Button) customDialog.findViewById(R.id.cancelDelete))
+        ((ImageButton) customDialog.findViewById(R.id.cancel_delete))
 
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -647,10 +648,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                 });
 
 
-    ((Button) customDialog.findViewById(R.id.confirmDelete))
-                .setText("Change");
-        ((Button) customDialog.findViewById(R.id.confirmDelete))
 
+        ((ImageButton) customDialog.findViewById(R.id.confirmDelete))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -683,11 +682,13 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         customDialog.setTitle("Message");
 
         customDialog.setContentView(R.layout.show_success_dialog);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
 //
         ((TextView) customDialog.findViewById(R.id.messageShow))
                 .setText(message);
 
-        ((Button) customDialog.findViewById(R.id.ok_button))
+        ((ImageButton) customDialog.findViewById(R.id.ok_button))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -704,33 +705,58 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         customDialog.setTitle("Change Wallpaper");
 
         customDialog.setContentView(R.layout.edit_text_dialog);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
-        ((Button) customDialog.findViewById(R.id.ok_button))
+        ((ImageButton) customDialog.findViewById(R.id.cancel))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //thực hiện đổi tên tại đây
+                        customDialog.dismiss();
+            }
+        });
+        ((ImageButton) customDialog.findViewById(R.id.ok_button))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //thực hiện đổi tên tại đây
 
                         ImageDisplay ic= ImageDisplay.newInstance();
-                        //ham nay lam sau chu khong bo
                         //cập nhật lại danh sách trong ImageDisplay
                         EditText editText = customDialog.findViewById(R.id.editChangeFileName);
-                        String fileExtension=paths[currentPosition].substring(paths[currentPosition].lastIndexOf("."));
-                        while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
-                            fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+                        if(!isFileName(editText.getText()+"")){
+                            ((TextView) customDialog.findViewById(R.id.errorName)).setVisibility(View.VISIBLE);
                         }
-                        String newName = editText.getText()+fileExtension;
+                        else{
+                            String fileExtension=paths[currentPosition].substring(paths[currentPosition].lastIndexOf("."));
+                            while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
+                                fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+                            }
+                            String newName = editText.getText()+fileExtension;
+                            customDialog.dismiss();
+                            ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
+                            renameImageUpdate(newName);
 
-                        customDialog.dismiss();
-                        ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
-                        renameImageUpdate(newName);
-
-                        showDialogSuccessChange("File name change successfully !");
+                            showDialogSuccessChange("File name change successfully !");
+                        }
                     }
                 });
 
         customDialog.show();
+    }
+    public boolean isFileName(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            System.out.println("Incorrect format of string");
+            return false;
+        }
+        Pattern p = Pattern.compile("[^A-Za-z0-9. ]");
+        Matcher m = p.matcher(s);
+        boolean b = m.find();
+        if (b)
+            return false;
+        else
+            return true;
     }
     public void deleteStringArrayByPossision(String[]arr, int pos){
         int size = arr.length;

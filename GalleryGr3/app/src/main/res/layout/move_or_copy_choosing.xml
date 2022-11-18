@@ -12,7 +12,7 @@
         android:layout_marginStart="16dp"
         android:gravity="center"
         android:text="Creating Album"
-        android:textSize="16sp"
+        android:textSize="25dp"
         android:textStyle="bold" />
 
     <Button
@@ -21,8 +21,9 @@
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
         android:backgroundTint="@color/white"
-        android:gravity="start"
+        android:textAlignment="textStart"
         android:text="Move"
+        android:paddingLeft="20dp"
         android:textColor="#757575" />
 
     <Button
@@ -30,7 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
-        android:gravity="start"
+        android:textAlignment="textStart"
         android:text="Copy"
+        android:paddingLeft="20dp"
         android:textColor="#757575" />
 </LinearLayout>

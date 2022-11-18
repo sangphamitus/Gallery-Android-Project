@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="15dp"
+    android:background="@drawable/custom_dialog"
+    android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp"
+
     >
     <TextView
         android:layout_width="match_parent"
@@ -11,9 +14,9 @@
         android:text="Information"
         android:textAlignment="center"
         android:textSize="30dp"
-        android:textStyle="bold">
+        android:textStyle="bold"
+        android:textAllCaps="true"/>
 
-    </TextView>
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,13 +78,13 @@
                 />
         </TableRow>
     </TableLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OK"
-        android:backgroundTint="@color/confirm_delete"
-        android:textColor="@color/white"
+    <ImageButton
         android:id="@+id/ok_button"
-        android:layout_gravity="center"/>
+        android:layout_marginTop="20dp"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="@drawable/button_line"
+        android:src="@drawable/ic_baseline_check_24" />
 
 </LinearLayout>
