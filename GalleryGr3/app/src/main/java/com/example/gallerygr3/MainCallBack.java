@@ -15,9 +15,11 @@ public interface MainCallBack {
 
     public ArrayList<String> getFileinDir();
     public void removeImageUpdate(String[] input);
+
     public void removeImageUpdate(String input);
 
     public void renameImageUpdate(String oldNam, String newName);
+
 
 
     public void Holding(boolean isHolding);
@@ -29,7 +31,5 @@ public interface MainCallBack {
 
 
     public void shareImages(ArrayList<String> paths);
-
-
-
 }
+

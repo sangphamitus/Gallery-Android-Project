@@ -16,6 +16,9 @@ import android.os.Build;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
+import android.content.Context;
+import android.content.DialogInterface;
+
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -305,7 +308,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     }
 
 
-
     private void showSliderDiaglogBox(){
         final Dialog customDialog = new Dialog( context );
         customDialog.setTitle("Create Slider with Music");
@@ -430,8 +432,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
-        }
 
+        }
 
     }
 

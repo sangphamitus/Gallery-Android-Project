@@ -58,6 +58,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -295,6 +301,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
 
         topNav = (RelativeLayout) findViewById(R.id.topNavSinglePic);
         bottomNav = (RelativeLayout) findViewById(R.id.bottomNavSinglePic);
+
         //get img and name data
 
 
@@ -463,6 +470,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         viewPager2.setUserInputEnabled(true);
         return;
     }
+
 
     @Override
     public void setCurrentSelectedName(String name){
@@ -739,7 +747,6 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
             }
         }
     }
-
     public Bitmap getItemBitmap(String selectedName) {
         File imgFile= new File(selectedName);
         return BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -762,4 +769,3 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         return displayName;
     }
 }
-
