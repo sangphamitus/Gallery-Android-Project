@@ -33,7 +33,7 @@ public class EditBlurFragment extends Fragment {
         {
            instance=new EditBlurFragment();
         }
-        return instance;
+        return new EditBlurFragment();
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

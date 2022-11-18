@@ -24,12 +24,13 @@
             android:layout_height="match_parent"
             android:background="@drawable/button_line"
             android:src="@drawable/ic_baseline_arrow_back_24" />
-
         <ImageButton
+
             android:background="@drawable/button_line"
             android:id="@+id/infoBtn"
             android:layout_width="70dp"
             android:layout_height="match_parent"
+
             android:layout_alignParentEnd="true"
             android:gravity="right"
             android:src="@drawable/ic_baseline_info_24" />
