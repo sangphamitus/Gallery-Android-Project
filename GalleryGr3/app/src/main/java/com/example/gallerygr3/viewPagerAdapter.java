@@ -126,6 +126,7 @@ public class viewPagerAdapter extends RecyclerView.Adapter<viewPagerAdapter.View
                         else {     // If not double click....
 //                            BackToInit();
                             mHasDoubleClicked = false;
+                            main.showNav();
                         };
                         // record the last time the menu button was pressed.
                         lastPressTime = pressTime;
