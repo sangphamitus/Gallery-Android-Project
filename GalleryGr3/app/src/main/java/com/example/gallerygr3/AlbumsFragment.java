@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -164,8 +165,8 @@ public class AlbumsFragment extends Fragment {
         public NewFolderDialog(@NonNull Context context) {
             super(context);
             LinearLayout layout= (LinearLayout) getLayoutInflater().inflate(R.layout.new_album_dialog,null);
-            Button newBtn=layout.findViewById(R.id.new_alubum_button);
-            Button cancleBtn=layout.findViewById(R.id.new_album_cancel);
+            ImageButton newBtn=layout.findViewById(R.id.new_alubum_button);
+            ImageButton cancleBtn=layout.findViewById(R.id.new_album_cancel);
             EditText nameFolder=layout.findViewById(R.id.new_album_name);
             newBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

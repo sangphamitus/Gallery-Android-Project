@@ -33,19 +33,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
+            <ImageButton
                 android:id="@+id/image_choosing_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Cancle" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/button_line"
+                android:padding="2dp"
+                android:src="@drawable/ic_baseline_close_24" />
 
-            <Button
+
+
+            <ImageButton
                 android:id="@+id/image_choosing_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Add" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/button_line"
+                android:padding="2dp"
+                android:src="@drawable/ic_baseline_check_24" />
         </TableRow>
 
     </TableLayout>
