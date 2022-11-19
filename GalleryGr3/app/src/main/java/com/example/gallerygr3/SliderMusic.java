@@ -43,13 +43,13 @@ public class SliderMusic extends AppCompatActivity {
             String nameMusic=intent.getStringExtra("music");
 
             switch (nameMusic){
-                case "Bai1":
+                case "Bai 1":
                     rawMusic=R.raw.musicc;
                     break;
-                case "Bai2":
+                case "Bai 2":
                     rawMusic=R.raw.mono;
                     break;
-                case "Bai3":
+                case "Bai 3":
                     rawMusic=R.raw.st;
                     break;
             }
