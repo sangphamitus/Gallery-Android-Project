@@ -790,21 +790,27 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 try {
                     intf = new ExifInterface(this.images.get(i));
                     if (intf != null) {
-                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
                         Date lastModDate = new Date(file.lastModified());
+
+
+//                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+//                        Date lastModDate = new Date(file.lastModified());
                         size.add(((Number) file.length()).intValue());
                         listDate.add(lastModDate);
-                        Log.i("PHOTO DATE", "Dated : " + dateString); //Display dateString. You can do/use it your own way
+//                        Log.i("PHOTO DATE", "Dated : " + dateString); //Display dateString. You can do/use it your own way
                     }
                 } catch (IOException e) {
+
                 }
                 if (intf == null) {
                     Date lastModDate = new Date(file.lastModified());
-                    Log.i("PHOTO DATE", "Dated : " + lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+                    listDate.add(lastModDate);
+//                    Log.i("PHOTO DATE", "Dated : " + lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
                 }
             }
         }
         imgDates = new ArrayList<ImageDate>();
+
         dates = new ArrayList<String>();
         //get object
         for (int i = 0; i < this.images.size(); i++) {

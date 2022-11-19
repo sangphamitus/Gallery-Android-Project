@@ -612,7 +612,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
         ((TextView) customDialog.findViewById(R.id.photoLastModified))
                 .setText(dates[currentPosition]);
         ((TextView) customDialog.findViewById(R.id.photoSize))
-                .setText(size[currentPosition]*1.0/1024+" kb");
+                .setText(Math.round(size[currentPosition]*1.0/1024)+" KB");
 //        Toast.makeText(this, imagesSize[currentPosition]+"", Toast.LENGTH_SHORT).show();
         ((ImageButton) customDialog.findViewById(R.id.ok_button))
         .setOnClickListener(new View.OnClickListener() {

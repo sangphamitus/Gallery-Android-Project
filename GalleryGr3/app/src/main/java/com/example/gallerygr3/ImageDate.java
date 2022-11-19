@@ -31,9 +31,8 @@ public class ImageDate implements Comparable<ImageDate>{
     }
 
     public String dayToString(){
-        DateFormat dateFormat;
-        dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        return dateFormat.format(this.date);
+        String temp = this.date.toString();
+        return temp;
     }
     @Override
     public int compareTo(ImageDate imageDate) {
