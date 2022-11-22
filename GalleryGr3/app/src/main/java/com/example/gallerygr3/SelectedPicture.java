@@ -547,6 +547,8 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                         //cập nhật lại danh sách trong ImageDisplay
                         ic.deleteClicked(currentSelectedName);
                         customDialog.dismiss();
+                        onBackPressed();
+
                     }
                 });
         customDialog.show();
@@ -694,6 +696,7 @@ public class SelectedPicture extends AppCompatActivity implements ISelectedPictu
                     public void onClick(View view) {
                         //donothing
                         customDialog.dismiss();
+                        onBackPressed();
                     }
                 });
 

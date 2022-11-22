@@ -72,7 +72,7 @@ public final class ImageDelete extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return temp;
+        return myFile.getAbsolutePath();
     }
 
 }

@@ -63,6 +63,7 @@ import android.widget.Toast;
 
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import java.io.IOException;
@@ -451,6 +452,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                             .putExtra("images", images)
                             .putExtra("dates", dates)
                             .putExtra("pos", i));
+                    Toast.makeText((MainActivity)context, "running", Toast.LENGTH_SHORT).show();
                 }
               else {
 
@@ -711,10 +713,22 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                         File imgFile= new File(namePictureShoot);
                         Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                         imageShoot=ImageUltility.rotateImage(imageShoot,90);
-                        ImageDelete.saveImage(imageShoot,namePictureShoot);
+                        FileOutputStream out = null;
+                        try {
+                            out = new FileOutputStream(imgFile);
+                            imageShoot.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                            out.flush();
+                            out.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-                        images.add(namePictureShoot);
-                        names.add(getDisplayName(namePictureShoot));
+                        if(!images.contains(imgFile.getAbsolutePath()))
+                        {
+                            images.add(imgFile.getAbsolutePath());
+                            names.add(getDisplayName(imgFile.getAbsolutePath()));
+
+                        }
 
                         notifyChangeGridLayout();
 
