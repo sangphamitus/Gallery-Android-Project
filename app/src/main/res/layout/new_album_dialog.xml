@@ -4,9 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/custom_dialog"
+    >
 
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add new Album"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        />
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
@@ -14,11 +23,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
         android:ems="10"
         android:gravity="center_vertical"
-        android:minHeight="48dp"
-        android:text="Add new Album"
+        android:text="New Album: "
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -41,25 +48,23 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/new_alubum_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:text="Add" />
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
+        <ImageButton
             android:id="@+id/new_album_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="32dp"
-            android:text="Cancle" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_line"
+            android:src="@drawable/ic_baseline_close_24"
+            android:layout_marginRight="30dp"
+            />
+
+        <ImageButton
+            android:id="@+id/new_alubum_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/button_line"
+            android:src="@drawable/ic_baseline_check_24" />
     </LinearLayout>
 
 </LinearLayout>

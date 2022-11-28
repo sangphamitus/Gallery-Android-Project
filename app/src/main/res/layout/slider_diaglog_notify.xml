@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/custom_dialog"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Music Slider"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        />
+
+    <RadioGroup
+        android:id="@+id/musicGroup"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center">
+        <RadioButton
+            android:checked="true"
+            android:id="@+id/music1"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bai 1"/>
+        <RadioButton
+            android:id="@+id/music2"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bai 2"/>
+        <RadioButton
+            android:id="@+id/music3"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bai 3"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageButton
+            android:id="@+id/cancelSlider"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_line"
+            android:src="@drawable/ic_baseline_close_24"
+            android:layout_marginRight="20dp"
+            />
+
+        <ImageButton
+            android:id="@+id/comfirmSlider"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/button_line"
+            android:src="@drawable/ic_baseline_check_24" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -4,31 +4,29 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.gallerygr3.SelectedPicture;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.BitmapFactory;
 
-import android.graphics.drawable.Drawable;
-
+import android.graphics.Color;
 import android.graphics.Matrix;
 
+import android.graphics.drawable.ColorDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.graphics.Bitmap;
@@ -40,34 +38,41 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import org.jetbrains.annotations.Nullable;
-
-
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.io.File;
+import java.util.Collections;
+import java.util.Date;
 
 /*
 * File imgFile= new File(Images.get(position));
@@ -77,7 +82,13 @@ import java.io.File;
 * */
 
 
-public class ImageDisplay extends Fragment{
+
+public class ImageDisplay extends Fragment implements chooseAndDelete{
+    Context context;
+
+    private static ImageDisplay INSTANCE = null;
+    private static ImageDisplay MAIN_INSTANCE=null;
+
 
     ImageButton changeBtn;
     FloatingActionButton fab_camera,fab_expand,fab_url;
@@ -92,51 +103,85 @@ public class ImageDisplay extends Fragment{
     ViewGroup myStatecontainer;
     ImageDisplay.CustomAdapter customAdapter=null;
     ImageDisplay.ListAdapter listAdapter=null;
+
+    ArrayList<ImageDate> imgDates;
+    ArrayList<String> dates;
+    ArrayList<Integer> size;
+
+    TableLayout header;
+    LongClickCallback callback=null;
+
+
+    boolean isHolding=false;
+    public static boolean isMain=true;
+
+    ArrayList<String> selectedImages=new ArrayList<>();
+
+
     private static final int CAMERA_REQUEST = 1888;
-
-
-    //--------------------------------
-
-//    String[] names;
-//    ArrayList<String> images;
-    //-------------------------------
 
 
     //universal-image-loader
     // Create default options which will be used for every
-//  displayImage(...) call if no options will be passed to this method
+    //  displayImage(...) call if no options will be passed to this method
 
-    public ImageDisplay() {
+    private ImageDisplay() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static ImageDisplay newInstance(String param1, String param2) {
-        ImageDisplay fragment = new ImageDisplay();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+    public static ImageDisplay newInstance() {
+        if(INSTANCE==null)
+        {
+            synchronized (ImageDisplay.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new ImageDisplay();
+                }
+            }
+        }
+
+        return INSTANCE;
     }
-
-
+    public static void changeINSTANCE(){
+        if(isMain)
+        {
+            MAIN_INSTANCE=INSTANCE;
+            isMain=false;
+            INSTANCE=null;
+        }
+    }
+    public static void restoreINSTANCE(){
+        if(!isMain){
+            INSTANCE=MAIN_INSTANCE;
+            isMain=true;
+        }
+    }
 
     public class CustomAdapter extends BaseAdapter {
         private ArrayList<String> imageNames;
         private ArrayList<String> imagePhotos;
+
         private Context context;
         private LayoutInflater layoutInflater;
+
         private class ViewHolder{
             ImageView imageView;
+            CheckBox check;
         }
 
-        public CustomAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, Context context) {
+        public CustomAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, @NonNull Context context) {
             this.imageNames = imageNames;
             this.imagePhotos = imagePhotos;
+
             this.context = context;
             this.layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-
         }
 
+        public void SetImageAndPhoto(ArrayList<String> imageNames, ArrayList<String> imagePhotos ) {
+            this.imageNames = imageNames;
+            this.imagePhotos = imagePhotos;
+            this.notifyDataSetChanged();
+            }
         @Override
         public int getCount() {
             return imagePhotos.size();
@@ -154,25 +199,97 @@ public class ImageDisplay extends Fragment{
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            ViewHolder viewHolder=null;
+           ViewHolder viewHolder=null;
 //            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             if(view == null){
                 view =layoutInflater.inflate(R.layout.row_item,viewGroup,false);
                 viewHolder=new ViewHolder();
                 viewHolder.imageView=view.findViewById(R.id.imageView);
+                viewHolder.check=view.findViewById(R.id.checkImage);
                 view.setTag(viewHolder);
             } else {
                 viewHolder=(ViewHolder) view.getTag();
+
+            }
+            if(isHolding)
+            {
+                int currentView=i;
+                viewHolder.check.setVisibility(View.VISIBLE);
+
+                if(selectedImages.contains(imagePhotos.get(i))) {
+                    viewHolder.check.setChecked(true);
+                }else
+                {
+                    viewHolder.check.setChecked(false);
+                }
+
+                viewHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(compoundButton.isPressed())
+                        {
+                            if(currentView<imagePhotos.size()) {
+
+                                if (b) {
+                                    if (!selectedImages.contains(imagePhotos.get(currentView))) {
+                                        selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(imagePhotos.get(currentView),"choose");
+                                        //selectedImages.add(imagePhotos.get(currentView));
+                                    }
+
+                                } else {
+                                    if (selectedImages.contains(imagePhotos.get(currentView))) {
+                                        selectedImages=  ((MainActivity)getContext()).adjustChooseToDeleteInList(imagePhotos.get(currentView),"unchoose");
+
+                                        //selectedImages.remove(imagePhotos.get(currentView));
+                                    }
+
+
+                                }
+                                ((MainActivity) getContext()).SelectedTextChange();
+                                notifyChangeGridLayout();
+
+                            }
+                        }
+
+                    }
+                });
+            }
+            else
+            {
+                viewHolder.check.setVisibility(View.INVISIBLE);
             }
 //            viewHolder.imageView.setImageBitmap(myBitmap);
+//            if(isHolding)
+//            {
+//               //viewHolder.check.setVisibility(View.VISIBLE);
+//                viewHolder.check.setChecked(checkPhoto.get(i));
+//                viewHolder.imageView.setClickable(true);
+//
+//            }
+//            else
+//            {
+//               // viewHolder.check.setVisibility(View.INVISIBLE);
+//
+//            }
             File imgFile= new File(imagePhotos.get(i));
-            ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
+         //   viewHolder.imageView.setImageBitmap(BitmapFactory.decodeFile(imagePhotos.get(i)));
+          //  ImageLoader.getInstance().notifyAll();
+          ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
+
 
             return view;
         }
 
 
 
+    }
+
+    public interface LongClickCallback {
+        void onLongClick();
+        void afterLongClick();
+    }
+    public void setLongClickCallBack(LongClickCallback callback){
+        this.callback=callback;
     }
 
     public class ListAdapter extends BaseAdapter{
@@ -183,6 +300,7 @@ public class ImageDisplay extends Fragment{
         private class ViewHolder{
             TextView textView;
             ImageView imageView;
+            CheckBox check;
         }
 
         public ListAdapter(ArrayList<String> imageNames, ArrayList<String> imagePhotos, Context context) {
@@ -216,16 +334,61 @@ public class ImageDisplay extends Fragment{
                 viewHolder=new ViewHolder();
                 viewHolder.imageView=view.findViewById(R.id.imageView);
                 viewHolder.textView=view.findViewById(R.id.tvName);
+                viewHolder.check=view.findViewById(R.id.checkImage);
                 view.setTag(viewHolder);
             } else {
                 viewHolder=(ViewHolder) view.getTag();
             }
             TextView tvName = viewHolder.textView;
             tvName.setText(imageNames.get(i));
+            if(isHolding)
+            {
+                int currentView=i;
+                viewHolder.check.setVisibility(View.VISIBLE);
 
+                if(selectedImages.contains(imagePhotos.get(i))) {
+                    viewHolder.check.setChecked(true);
+                }else
+                {
+                    viewHolder.check.setChecked(false);
+                }
+                viewHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(compoundButton.isPressed())
+                        {
+                            if(currentView<imagePhotos.size()) {
+
+                                if (b) {
+                                    if (!selectedImages.contains(imagePhotos.get(currentView))) {
+                                        selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(imagePhotos.get(currentView),"choose");
+                                        //selectedImages.add(imagePhotos.get(currentView));
+                                    }
+
+                                } else {
+                                    if (selectedImages.contains(imagePhotos.get(currentView))) {
+                                        selectedImages=  ((MainActivity)getContext()).adjustChooseToDeleteInList(imagePhotos.get(currentView),"unchoose");
+
+                                        //selectedImages.remove(imagePhotos.get(currentView));
+                                    }
+
+
+                                }
+                                ((MainActivity) getContext()).SelectedTextChange();
+                                notifyChangeGridLayout();
+
+                            }
+                        }
+
+                    }
+                });
+            }
+            else
+            {
+                viewHolder.check.setVisibility(View.INVISIBLE);
+            }
             File imgFile= new File(imagePhotos.get(i));
-            ImageLoader.getInstance().
-                    displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
+            ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
             return view;
         }
     }
@@ -234,46 +397,26 @@ public class ImageDisplay extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Sử dụng thư viện univeral-image-loader
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .delayBeforeLoading(0)
-                .resetViewBeforeLoading(true)
-                .showImageOnLoading(R.drawable.placehoder)
-                .showImageForEmptyUri(R.drawable.error_image)
-                .showImageOnFail(R.drawable.error_image)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader.getInstance().init(config);
 
-        Context context= getActivity();
-        images =((MainActivity)context).getFileinDir();
-        //create name array
-        names= new ArrayList<String>();
 
-        for(int i=0;i<images.size();i++){
+        this.context= getActivity();
 
-            // get name from file ===================================
+        if(images == null) {setImagesData (((MainActivity)context).getFileinDir());}
 
-            String name = getDisplayName(images.get(i));
-            names.add(name);
-
-            // ====================================================
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //
+        Toast.makeText(getContext(),"ImageDisplay oncreatview",Toast.LENGTH_SHORT).show();
+        // Get images
         // Inflate the layout for this fragment
         myStateinflater=inflater;
         myStatecontainer=container;
         myStateInfo = savedInstanceState;
         //      myStateInfo = savedInstanceState;
         super.onCreateView(inflater, container, savedInstanceState);
-
         View view = inflater.inflate(R.layout.fragment_image_display, container, false);
 
         gridView = (GridView) view.findViewById(R.id.gridView);
@@ -287,30 +430,75 @@ public class ImageDisplay extends Fragment{
         {
             customAdapter = new ImageDisplay.CustomAdapter(names,images,getActivity());
 
+        } else {
+            customAdapter.notifyDataSetChanged();
         }
         if(listAdapter==null)
         {
             listAdapter = new ImageDisplay.ListAdapter(names,images,getActivity());
+        } else {
+            listAdapter.notifyDataSetChanged();
         }
 
         gridView.setAdapter(customAdapter);
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedName= images.get(i);
 
 //                int selectedImage = images[i];
+                if (isHolding == false) {
+                    someActivityResultLauncher.launch(new Intent(getActivity(), SelectedPicture.class)
+                            .putExtra("size", size)//này là em bỏ qua cái selected nè
+                            .putExtra("images", images)
+                            .putExtra("dates", dates)
+                            .putExtra("pos", i));
+                    Toast.makeText((MainActivity)context, "running", Toast.LENGTH_SHORT).show();
+                }
+              else {
 
-                //=================================================================================
-                // show next layout by start activity
-                startActivity(new Intent(getActivity(), SelectedPicture.class)
-                        .putExtra("name", selectedName)
-                        .putExtra("images",images)
-                        .putExtra("pos",i));
+//                    //view.setFocusable(true);
+//                    if(!selectedImages.contains(selectedName))
+//                    {
+//                      //  selectedImages.add(selectedName) ;
+//                        selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(selectedName,"choose");
+//                    }
+//                    else {
+//                       // selectedImages.remove(selectedName) ;
+//                        selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(selectedName,"unchoose");
+//
+//                    }
+//                    ((MainActivity)getContext()).SelectedTextChange();
+//                    notifyChangeGridLayout()
+//                }
+//                Toast.makeText((MainActivity)getContext(), "choosed ", Toast.LENGTH_SHORT).show();
+                }
             }
 
         });
+
+
+
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                isHolding =true;
+                ((MainActivity)getContext()).Holding(isHolding);
+
+                String selectedName= images.get(i);
+
+                selectedImages= ((MainActivity)getContext()).adjustChooseToDeleteInList(selectedName,"choose");
+
+                ((MainActivity)getContext()).SelectedTextChange();
+
+                notifyChangeGridLayout();
+
+                if(callback != null){callback.onLongClick();}
+
+                return true;
+            }
+        });
+
+
 
         changeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,6 +521,13 @@ public class ImageDisplay extends Fragment{
                 openCamera();
             }
         });
+
+        fab_url.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showInputDialogBox();
+            }
+        });
         fab_url.setVisibility(View.INVISIBLE);
         fab_camera.setVisibility(View.INVISIBLE);
         fab_expand.setOnClickListener(new View.OnClickListener() {
@@ -348,8 +543,156 @@ public class ImageDisplay extends Fragment{
             }
         });
 
+        header=(TableLayout) view.findViewById(R.id.header);
+
         return view;
 //        return inflater.inflate(R.layout.fragment_image_display, container, false);
+    }
+
+    private void showInputDialogBox()
+    {
+        final String[] url_input = {"",""};
+        final Dialog customDialog = new Dialog( getContext());
+        customDialog.setTitle("Delete confirm");
+
+        customDialog.setContentView(R.layout.url_download_diagbox);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+        ((ImageButton) customDialog.findViewById(R.id.download_url_cancel))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //donothing
+                        customDialog.dismiss();
+                    }
+                });
+
+        ((ImageButton) customDialog.findViewById(R.id.download_url_confirm))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        url_input[0] = ((EditText) customDialog.findViewById(R.id.download_url_input)).getText().toString();
+                        url_input[1] =((EditText) customDialog.findViewById(R.id.download_url_rename)).getText().toString();
+                        Toast.makeText(INSTANCE.getContext(), url_input[0], Toast.LENGTH_SHORT).show();
+                        String[] ArrInput=DownloadImageFromURL(url_input[0].trim(),url_input[1].trim());
+                        ((MainActivity)getContext()).addImageUpdate(ArrInput);
+                        notifyChangeGridLayout();
+                        customDialog.dismiss();
+                    }
+                });
+
+        customDialog.show();
+    }
+
+    private String[] DownloadImageFromURL(String input,String fileName)
+    {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(input));
+        String[] result=new String[1];
+        String fileExtension=input.substring(input.lastIndexOf("."));
+        while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
+            fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+        }
+
+        if (fileName.length()==0){
+            fileName= (new Date()).toString();
+
+        }
+        String fullNameFile=((MainActivity)getContext()).getPictureDirectory() + "/" + fileName + "." + fileExtension;
+        request.setDescription("Downloading " + input + "...");
+        request.setTitle(input);
+       // request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationUri(Uri.fromFile(new File(fullNameFile)));
+        DownloadManager manager = (DownloadManager) INSTANCE.getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        manager.enqueue(request);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        Notification noti = new NotificationCompat.Builder((MainActivity)getContext(),"Download " +fullNameFile )
+                .setContentText("Downloaded item")
+                .setSmallIcon(R.drawable.ic_launcher_background)
+
+                .build();
+
+
+
+        result[0]=fullNameFile;
+        return result;
+    }
+
+
+    @Override
+    public  void deleteClicked()
+    {
+
+        isHolding =false;
+        ((MainActivity)getContext()).Holding(isHolding);
+        selectedImages = ((MainActivity)getContext()).chooseToDeleteInList();
+        notifyChangeGridLayout();
+    }
+    @Override
+    public void deleteClicked(String file)
+    {
+        ((MainActivity)getContext()).removeImageUpdate(file);
+        notifyChangeGridLayout();
+    }
+    @Override
+    public void renameClicked(String file, String newFile)
+    {
+        ((MainActivity)getContext()).renameImageUpdate(file, newFile);
+    }
+
+    @Override
+    public void  clearClicked()
+    {
+        isHolding =false;
+        ((MainActivity)getContext()).Holding(isHolding);
+       // Collections.fill(checkPhoto,Boolean.FALSE);
+
+
+        notifyChangeGridLayout();
+
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+
+        if(callback !=null){callback.afterLongClick();}
+    }
+
+    public void notifyChanged()
+    {
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+
+    }
+
+
+    @Override
+    public void  selectAllClicked()
+    {
+        isHolding =true;
+        ((MainActivity)getContext()).Holding(isHolding);
+//        if(selectedImages.size()==images.size())
+//        {
+//            //selectedImages.clear();
+//           // Collections.fill(checkPhoto,Boolean.FALSE);
+//
+//        }
+//        else
+//        {
+//            //Collections.fill(checkPhoto,Boolean.TRUE);
+//
+//        }
+//        else
+//        {
+//            selectedImages.clear();
+//            for(String name:images)
+//            {
+//                selectedImages.add(name);
+//            }
+//
+//        }
+        selectedImages= ((MainActivity)getContext()).chooseToDeleteInList();
+        ((MainActivity)getContext()).SelectedTextChange();
+        notifyChangeGridLayout();
     }
 
 
@@ -360,47 +703,42 @@ public class ImageDisplay extends Fragment{
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == 2)
+                    {
+                        ((MainActivity) getContext()).readAgain();
+                    }
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
 
                         File imgFile= new File(namePictureShoot);
                         Bitmap imageShoot= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        imageShoot=rotateImage(imageShoot,90);
-                        saveImage(imageShoot,namePictureShoot);
+                        imageShoot=ImageUltility.rotateImage(imageShoot,90);
+                        FileOutputStream out = null;
+                        try {
+                            out = new FileOutputStream(imgFile);
+                            imageShoot.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                            out.flush();
+                            out.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-                        images.add(namePictureShoot);
-                        names.add(getDisplayName(namePictureShoot));
+                        if(!images.contains(imgFile.getAbsolutePath()))
+                        {
+                            images.add(imgFile.getAbsolutePath());
+                            names.add(getDisplayName(imgFile.getAbsolutePath()));
 
-                        customAdapter.notifyDataSetChanged();
-                        listAdapter.notifyDataSetChanged();
+                        }
+
+                        notifyChangeGridLayout();
 
 
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-    private void saveImage(Bitmap finalBitmap,String imagePath) {
 
-        File myFile = new File(imagePath);
 
-        if (myFile.exists()) myFile.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(myFile);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public static Bitmap rotateImage(Bitmap bmpSrc, float degrees) {
-        int w = bmpSrc.getWidth();
-        int h = bmpSrc.getHeight();
-        Matrix mtx = new Matrix();
-        mtx.postRotate(degrees);
-        Bitmap bmpTrg = Bitmap.createBitmap(bmpSrc, 0, 0, w, h, mtx, true);
-        return bmpTrg;
-    }
     private void openCamera()  {
         // Ask permission
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -435,24 +773,93 @@ public class ImageDisplay extends Fragment{
 
         return uri;
     }
-    private String getDisplayName(String path){
+    public static String getDisplayName(String path){
         int getPositionFolderName= path.lastIndexOf("/");
         String name= path.substring(getPositionFolderName + 1);
 
-        String[] ArrayName= name.split("\\.");
-        String displayName="";
+        return name;
+    }
 
-        if (ArrayName[0].length() > 10)
-        {
-            displayName = ArrayName[0].substring(0, 5);
-            displayName+="...";
-            displayName += ArrayName[0].substring(ArrayName[0].length()-5);
+    public void notifyChangeGridLayout(){
+        customAdapter.notifyDataSetChanged();
+        listAdapter.notifyDataSetChanged();
+
+    }
+    public void setNameAndPhoto()
+    {
+        customAdapter.SetImageAndPhoto(names,images);
+    }
+
+
+    public void setImagesData(ArrayList<String> images) {
+        this.images = images;
+        //get date
+        ArrayList<Date> listDate = new ArrayList<Date>();
+        size = new ArrayList<Integer>(this.images.size());
+        for (int i = 0; i < this.images.size(); i++) {
+            File file = new File(this.images.get(i));
+            if (file.exists()) //Extra check, Just to validate the given path
+            {
+                ExifInterface intf = null;
+                try {
+                    intf = new ExifInterface(this.images.get(i));
+                    if (intf != null) {
+                        Date lastModDate = new Date(file.lastModified());
+
+
+//                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+//                        Date lastModDate = new Date(file.lastModified());
+                        size.add(((Number) file.length()).intValue());
+                        listDate.add(lastModDate);
+//                        Log.i("PHOTO DATE", "Dated : " + dateString); //Display dateString. You can do/use it your own way
+                    }
+                } catch (IOException e) {
+
+                }
+                if (intf == null) {
+                    Date lastModDate = new Date(file.lastModified());
+                    listDate.add(lastModDate);
+//                    Log.i("PHOTO DATE", "Dated : " + lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+                }
+            }
         }
-        else
-        {
-            displayName = ArrayName[0];
+        imgDates = new ArrayList<ImageDate>();
+
+        dates = new ArrayList<String>();
+        //get object
+        for (int i = 0; i < this.images.size(); i++) {
+            ImageDate temp = new ImageDate(this.images.get(i), listDate.get(i));
+            imgDates.add(temp);
+            dates.add(temp.dayToString());
         }
-        displayName+="."+ArrayName[1];
-        return displayName;
+
+        //sort obj
+        Collections.sort(imgDates);
+        Collections.reverse(imgDates);
+
+        //change images after sort
+        for (int i = 0; i < imgDates.size(); i++) {
+            this.images.set(i, imgDates.get(i).getImage());
+
+        }
+
+//        Collections.sort(images);
+        //checkPhoto=new ArrayList<Boolean>(Arrays.asList(new Boolean[images.size()]));
+        //Collections.fill(checkPhoto, Boolean.FALSE);
+
+        //create name array
+        names = new ArrayList<String>();
+
+        for (int i = 0; i < this.images.size(); i++) {
+
+            // get name from file ===================================
+// t biet ly do roi
+            String temp = this.images.get(i);
+            String name = getDisplayName(this.images.get(i));
+            // ba chaams thi van dc ma
+// nhma problem la no ko hien len co 3 cham nhu z
+            names.add(name);//thấy cái names không
+            // ====================================================
+        }
     }
 }

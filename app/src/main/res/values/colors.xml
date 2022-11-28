@@ -16,5 +16,26 @@
     <color name="albums_20">#33C9379D</color>
     <color name="settings_20">#33AE7E0F</color>
 
+    <color name="cancel_delete">#EEEEEE</color>
+    <color name="confirm_delete">#3AB4F2</color>
+
+    <color name="selectedImageBtn">#343d46</color>
+    <color name="imageBtn">#AFACB0</color>
+
+
+    <color name="space_grey">#65737e</color>
+
+    <color name="changeGridBtn">#65737e</color>
+    <color name="fab">#65737e</color>
+
+    <color name="fullScreenBtn">#AFACB0</color>
+
+    <color name="grey_pastel">#BDBDD7</color>
+
+    <color name="red_1">#FF6768</color>
+
+    <color name="select">#fefefe</color>
+
+
 
 </resources>

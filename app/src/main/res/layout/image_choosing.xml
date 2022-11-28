@@ -3,16 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <GridView
         android:id="@+id/image_choosing_imageList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@id/image_choosing_buttons"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="4dp"
+        android:horizontalSpacing="4dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="4dp">
 
-    </androidx.recyclerview.widget.RecyclerView>
+    </GridView>
 
     <TableLayout
         android:id="@+id/image_choosing_buttons"
@@ -26,19 +33,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/image_choosing_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Add" />
-
-            <Button
+            <ImageButton
                 android:id="@+id/image_choosing_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Cancle" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/button_line"
+                android:padding="2dp"
+                android:src="@drawable/ic_baseline_close_24" />
+
+
+
+            <ImageButton
+                android:id="@+id/image_choosing_add"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/button_line"
+                android:padding="2dp"
+                android:src="@drawable/ic_baseline_check_24" />
         </TableRow>
 
     </TableLayout>
