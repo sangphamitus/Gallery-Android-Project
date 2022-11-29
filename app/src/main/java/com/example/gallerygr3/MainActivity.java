@@ -523,12 +523,18 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     private void readFolder(String Dir) {
 
+
             File sdFile = new File(Dir);
+
             File[] foldersSD = sdFile.listFiles();
 
             try {
                 for (File file : foldersSD) {
                     if (file.isDirectory()) {
+                        if(file.getName().equals("Albums"))
+                        {
+                            continue;
+                        }
                         //get absolute
                         //do nothing
                         readFolder(file.getAbsolutePath());

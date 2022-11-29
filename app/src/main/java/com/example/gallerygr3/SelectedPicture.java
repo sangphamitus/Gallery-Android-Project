@@ -87,7 +87,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SelectedPicture extends AppCompatActivity implements ISelectedPicture {
+public class SelectedPicture extends AppCompatActivity implements IselectedPicture {
 
 
     ViewPager2 viewPager2;
