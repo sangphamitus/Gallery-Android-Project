@@ -55,6 +55,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -521,44 +522,71 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         return chooseToDeleteInList;
     }
 
+    public long hashBitmap(Bitmap bmp){
+        long hash = 31 ;
+        for(int x = 0; x < bmp.getWidth(); x++){
+            for (int y = 0; y < bmp.getHeight(); y++){
+                hash *= (bmp.getPixel(x,y) + 31);
+            }
+        }
+        return hash;
+    }
+    public void filterImage(){
+        HashMap<Long,String> hash= new HashMap<Long, String>();
+        for (String f:FileInPaths)
+        {
+            Bitmap bm =BitmapFactory.decodeFile(f);
+            Long code=hashBitmap(bm);
+            if(!hash.containsKey(code ))
+            {
+                hash.put(code,f);
+            }else
+            {
+                ImageDelete.DeleteImage(f );
+                FileInPaths.remove(f);
+            }
+        }
+    }
+
+
     private void readFolder(String Dir) {
 
 
-            File sdFile = new File(Dir);
+        File sdFile = new File(Dir);
 
-            File[] foldersSD = sdFile.listFiles();
+        File[] foldersSD = sdFile.listFiles();
 
-            try {
-                for (File file : foldersSD) {
-                    if (file.isDirectory()) {
-                        if(file.getName().equals("Albums"))
-                        {
-                            continue;
-                        }
-                        //get absolute
-                        //do nothing
-                        readFolder(file.getAbsolutePath());
+        try {
+            for (File file : foldersSD) {
+                if (file.isDirectory()) {
+                    if(file.getName().equals("Albums"))
+                    {
+                        continue;
+                    }
+                    //get absolute
+                    //do nothing
+                    readFolder(file.getAbsolutePath());
 
-                    } else {
-                        for (String extension : ImageExtensions) {
-
-                            if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
-                                // addImageView(file.getAbsolutePath());
-                                if(!FileInPaths.contains(file.getAbsolutePath()))
+                } else {
+                    for (String extension : ImageExtensions) {
+                        if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
+                            // addImageView(file.getAbsolutePath());
+                            if(!FileInPaths.contains(file.getAbsolutePath()))
                                 FileInPaths.add(file.getAbsolutePath());
+                            filterImage();
 
-                                break;
-                            }
-
+                            break;
                         }
+
                     }
                 }
-
-            } catch (Exception e) {
-                //do nothing
             }
 
+        } catch (Exception e) {
+            //do nothing
         }
+
+    }
 
     private void changeFileInFolder(String Dir, String oldName, String newName) {
 
@@ -568,14 +596,19 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         try {
             for (File file : foldersSD) {
                 if (file.isDirectory()) {
+                    if(file.getName().equals("Albums"))
+                    {
+                        continue;
+                    }
                     //get absolute
                     //do nothing
                     changeFileInFolder(file.getAbsolutePath(), oldName,newName);
 
                 } else {
                     for (String extension : ImageExtensions) {
-                        if(file.getAbsolutePath().toLowerCase().endsWith(extension)){
 
+                        if(file.getAbsolutePath().toLowerCase().endsWith(extension)){
+                            filterImage();
                             if (oldName.equals(file.getName())) {
                                 File from = new File(Dir+"/"+oldName);
                                 File to = new File(Dir+"/"+newName);
@@ -599,7 +632,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         }
 
     }
-
 
 
     @Override
