@@ -63,6 +63,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity  implements MainCallBack {
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     String Picture;
     ArrayList<String> folderPaths=new ArrayList<String>();
     public ArrayList<String> FileInPaths=new ArrayList<String>();
-    public ArrayList<Bitmap> checkHash=new ArrayList<Bitmap>();
+    HashMap<Integer,Bitmap> hashMap= new HashMap<Integer, Bitmap>();
 //    PhotosFragment photo;
 
     LinearLayout navbar;
@@ -466,7 +467,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     {
         for (String name:input)
         {
-            FileInPaths.add(name);
+            filterImage(name);
 
         }
 
@@ -533,18 +534,11 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     public void filterImage(String name){
         Bitmap test= BitmapFactory.decodeFile(name);
         boolean have= false;
-        for(Bitmap k: checkHash)
-        {
-            if(k.sameAs(test))
-            {
-                have=true;
-                break;
-            }
-        }
-        if(!have)
+        int HashCode= ImageDelete.hashBitmap(test);
+        if(!hashMap.containsKey(HashCode))
         {
             FileInPaths.add(name);
-            checkHash.add(test);
+            hashMap.put(HashCode,test);
         }
         else {
             ImageDelete.DeleteImage(name);
@@ -575,8 +569,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                         if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
                             // addImageView(file.getAbsolutePath());
                             if(!FileInPaths.contains(file.getAbsolutePath()))
-                                FileInPaths.add(file.getAbsolutePath());
-                  //              filterImage(file.getAbsolutePath());
+                                //FileInPaths.add(file.getAbsolutePath());
+                               filterImage(file.getAbsolutePath());
 
                             break;
                         }
