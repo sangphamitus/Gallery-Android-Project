@@ -1,10 +1,5 @@
 package com.example.gallerygr3;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -15,6 +10,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.Notification;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -22,10 +18,10 @@ import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 
 import android.graphics.Color;
-import android.graphics.Matrix;
 
 import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -43,14 +39,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -62,17 +58,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.io.File;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /*
 * File imgFile= new File(Images.get(position));
@@ -89,6 +89,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     private static ImageDisplay INSTANCE = null;
     private static ImageDisplay MAIN_INSTANCE=null;
 
+    String fullNameFile="";
 
     ImageButton changeBtn;
     FloatingActionButton fab_camera,fab_expand,fab_url;
@@ -575,9 +576,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                         url_input[0] = ((EditText) customDialog.findViewById(R.id.download_url_input)).getText().toString();
                         url_input[1] =((EditText) customDialog.findViewById(R.id.download_url_rename)).getText().toString();
                         Toast.makeText(INSTANCE.getContext(), url_input[0], Toast.LENGTH_SHORT).show();
-                        String[] ArrInput=DownloadImageFromURL(url_input[0].trim(),url_input[1].trim());
-                        ((MainActivity)getContext()).addImageUpdate(ArrInput);
-                        notifyChangeGridLayout();
+                        DownloadImageFromURL(url_input[0].trim(),url_input[1].trim());
+
                         customDialog.dismiss();
                     }
                 });
@@ -585,10 +585,10 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         customDialog.show();
     }
 
-    private String[] DownloadImageFromURL(String input,String fileName)
+    private void DownloadImageFromURL(String input,String fileName)
     {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(input));
-        String[] result=new String[1];
+
         String fileExtension=input.substring(input.lastIndexOf("."));
         while ( fileExtension.charAt(fileExtension.length() - 1) == '\n') {
             fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
@@ -598,7 +598,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             fileName= (new Date()).toString();
 
         }
-        String fullNameFile=((MainActivity)getContext()).getPictureDirectory() + "/" + fileName + "." + fileExtension;
+        fullNameFile=((MainActivity)getContext()).getPictureDirectory() + "/" + fileName + fileExtension;
         request.setDescription("Downloading " + input + "...");
         request.setTitle(input);
        // request.allowScanningByMediaScanner();
@@ -615,8 +615,61 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 
 
-        result[0]=fullNameFile;
-        return result;
+    }
+
+    private Bitmap mLoad( String name) throws MalformedURLException {
+        URL url = new URL(name);
+        HttpURLConnection connection;
+        try {
+            connection = (HttpURLConnection) (url.openConnection() );
+            connection.connect();
+            InputStream inputStream  = connection.getInputStream();
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText((MainActivity) getContext(), "Error", Toast.LENGTH_LONG).show();
+        }
+        return null;
+    }
+
+    private void DownloadImageFromURLVer2(String input,String fileName) {
+        String[] result = new String[1];
+        String fileExtension = input.substring(input.lastIndexOf("."));
+        while (fileExtension.charAt(fileExtension.length() - 1) == '\n') {
+            fileExtension = fileExtension.substring(0, fileExtension.length() - 1);
+        }
+
+        if (fileName.length() == 0) {
+            fileName = (new Date()).toString();
+
+        }
+        String fullNameFile = ((MainActivity) getContext()).getPictureDirectory() + "/" + fileName + "." + fileExtension;
+        result[0] = fullNameFile;
+
+
+        Thread downloadThread= new Thread( ){
+            @Override
+            public void run() {
+                try {
+                    Bitmap res = mLoad(input);
+
+                    if (res != null) {
+                        ImageDelete.saveImage(res, fullNameFile);
+                        dates.add((new Date()).toString());
+                        File k = new File(fullNameFile);
+                        size.add(Integer.parseInt(String.valueOf(k.length() / 1024)));
+                        ((MainActivity) getContext()).addImageUpdate(result);
+                    }
+                    Toast.makeText((MainActivity) getContext(), "Download success" + fullNameFile, Toast.LENGTH_SHORT).show();
+
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+       downloadThread.start();
     }
 
 
