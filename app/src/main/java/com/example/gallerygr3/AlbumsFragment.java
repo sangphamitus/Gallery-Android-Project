@@ -80,7 +80,7 @@ public class AlbumsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         CoordinatorLayout layout = (CoordinatorLayout) inflater.inflate(R.layout.fragment_albums, container, false);
-
+        Toast.makeText(context, "album create", Toast.LENGTH_SHORT).show();
         // SAMPLE TEST
         spanColumns = 2;
         rcv_albumList = layout.findViewById(R.id.album_list);
