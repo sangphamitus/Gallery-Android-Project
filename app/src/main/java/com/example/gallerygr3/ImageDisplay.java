@@ -401,7 +401,9 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         this.context= getActivity();
 
-        if(images == null) {setImagesData (((MainActivity)context).getFileinDir());}
+        if(images == null) {setImagesData (((MainActivity)context).getFileinDir());
+            Toast.makeText(getContext(),"Complete get file",Toast.LENGTH_SHORT).show();
+        }
 
     }
 
