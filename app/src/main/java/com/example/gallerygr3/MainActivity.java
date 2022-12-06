@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
         Picture= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
-     //   arrFrag[0] = ImageDisplay.class;
+     //   arrFrag[0] = ImageDisplay.newInstance();
         arrFrag[1] = AlbumsFragment.class;
         arrFrag[2] = SettingsFragment.class;
 
@@ -316,6 +316,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 //            Toast.makeText(main, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 
     private void showSliderDiaglogBox(){
