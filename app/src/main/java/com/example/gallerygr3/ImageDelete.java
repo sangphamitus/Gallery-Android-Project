@@ -30,7 +30,19 @@ public final class ImageDelete extends Activity {
         return running;
     }
 
-
+    public static int hashBitmap(Bitmap bitmap) {
+        int hash_result = 0;
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        hash_result = (hash_result << 7) ^ h;
+        hash_result = (hash_result << 7) ^ w;
+        for (int pixel = 0; pixel < 20; ++pixel) {
+            int x = (pixel * 50) % w;
+            int y = (pixel * 100) % h;
+            hash_result = (hash_result << 7) ^ bitmap.getPixel(x, y);
+        }
+        return hash_result;
+    }
     //xử lí single image
     public static boolean DeleteImage(String image){
         boolean running=true;
