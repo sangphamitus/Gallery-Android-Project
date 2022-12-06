@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         DCIM = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
         Picture= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
-     //   arrFrag[0] = ImageDisplay.newInstance();
+     //   arrFrag[0] = ImageDisplay.getInstance();
         arrFrag[1] = AlbumsFragment.class;
         arrFrag[2] = SettingsFragment.class;
 
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageDisplay ic= ImageDisplay.newInstance();
+                ImageDisplay ic= ImageDisplay.getInstance();
                 clearChooseToDeleteInList();
                 ic.clearClicked();
             }
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         selectAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               ImageDisplay ic= ImageDisplay.newInstance();
+               ImageDisplay ic= ImageDisplay.getInstance();
                if(chooseToDeleteInList.size()==ic.images.size())
                {
                    chooseToDeleteInList.clear();
@@ -387,7 +387,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         String[] select = chooseToDeleteInList.toArray
                                 (new String[chooseToDeleteInList.size()]);
                         String temp=select[0];
@@ -616,7 +616,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                                 FileInPaths.add(Dir+"/"+newName);
                                 Toast.makeText(this, "doi xong", Toast.LENGTH_SHORT).show();
 
-                                ImageDisplay ic= ImageDisplay.newInstance();
+                                ImageDisplay ic= ImageDisplay.getInstance();
                                 ic.notifyChangeGridLayout();
                                 break;
 

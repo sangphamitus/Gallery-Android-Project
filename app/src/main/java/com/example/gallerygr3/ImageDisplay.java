@@ -132,7 +132,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
     // TODO: Rename and change types and number of parameters
 
-    public static ImageDisplay newInstance() {
+    public static ImageDisplay getInstance() {
         if(INSTANCE==null)
         {
             synchronized (ImageDisplay.class) {
@@ -142,8 +142,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             }
 
         }
-//        return INSTANCE;
-        return new ImageDisplay();
+        return INSTANCE;
+    }
+
+    public static ImageDisplay newInstance() {
+        INSTANCE = new ImageDisplay();
+        return INSTANCE;
     }
 
     public static void changeINSTANCE(){
@@ -802,7 +806,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                         }
 
                         notifyChangeGridLayout();
-
+                        setImagesData (((MainActivity)context).getFileinDir());
 
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
                     }
