@@ -725,7 +725,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                     public void onClick(View view) {
                         //thực hiện đổi tên tại đây
 
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         //cập nhật lại danh sách trong ImageDisplay
                         EditText editText = customDialog.findViewById(R.id.editChangeFileName);
                         if(!isFileName(editText.getText()+"")){
