@@ -15,7 +15,7 @@ public class DownloadBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
 
-        ImageDisplay ic= ImageDisplay.newInstance();
+        ImageDisplay ic= ImageDisplay.getInstance();
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
             String[] result=new String[1];
             ic.dates.add((new Date()).toString());
