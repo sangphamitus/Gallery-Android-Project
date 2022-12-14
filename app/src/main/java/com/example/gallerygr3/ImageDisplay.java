@@ -131,6 +131,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     }
 
     // TODO: Rename and change types and number of parameters
+
     public static ImageDisplay newInstance() {
         if(INSTANCE==null)
         {
@@ -139,10 +140,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     INSTANCE = new ImageDisplay();
                 }
             }
-        }
 
-        return INSTANCE;
+        }
+//        return INSTANCE;
+        return new ImageDisplay();
     }
+
     public static void changeINSTANCE(){
         if(isMain)
         {
@@ -394,6 +397,19 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         }
     }
 
+//    @Override
+//    public void onDestroy ()
+//    {
+//        Toast.makeText(getContext(),"Destroy image display",Toast.LENGTH_SHORT).show();
+//        ((MainActivity)context).back();
+//        super.onDestroy();
+////        ImageDisplay.super.onBackPress();
+////        ImageDisplay.super.onDetach();
+////        ImageDisplay.super.onDestroyView();
+////        ImageDisplay.super.onDestroy();
+////        getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
+//    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -402,7 +418,9 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         this.context= getActivity();
 
-        if(images == null) {setImagesData (((MainActivity)context).getFileinDir());}
+        if(images == null) {setImagesData (((MainActivity)context).getFileinDir());
+            Toast.makeText(getContext(),"Complete get file",Toast.LENGTH_SHORT).show();
+        }
 
     }
 
