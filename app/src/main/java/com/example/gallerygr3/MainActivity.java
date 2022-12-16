@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
-
+            ImageDisplay.getInstance().removeImage(name);
         }
 
     }
@@ -478,16 +478,22 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     @Override
     public void Holding(boolean isHolding)
     {
+        ImageDisplay instance=ImageDisplay.getInstance() ;
         if(isHolding)
         {
             chooseNavbar.setVisibility(View.VISIBLE);
             navbar.setVisibility(View.INVISIBLE);
             status.setVisibility(View.VISIBLE);
+            if(instance.callback != null){instance.callback.onLongClick();}
         }
         else {
             chooseNavbar.setVisibility(View.INVISIBLE);
             navbar.setVisibility(View.VISIBLE);
             status.setVisibility(View.INVISIBLE);
+
+            if(instance.callback !=null){instance.callback.afterLongClick();}
+
+
         }
     }
     @Override

@@ -422,7 +422,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         this.context= getActivity();
 
-        if(images == null) {setImagesData (((MainActivity)context).getFileinDir());
+        if(images == null) {
+            setImagesData (((MainActivity)context).getFileinDir());
             Toast.makeText(getContext(),"Complete get file",Toast.LENGTH_SHORT).show();
         }
 
@@ -515,7 +516,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
                 notifyChangeGridLayout();
 
-                if(callback != null){callback.onLongClick();}
+
 
                 return true;
             }
@@ -729,7 +730,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
 
-        if(callback !=null){callback.afterLongClick();}
     }
 
     public void notifyChanged()
@@ -858,7 +858,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     public void notifyChangeGridLayout(){
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
-
     }
     public void setNameAndPhoto()
     {
@@ -928,13 +927,22 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         for (int i = 0; i < this.images.size(); i++) {
 
             // get name from file ===================================
-// t biet ly do roi
             String temp = this.images.get(i);
             String name = getDisplayName(this.images.get(i));
-            // ba chaams thi van dc ma
-// nhma problem la no ko hien len co 3 cham nhu z
-            names.add(name);//thấy cái names không
+            names.add(name);
             // ====================================================
         }
+    }
+    public void addNewImage(String imagePath){
+        if(!images.contains(imagePath))
+        {
+            images.add(imagePath);
+            names.add(getDisplayName(imagePath));
+            notifyChanged();
+        }
+    }
+    public void removeImage(String name){
+        this.images.remove(name);
+        this.names.remove(getDisplayName(name));
     }
 }
