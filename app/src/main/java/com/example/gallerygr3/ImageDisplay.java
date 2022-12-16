@@ -934,15 +934,47 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         }
     }
     public void addNewImage(String imagePath){
+        File file = new File(imagePath);
+        if (!file.exists()) //Extra check, Just to validate the given path
+        {
+            return;
+        }
         if(!images.contains(imagePath))
         {
+            ExifInterface intf = null;
+            try {
+                intf = new ExifInterface(imagePath);
+                if (intf != null) {
+                    Date lastModDate = new Date(file.lastModified());
+
+
+//                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+//                        Date lastModDate = new Date(file.lastModified());
+                    size.add(((Number) file.length()).intValue());
+                    dates.add(lastModDate.toString());
+//                        Log.i("PHOTO DATE", "Dated : " + dateString); //Display dateString. You can do/use it your own way
+                }
+            } catch (IOException e) {
+
+            }
+            if (intf == null) {
+                Date lastModDate = new Date(file.lastModified());
+                dates.add(lastModDate.toString());
+//                    Log.i("PHOTO DATE", "Dated : " + lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+            }
             images.add(imagePath);
             names.add(getDisplayName(imagePath));
             notifyChanged();
         }
     }
     public void removeImage(String name){
-        this.images.remove(name);
-        this.names.remove(getDisplayName(name));
+        int index=this.images.indexOf(name);
+        if(index != -1)
+        {
+            this.images.remove(index);
+            this.names.remove(index);
+            this.dates.remove(index);
+            this.size.remove(index);
+        }
     }
 }
