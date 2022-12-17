@@ -125,12 +125,13 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
 
 
         ImageDisplay.changeINSTANCE();
-        ImageDisplay.getInstance().setImagesData(album.imagePaths);
+        ImageDisplay instance=ImageDisplay.getInstance();
+        instance.setImagesData(album.imagePaths);
         ImageDisplay.getInstance().setLongClickCallBack(this);
 
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(R.id.album_display_list,ImageDisplay.newInstance(),null)
+                .replace(R.id.album_display_list,ImageDisplay.getInstance(),null)
                 .commit();
 
         resize_button=layout.findViewById(R.id.resizeBtn);
@@ -175,6 +176,9 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
         ViewGroup.LayoutParams params=header.getLayoutParams();
         params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
         header.setLayoutParams(params);
+
+        // set text lại - TH: xóa bớt ảnh
+        album_images_count.setText(String.format(context.getString(R.string.album_image_count),album.imagePaths.size()));
     }
 
 
@@ -343,9 +347,7 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
                     for (int i=0;i < addedPaths.size();i++){
                         String newFileName=moveFile(addedPaths.get(i),folderPath);
                         album.imagePaths.add(folderPath+"/"+newFileName);
-                        ((MainActivity)context).FileInPaths.add(folderPath+"/"+newFileName);
-                        ((MainActivity)context).FileInPaths.remove(addedPaths.get(i));
-                        album.imagePaths.remove(addedPaths.get(i));
+                        album.imagePaths.remove(addedPaths.get(i)); // remove if already in album
                     }
 
                     dismiss();
@@ -357,11 +359,10 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
                 @Override
                 public void onClick(View view) {
                     String folderPath=((MainActivity) context).Picture + AlbumsFragment.folderPath+"/"+album.name;
-                    int from=album.imagePaths.size();
-                    int to=from+addedPaths.size()-1;
                     for (int i=0;i < addedPaths.size();i++){
                         String newFileName=copyFile(addedPaths.get(i),folderPath);
-                        album.imagePaths.add(folderPath+"/"+newFileName);
+                        //album.imagePaths.add(folderPath+"/"+newFileName);
+                        ImageDisplay.getInstance().addNewImage(folderPath+"/"+newFileName);
                     }
 
                     dismiss();
@@ -401,6 +402,6 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
     }
     public String getExtension(String file){
         String[] splits=file.split("\\.");
-        return splits[1];
+        return splits[splits.length-1];
     }
 }
