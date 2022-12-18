@@ -461,7 +461,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     {
         changeFileInFolder(Picture, oldName, newName);
         changeFileInFolder(DCIM, oldName, newName);
-
+        //changeFileInFolder();
     }
 
     @Override

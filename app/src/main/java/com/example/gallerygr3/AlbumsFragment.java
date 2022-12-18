@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AlbumsFragment extends Fragment {
+public class AlbumsFragment extends Fragment{
     Context context;
     int spanColumns;
     Gson gson = new Gson();
@@ -103,7 +104,7 @@ public class AlbumsFragment extends Fragment {
     }
 
     private void readData(){
-        MainActivity ma= (MainActivity) context;
+        MainActivity ma= (MainActivity) getContext();
         albumList=new ArrayList<Album>();
         File path=new File(ma.Picture+folderPath);
         if(!path.isDirectory()){
@@ -112,7 +113,7 @@ public class AlbumsFragment extends Fragment {
             File[] albumFolders=path.listFiles();
             for(File folder : albumFolders){
                 if(!folder.isFile()){
-                    albumList.add(new Album(folder.getName(),imagePathInFolder(folder)));
+                    albumList.add(new Album(folder.getAbsolutePath(),folder.getName(),imagePathInFolder(folder)));
                 }
             }
         }
@@ -155,10 +156,12 @@ public class AlbumsFragment extends Fragment {
             path.mkdirs();
         }
         ArrayList<String> imagePaths=new ArrayList<String>();
-        albumList.add(new Album(newAlbumName,imagePaths));
+        albumList.add(new Album(path.getAbsolutePath(),newAlbumName,imagePaths));
         rcv_albumList.getAdapter().notifyItemChanged(albumList.size()-1);
         return true;
     }
+
+
 
     public class NewFolderDialog extends Dialog{
 
@@ -199,4 +202,5 @@ public class AlbumsFragment extends Fragment {
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.create().show();
     }
+
 }
