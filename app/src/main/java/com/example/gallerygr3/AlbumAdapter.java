@@ -86,7 +86,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         ImageView imageView;
         TextView albumName;
         TextView albumImagesCount;
-        ImageView moreBtn;
         LinearLayout albumInfo;
         boolean isChoosing=false;
         public ViewHolder(@NonNull View itemView) {
@@ -95,7 +94,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
             imageView.setImageResource(R.drawable.ic_baseline_folder_24);
             albumName =itemView.findViewById(R.id.album_name);
             albumImagesCount=itemView.findViewById(R.id.album_images_count);
-            moreBtn=itemView.findViewById(R.id.moreBtnAlbum);
             albumInfo=itemView.findViewById(R.id.album_info);
         }
     }

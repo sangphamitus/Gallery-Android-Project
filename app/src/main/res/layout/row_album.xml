@@ -50,11 +50,11 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/moreBtnAlbum"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_margin="10dp"
-        android:src="@drawable/ic_baseline_more_vert_24" />
+<!--    <ImageView-->
+<!--        android:id="@+id/moreBtnAlbum"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="80dp"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:src="@drawable/ic_baseline_more_vert_24" />-->
 
 </LinearLayout>

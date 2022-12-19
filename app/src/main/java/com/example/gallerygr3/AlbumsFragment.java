@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,22 +46,26 @@ public class AlbumsFragment extends Fragment{
     Context context;
     int spanColumns;
     Gson gson = new Gson();
-    ArrayList<Album> albumList;
+    static ArrayList<Album> albumList;
     public static String filename = "AlbumData";
     FloatingActionButton fab_addNewAlbum;
     RecyclerView rcv_albumList;
-    public static String folderPath="/Glr3/Albums";
-
+    public static String folderPath= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/Glr3/Albums";
+    private static AlbumsFragment INSTANCE=null;
     public AlbumsFragment() {
         // Required empty public constructor
     }
 
 
     // TODO: Rename and change types and number of parameters
-    public static AlbumsFragment newInstance() {
-        AlbumsFragment fragment = new AlbumsFragment();
+    public static AlbumsFragment getInstance() {
+        if(INSTANCE == null)
+        {
+            INSTANCE=new AlbumsFragment();
+            readData();
+        }
         // put args
-        return fragment;
+        return INSTANCE;
     }
 
     @Override
@@ -73,7 +78,7 @@ public class AlbumsFragment extends Fragment{
 
         }
         context = getActivity();
-        readData();
+        //readData();
     }
 
     @Override
@@ -103,10 +108,10 @@ public class AlbumsFragment extends Fragment{
         return layout;
     }
 
-    private void readData(){
-        MainActivity ma= (MainActivity) getContext();
+    private static void readData(){
+//        MainActivity ma= (MainActivity) getContext();
         albumList=new ArrayList<Album>();
-        File path=new File(ma.Picture+folderPath);
+        File path=new File(folderPath);
         if(!path.isDirectory()){
             path.mkdirs();
         } else {
@@ -118,15 +123,15 @@ public class AlbumsFragment extends Fragment{
             }
         }
     }
-    private ArrayList<String> imagePathInFolder(File folder){
+    private static ArrayList<String> imagePathInFolder(File folder){
         ArrayList<String> result=new ArrayList<String>();
 
-        MainActivity mainActivity= (MainActivity) context;
+//        MainActivity mainActivity= (MainActivity) context;
         for (File file : folder.listFiles()) {
             if (file.isDirectory()) {
 
             } else {
-                for (String extension : mainActivity.ImageExtensions) {
+                for (String extension : MainActivity.ImageExtensions) {
 
                     if (file.getAbsolutePath().toLowerCase().endsWith(extension)) {
                         // addImageView(file.getAbsolutePath());
@@ -148,8 +153,8 @@ public class AlbumsFragment extends Fragment{
         dialog.show();
     }
     private boolean addNewFolder(String newAlbumName){
-        MainActivity ma= (MainActivity) context;
-        File path=new File(ma.Picture+folderPath+"/"+newAlbumName);
+//        MainActivity ma= (MainActivity) context;
+        File path=new File(folderPath+"/"+newAlbumName);
         if(path.isDirectory()){
             return false;
         } else {
