@@ -393,7 +393,9 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
-                       String imgName=getIntent().getStringExtra("imgPath");
+
+                        Intent get=getIntent();
+                       String imgName=get.getStringExtra("imgPath");
                        String[] temp= new String[1];
                         temp[0]= imgName;
                         Intent intent=new Intent();
@@ -401,7 +403,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                         finish();
 
                         aa.setImageView(currentSelectedName,currentPosition);
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         ic.setNameAndPhoto();
                     }
                                   }
