@@ -172,7 +172,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                     //aa.setImageView(imageRotated,currentPosition);
                 }
 
-                ImageDisplay.newInstance().notifyChangeGridLayout();
+                ImageDisplay.getInstance().notifyChangeGridLayout();
                 rotateImage=null;
                 imageRotated=null;
                 haveRotate=false;
@@ -543,7 +543,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         ImageDelete.DeleteImage(currentSelectedName);
                         removeImageUpdate(currentSelectedName);
                         //cập nhật lại danh sách trong ImageDisplay
@@ -588,7 +588,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         ImageDelete.DeleteImage(currentSelectedName);
                         removeImageUpdate(currentSelectedName);
                         //cập nhật lại danh sách trong ImageDisplay
@@ -667,7 +667,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                         }
                         aa.notifyItemChanged(currentPosition);
-                        ImageDisplay.newInstance().notifyChangeGridLayout();
+                        ImageDisplay.getInstance().notifyChangeGridLayout();
 
                         Toast.makeText(getApplicationContext(), "Changed", Toast.LENGTH_SHORT).show();
                         customDialog.dismiss();
