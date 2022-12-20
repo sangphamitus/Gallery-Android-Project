@@ -975,6 +975,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             this.names.remove(index);
             this.dates.remove(index);
             this.size.remove(index);
+            notifyChanged();
         }
     }
 }
