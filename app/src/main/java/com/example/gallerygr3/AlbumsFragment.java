@@ -48,6 +48,7 @@ public class AlbumsFragment extends Fragment{
     Gson gson = new Gson();
     static ArrayList<Album> albumList;
     public static String filename = "AlbumData";
+    public static String favourite = "Favourite";
     FloatingActionButton fab_addNewAlbum;
     RecyclerView rcv_albumList;
     public static String folderPath= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/Glr3/Albums";
@@ -122,7 +123,27 @@ public class AlbumsFragment extends Fragment{
                 }
             }
         }
+
+        int favoriteIndex=indexOfFavorite(albumList);
+        if(favoriteIndex == -1){
+            File favorite=new File(path.getAbsolutePath()+"/" +favourite);
+            favorite.mkdirs();
+            albumList.add(0,new Album(favorite.getAbsolutePath(),favorite.getName(),imagePathInFolder(favorite)));
+        } else {
+            Album fav=albumList.get(favoriteIndex);
+            albumList.remove(favoriteIndex);
+            albumList.add(0,fav);
+        }
     }
+    private static int indexOfFavorite(ArrayList<Album> list){
+        for(int i=0; i<list.size(); i++){
+            if(list.get(i).name.equals(favourite)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private static ArrayList<String> imagePathInFolder(File folder){
         ArrayList<String> result=new ArrayList<String>();
 

@@ -58,10 +58,23 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                         .commit();
             }
         };
+
 //        holder.albumInfo.setOnClickListener(displayAlbum);
 //        holder.imageView.setOnClickListener(displayAlbum);
         holder.itemView.setOnClickListener(displayAlbum);
         setBackgroundColor(holder.itemView,null);
+
+        // Nếu là album Favourite
+        if(albumList.get(position).name.equals(AlbumsFragment.favourite))
+        {
+            holder.imageView.setImageResource(R.drawable.heart);
+            holder.itemView.setBackgroundResource(R.drawable.custom_row_album_favorite);
+            return;
+        }else{
+            holder.imageView.setImageResource(R.drawable.ic_baseline_folder_24);
+            holder.itemView.setBackgroundResource(R.drawable.custom_row_album);
+        }
+
         colorChoosingState(holder.itemView, holder.isChoosing);
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

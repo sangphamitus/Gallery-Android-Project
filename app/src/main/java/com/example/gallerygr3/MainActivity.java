@@ -829,6 +829,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     viewHolder=new AlbumChoosingAdapter.ViewHolder();
                     viewHolder.albumName=view.findViewById(R.id.album_name);
                     viewHolder.albumImageCount=view.findViewById(R.id.album_images_count);
+                    viewHolder.imageView=view.findViewById(R.id.album_image);
                     view.setTag(viewHolder);
                 } else {
                     viewHolder=(AlbumChoosingAdapter.ViewHolder) view.getTag();
@@ -836,12 +837,23 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 viewHolder.albumName.setText(albumList.get(i).name);
                 viewHolder.albumImageCount.setText(String.format(context.getString(R.string.album_image_count),albumList.get(i).imagePaths.size()));
                 view.setBackgroundTintList(null);
+                if(albumList.get(i).name.equals(AlbumsFragment.favourite))
+                {
+                    viewHolder.imageView.setImageResource(R.drawable.heart);
+                    view.setBackgroundResource(R.drawable.custom_row_album_favorite);
+                }else{
+                    viewHolder.imageView.setImageResource(R.drawable.ic_baseline_folder_24);
+                    view.setBackgroundResource(R.drawable.custom_row_album);
+
+
+                }
                 return view;
             }
 
             private class ViewHolder{
                 TextView albumName;
                 TextView albumImageCount;
+                ImageView imageView;
             }
         }
     }
