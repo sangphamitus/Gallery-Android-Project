@@ -736,7 +736,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     {
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
-
     }
 
 

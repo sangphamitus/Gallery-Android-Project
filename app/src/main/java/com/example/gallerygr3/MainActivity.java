@@ -777,16 +777,31 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     view.setBackground(buttonDrawable);
                     MoveOrCopy dialog=new MoveOrCopy(context, new MoveOrCopy.MoveOrCopyCallBack() {
                         @Override
-                        public void dismissCallback() {
+                        public void dismissCallback(String method) {
                             view.setBackgroundTintList(null);
                             TextView imgCount= view.findViewById(R.id.album_images_count);
                             imgCount.setText(String.format(context.getString(R.string.album_image_count),AlbumsFragment.albumList.get(i).imagePaths.size()));
+                            if(method.equals("remove"))
+                            {
+                                ImageDisplay ic= ImageDisplay.getInstance();
+                                clearChooseToDeleteInList();
+                                ic.clearClicked();
+                                dismiss();
+                            }
                         }
 
                         @Override
-                        public void addedCallback(String newImagePath) {
+                        public void copiedCallback(String newImagePath) {
                             AlbumsFragment.albumList.get(i).imagePaths.add(newImagePath);
                         }
+
+                        @Override
+                        public void removedCallback(String oldImagePath, String newImagePath) {
+                            ImageDisplay.getInstance().removeImage(oldImagePath);
+                            AlbumsFragment.albumList.get(i).imagePaths.add(newImagePath);
+                        }
+
+
                     },AlbumsFragment.albumList.get(i), chooseToDeleteInList());
                     dialog.show();
                 }
