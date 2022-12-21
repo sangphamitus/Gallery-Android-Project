@@ -113,7 +113,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     LongClickCallback callback=null;
 
 
-    boolean isHolding=false;
+    public boolean isHolding=false;
     public static boolean isMain=true;
 
     ArrayList<String> selectedImages=new ArrayList<>();
@@ -975,6 +975,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             this.names.remove(index);
             this.dates.remove(index);
             this.size.remove(index);
+            notifyChanged();
         }
     }
 }
