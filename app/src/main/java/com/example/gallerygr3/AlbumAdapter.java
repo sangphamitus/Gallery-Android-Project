@@ -2,6 +2,8 @@ package com.example.gallerygr3;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -166,12 +168,19 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int index=albumList.indexOf(choosingAlbum);
-                    albumList.remove(index);
-                    adapter.notifyItemRemoved(index);
-                    File album=new File(choosingAlbum.path);
-                    fileDelete(album);
-                    dismiss();
+
+                    ConfirmDeleteAlbumDialog dialog=new ConfirmDeleteAlbumDialog(context, choosingAlbum, new ConfirmDeleteAlbumDialog.CallBack() {
+                        @Override
+                        public void confirmClickedCallback() {
+                            int index=albumList.indexOf(choosingAlbum);
+                            albumList.remove(index);
+                            adapter.notifyItemRemoved(index);
+                            File album=new File(choosingAlbum.path);
+                            fileDelete(album);
+                            dismiss();
+                        }
+                    });
+                    dialog.show();
                 }
             });
 
@@ -252,7 +261,43 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
             getWindow().setAttributes(layoutParams);
         }
     }
+    public static class ConfirmDeleteAlbumDialog extends Dialog{
+        CallBack callBack;
 
+
+        public ConfirmDeleteAlbumDialog(@NonNull Context context, Album album, @NonNull CallBack callBack) {
+            super(context);
+            this.callBack=callBack;
+
+            this.setTitle("Delete confirm");
+            this.setContentView(R.layout.delete_album_confirm_dialog);
+            this.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            String text = (String) ((TextView) this.findViewById(R.id.delete_album_notify)).getText();
+            ((TextView) this.findViewById(R.id.delete_album_notify))
+                    .setText(text.replace("album_name",album.name));
+
+            ((ImageButton) this.findViewById(R.id.delete_album_cancel))
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dismiss();
+                        }
+                    });
+
+            ((ImageButton) this.findViewById(R.id.delete_album_confirm))
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            callBack.confirmClickedCallback();
+                            dismiss();
+                        }
+                    });
+        }
+        public interface CallBack{
+            void confirmClickedCallback();
+        }
+    }
 
     private void fileDelete(File file){
         if(file.isDirectory())
