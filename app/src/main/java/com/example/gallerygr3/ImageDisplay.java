@@ -113,7 +113,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     LongClickCallback callback=null;
 
 
-    boolean isHolding=false;
+    public boolean isHolding=false;
     public static boolean isMain=true;
 
     ArrayList<String> selectedImages=new ArrayList<>();
@@ -132,7 +132,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
     // TODO: Rename and change types and number of parameters
 
-    public static ImageDisplay newInstance() {
+    public static ImageDisplay getInstance() {
         if(INSTANCE==null)
         {
             synchronized (ImageDisplay.class) {
@@ -142,8 +142,12 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             }
 
         }
-//        return INSTANCE;
-        return new ImageDisplay();
+        return INSTANCE;
+    }
+
+    public static ImageDisplay newInstance() {
+        INSTANCE = new ImageDisplay();
+        return INSTANCE;
     }
 
     public static void changeINSTANCE(){
@@ -418,7 +422,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
         this.context= getActivity();
 
-        if(images == null) {setImagesData (((MainActivity)context).getFileinDir());
+        if(images == null) {
+            setImagesData (((MainActivity)context).getFileinDir());
             Toast.makeText(getContext(),"Complete get file",Toast.LENGTH_SHORT).show();
         }
 
@@ -511,7 +516,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
                 notifyChangeGridLayout();
 
-                if(callback != null){callback.onLongClick();}
+
 
                 return true;
             }
@@ -725,7 +730,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
 
-        if(callback !=null){callback.afterLongClick();}
     }
 
     public void notifyChanged()
@@ -802,7 +806,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                         }
 
                         notifyChangeGridLayout();
-
+                        setImagesData (((MainActivity)context).getFileinDir());
 
                         Toast.makeText(getContext(), "Taking picture", Toast.LENGTH_SHORT).show();
                     }
@@ -854,7 +858,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     public void notifyChangeGridLayout(){
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
-
     }
     public void setNameAndPhoto()
     {
@@ -924,13 +927,55 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         for (int i = 0; i < this.images.size(); i++) {
 
             // get name from file ===================================
-// t biet ly do roi
             String temp = this.images.get(i);
             String name = getDisplayName(this.images.get(i));
-            // ba chaams thi van dc ma
-// nhma problem la no ko hien len co 3 cham nhu z
-            names.add(name);//thấy cái names không
+            names.add(name);
             // ====================================================
+        }
+    }
+    public void addNewImage(String imagePath){
+        File file = new File(imagePath);
+        if (!file.exists()) //Extra check, Just to validate the given path
+        {
+            return;
+        }
+        if(!images.contains(imagePath))
+        {
+            ExifInterface intf = null;
+            try {
+                intf = new ExifInterface(imagePath);
+                if (intf != null) {
+                    Date lastModDate = new Date(file.lastModified());
+
+
+//                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
+//                        Date lastModDate = new Date(file.lastModified());
+                    size.add(((Number) file.length()).intValue());
+                    dates.add(lastModDate.toString());
+//                        Log.i("PHOTO DATE", "Dated : " + dateString); //Display dateString. You can do/use it your own way
+                }
+            } catch (IOException e) {
+
+            }
+            if (intf == null) {
+                Date lastModDate = new Date(file.lastModified());
+                dates.add(lastModDate.toString());
+//                    Log.i("PHOTO DATE", "Dated : " + lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
+            }
+            images.add(imagePath);
+            names.add(getDisplayName(imagePath));
+            notifyChanged();
+        }
+    }
+    public void removeImage(String name){
+        int index=this.images.indexOf(name);
+        if(index != -1)
+        {
+            this.images.remove(index);
+            this.names.remove(index);
+            this.dates.remove(index);
+            this.size.remove(index);
+            notifyChanged();
         }
     }
 }

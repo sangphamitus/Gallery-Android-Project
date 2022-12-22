@@ -172,7 +172,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                     //aa.setImageView(imageRotated,currentPosition);
                 }
 
-                ImageDisplay.newInstance().notifyChangeGridLayout();
+                ImageDisplay.getInstance().notifyChangeGridLayout();
                 rotateImage=null;
                 imageRotated=null;
                 haveRotate=false;
@@ -393,7 +393,9 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
-                       String imgName=getIntent().getStringExtra("imgPath");
+
+                        Intent get=getIntent();
+                       String imgName=get.getStringExtra("imgPath");
                        String[] temp= new String[1];
                         temp[0]= imgName;
                         Intent intent=new Intent();
@@ -401,7 +403,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                         finish();
 
                         aa.setImageView(currentSelectedName,currentPosition);
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         ic.setNameAndPhoto();
                     }
                                   }
@@ -541,7 +543,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         ImageDelete.DeleteImage(currentSelectedName);
                         removeImageUpdate(currentSelectedName);
                         //cập nhật lại danh sách trong ImageDisplay
@@ -586,7 +588,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         ImageDelete.DeleteImage(currentSelectedName);
                         removeImageUpdate(currentSelectedName);
                         //cập nhật lại danh sách trong ImageDisplay
@@ -665,7 +667,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                         }
                         aa.notifyItemChanged(currentPosition);
-                        ImageDisplay.newInstance().notifyChangeGridLayout();
+                        ImageDisplay.getInstance().notifyChangeGridLayout();
 
                         Toast.makeText(getApplicationContext(), "Changed", Toast.LENGTH_SHORT).show();
                         customDialog.dismiss();
@@ -725,7 +727,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                     public void onClick(View view) {
                         //thực hiện đổi tên tại đây
 
-                        ImageDisplay ic= ImageDisplay.newInstance();
+                        ImageDisplay ic= ImageDisplay.getInstance();
                         //cập nhật lại danh sách trong ImageDisplay
                         EditText editText = customDialog.findViewById(R.id.editChangeFileName);
                         if(!isFileName(editText.getText()+"")){
@@ -738,7 +740,16 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                             }
                             String newName = editText.getText()+fileExtension;
                             customDialog.dismiss();
-                            ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
+                            //ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
+                            File oldImg=new File(paths[currentPosition]);
+                            String oldImg_name=oldImg.getName();
+                            File newImg= new File(paths[currentPosition].replace(oldImg_name,newName));
+                            if(oldImg.renameTo(newImg)){
+                                newImg= new File(paths[currentPosition].replace(oldImg_name,newName));
+                                ic.addNewImage(newImg.getAbsolutePath());
+                                ic.removeImage(oldImg.getAbsolutePath());
+                                Toast.makeText(getApplicationContext(),"Rename succeeded",Toast.LENGTH_SHORT).show();
+                            }
                             renameImageUpdate(newName);
 
                             showDialogSuccessChange("File name change successfully !");
