@@ -132,6 +132,10 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
     String imageRotated=null;
 
 
+    int lastRotate=-1;
+    String selectedName=null;
+    int totalRotate=0;
+
     boolean displayNavBars = true;
     boolean displaySubBar = false;
     @SuppressLint("ClickableViewAccessibility")
@@ -234,7 +238,12 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                 haveRotate=true;
                 imageRotated=currentSelectedName;
                 saveBtn.setVisibility(View.VISIBLE);
+                lastRotate=currentPosition;
                 rotateImage=aa.RotateDegree(currentSelectedName,90,currentPosition);
+
+                 lastRotate=currentPosition;
+                 selectedName=currentSelectedName;
+                 totalRotate+=90;
 
             }
         });
@@ -535,6 +544,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                     @Override
                     public void onClick(View view) {
                         //donothing
+
                         customDialog.dismiss();
                     }
                 });
@@ -647,6 +657,11 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                     @Override
                     public void onClick(View view) {
                         //donothing
+                      //  rotateImage=aa.RotateDegree(currentSelectedName,90,currentPosition);
+                        aa.RotateDegree(selectedName,0-totalRotate,lastRotate);
+                        selectedName=null;
+                        lastRotate=-1;
+                        totalRotate=0;
                         customDialog.dismiss();
                     }
                 });
