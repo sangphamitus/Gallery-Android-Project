@@ -224,12 +224,18 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
                     dismiss();
                     MoveOrCopy.MoveOrCopyCallBack callBack=new MoveOrCopy.MoveOrCopyCallBack() {
                         @Override
-                        public void dismissCallback() {
+                        public void dismissCallback(String method) {
                             album_images_count.setText(String.format(context.getString(R.string.album_image_count), album.imagePaths.size()));
                         }
 
                         @Override
-                        public void addedCallback(String newImagePath) {
+                        public void copiedCallback(String newImagePath) {
+                            ImageDisplay.getInstance().addNewImage(newImagePath);
+                        }
+
+                        @Override
+                        public void removedCallback(String oldImagePath, String newImagePath) {
+                            ((MainActivity) context).FileInPaths.remove(oldImagePath);
                             ImageDisplay.getInstance().addNewImage(newImagePath);
                         }
                     };

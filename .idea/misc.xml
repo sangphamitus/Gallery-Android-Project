@@ -73,19 +73,25 @@
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/row_album.xml" value="0.21693840579710144" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/row_item.xml" value="0.21693840579710144" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/GalleryGr3/app/src/main/res/layout/row_item_with_choose.xml" value="0.536" />
+        <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/drawable-v24/custom_dialog.xml" value="0.2265" />
+        <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/drawable-v24/custom_row_album.xml" value="0.2265" />
+        <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/drawable/custom_row_album_favorite.xml" value="0.2265" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/drawable/ic_baseline_folder_24.xml" value="0.2265" />
+        <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/drawable/round_albums.xml" value="0.2265" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/activity_edit_image.xml" value="0.11302083333333333" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/album_choosing.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/album_operations.xml" value="0.21965579710144928" />
+        <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/delete_album_confirm_dialog.xml" value="0.536" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/delete_dialog_notify.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/fragment_album_display.xml" value="0.21965579710144928" />
+        <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/fragment_albums.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/image_choosing.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/list_item.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/move_or_copy_choosing.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/new_album_dialog.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/rename_album_dialog.xml" value="0.21965579710144928" />
-        <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/row_album.xml" value="0.21965579710144928" />
+        <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/row_album.xml" value="0.4" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/row_item.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Lenovo/Desktop/HDH/Gallery-Android-Project/app/src/main/res/layout/row_item_with_choose.xml" value="0.21965579710144928" />
         <entry key="..\:/Users/Sang/Desktop/Nam3/HK1/Mobile/DoAn/Gallery/Gallery-Android-Project/GalleryGr3/app/src/main/res/drawable/custom_checkbox.xml" value="0.1" />

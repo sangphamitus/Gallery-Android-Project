@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -22,13 +21,14 @@ public class MoveOrCopy extends BottomSheetDialog {
     MoveOrCopyCallBack callBack;
     Album album;
     ArrayList<String> addedPaths;
+    String method="";
     @Override
     public void dismiss() {
         super.dismiss();
         ImageDisplay.getInstance().customAdapter.notifyDataSetChanged();
         ImageDisplay.getInstance().listAdapter.notifyDataSetChanged();
         if(callBack != null){
-            callBack.dismissCallback();
+            callBack.dismissCallback(method);
         }
     }
 
@@ -45,12 +45,14 @@ public class MoveOrCopy extends BottomSheetDialog {
         move_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String folderPath = AlbumsFragment.folderPath + "/" + album.name;
-//                for (int i = 0; i < addedPaths.size(); i++) {
-//                    String newFileName = moveFile(addedPaths.get(i), folderPath);
+                method="remove";
+                String folderPath = AlbumsFragment.folderPath + "/" + album.name;
+                for (int i = 0; i < addedPaths.size(); i++) {
+                    String newFileName = moveFile(addedPaths.get(i), folderPath);
 //                    album.imagePaths.add(folderPath + "/" + newFileName);
 //                    album.imagePaths.remove(addedPaths.get(i)); // remove if already in album
-//                }
+                    callBack.removedCallback(addedPath.get(i),folderPath + "/" + newFileName);
+                }
 
                 dismiss();
             }
@@ -60,11 +62,12 @@ public class MoveOrCopy extends BottomSheetDialog {
         copy_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                method="copy";
                 String folderPath = AlbumsFragment.folderPath + "/" + album.name;
                 for (int i = 0; i < addedPaths.size(); i++) {
                     String newFileName = copyFile(addedPaths.get(i), folderPath);
                     //album.imagePaths.add(folderPath+"/"+newFileName);
-                    callBack.addedCallback(folderPath + "/" + newFileName);
+                    callBack.copiedCallback(folderPath + "/" + newFileName);
                 }
 
                 dismiss();
@@ -108,7 +111,8 @@ public class MoveOrCopy extends BottomSheetDialog {
         return splits[splits.length - 1];
     }
     public interface MoveOrCopyCallBack {
-        void dismissCallback();
-        void addedCallback(String newImagePath);
+        void dismissCallback(String method);
+        void copiedCallback(String newImagePath);
+        void removedCallback(String oldImagePath, String newImagePath);
     }
 }
