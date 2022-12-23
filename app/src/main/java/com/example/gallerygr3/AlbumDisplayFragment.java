@@ -11,32 +11,23 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -46,7 +37,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Use the {@link AlbumDisplayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongClickCallback {
+public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongClickCallback{
     Context context;
     ImageButton back_button,resize_button;
     TextView album_name,album_images_count;
@@ -94,7 +85,7 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
             @Override
             public void onClick(View view) {
                 ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container,AlbumsFragment.class,null)
+                        .replace(R.id.fragment_container,AlbumsFragment.getInstance(),null)
                         .setReorderingAllowed(true)
                         .commit();
             }
@@ -125,12 +116,13 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
 
 
         ImageDisplay.changeINSTANCE();
-        ImageDisplay.getInstance().setImagesData(album.imagePaths);
+        ImageDisplay instance=ImageDisplay.getInstance();
+        instance.setImagesData(album.imagePaths);
         ImageDisplay.getInstance().setLongClickCallBack(this);
 
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(R.id.album_display_list,ImageDisplay.newInstance(),null)
+                .replace(R.id.album_display_list,ImageDisplay.getInstance(),null)
                 .commit();
 
         resize_button=layout.findViewById(R.id.resizeBtn);
@@ -175,6 +167,9 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
         ViewGroup.LayoutParams params=header.getLayoutParams();
         params.height=ViewGroup.LayoutParams.WRAP_CONTENT;
         header.setLayoutParams(params);
+
+        // set text lại - TH: xóa bớt ảnh
+        album_images_count.setText(String.format(context.getString(R.string.album_image_count),album.imagePaths.size()));
     }
 
 
@@ -227,7 +222,24 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
                 @Override
                 public void onClick(View view) {
                     dismiss();
-                    MoveOrCopy dialog=new MoveOrCopy(context);
+                    MoveOrCopy.MoveOrCopyCallBack callBack=new MoveOrCopy.MoveOrCopyCallBack() {
+                        @Override
+                        public void dismissCallback(String method) {
+                            album_images_count.setText(String.format(context.getString(R.string.album_image_count), album.imagePaths.size()));
+                        }
+
+                        @Override
+                        public void copiedCallback(String newImagePath) {
+                            ImageDisplay.getInstance().addNewImage(newImagePath);
+                        }
+
+                        @Override
+                        public void removedCallback(String oldImagePath, String newImagePath) {
+                            ((MainActivity) context).FileInPaths.remove(oldImagePath);
+                            ImageDisplay.getInstance().addNewImage(newImagePath);
+                        }
+                    };
+                    MoveOrCopy dialog=new MoveOrCopy(context,callBack,album,addedPaths);
                     dialog.show();
                 }
             });
@@ -322,85 +334,5 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
             }
         }
     }
-    private class MoveOrCopy extends BottomSheetDialog{
-        @Override
-        public void dismiss() {
-            super.dismiss();
-            ImageDisplay.getInstance().customAdapter.notifyDataSetChanged();
-            ImageDisplay.getInstance().listAdapter.notifyDataSetChanged();
-            album_images_count.setText(String.format(context.getString(R.string.album_image_count),album.imagePaths.size()));
-        }
 
-        public MoveOrCopy(@NonNull Context context) {
-            super(context);
-            LinearLayout layout= (LinearLayout) getLayoutInflater().inflate(R.layout.move_or_copy_choosing,null);
-
-            Button move_btn=layout.findViewById(R.id.move_option);
-            move_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String folderPath=((MainActivity) context).Picture + AlbumsFragment.folderPath+"/"+album.name;
-                    for (int i=0;i < addedPaths.size();i++){
-                        String newFileName=moveFile(addedPaths.get(i),folderPath);
-                        album.imagePaths.add(folderPath+"/"+newFileName);
-                        ((MainActivity)context).FileInPaths.add(folderPath+"/"+newFileName);
-                        ((MainActivity)context).FileInPaths.remove(addedPaths.get(i));
-                        album.imagePaths.remove(addedPaths.get(i));
-                    }
-
-                    dismiss();
-                }
-            });
-
-            Button copy_btn=layout.findViewById(R.id.copy_option);
-            copy_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String folderPath=((MainActivity) context).Picture + AlbumsFragment.folderPath+"/"+album.name;
-                    int from=album.imagePaths.size();
-                    int to=from+addedPaths.size()-1;
-                    for (int i=0;i < addedPaths.size();i++){
-                        String newFileName=copyFile(addedPaths.get(i),folderPath);
-                        album.imagePaths.add(folderPath+"/"+newFileName);
-                    }
-
-                    dismiss();
-                }
-            });
-
-            setContentView(layout);
-        }
-    }
-
-    public String moveFile(String filePath, String newFolderLocation){
-
-        Path from= Paths.get(filePath);
-        String newFileName=ImageDisplay.generateFileName()+"."+getExtension(from.getFileName().toString());
-        Path to=Paths.get(newFolderLocation+"/"+newFileName);
-        try {
-            Files.move(from,to,StandardCopyOption.REPLACE_EXISTING);
-            return newFileName;
-        } catch (IOException e) {
-            Log.e("Move Error","Move Error");
-            e.printStackTrace();
-            return "";
-        }
-    }
-    public String copyFile(String filePath,String newFolderLocation){
-
-        Path from= Paths.get(filePath);
-        String newFileName=ImageDisplay.generateFileName()+"."+getExtension(from.getFileName().toString());
-        Path to=Paths.get(newFolderLocation+"/"+newFileName);
-        try {
-            Files.copy(from,to,StandardCopyOption.REPLACE_EXISTING);
-            return newFileName;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-    public String getExtension(String file){
-        String[] splits=file.split("\\.");
-        return splits[1];
-    }
 }

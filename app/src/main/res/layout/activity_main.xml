@@ -53,7 +53,7 @@
 
             app:elevation="0dp" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
 
             android:id="@+id/clear"
             android:layout_width="wrap_content"
@@ -63,8 +63,8 @@
 
             android:layout_centerInParent="true"
             android:layout_marginStart="10dp"
-            android:clickable="true"
 
+            android:clickable="true"
             android:src="@drawable/ic_baseline_clear_24"
             app:backgroundTint="#FFFFFF"
             app:elevation="0dp" />
@@ -92,32 +92,30 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/round_navbar"
         android:elevation="10dp"
-        android:visibility="invisible"
         android:orientation="horizontal"
-
         android:paddingTop="5dp"
+
         android:paddingBottom="5dp"
+        android:visibility="invisible"
         android:weightSum="3"
         app:layout_constraintBottom_toBottomOf="parent">
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
 
             android:id="@+id/deleteImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="30dp"
-                android:clickable="true"
-                app:elevation="0dp"
-                android:src="@drawable/ic_baseline_delete_outline_24"
-                app:backgroundTint="#FFFFFF"
-               >
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="30dp"
+            android:clickable="true"
+            android:src="@drawable/ic_baseline_delete_outline_24"
+            app:backgroundTint="#FFFFFF"
+            app:elevation="0dp">
 
-            </com.google.android.material.floatingactionbutton.FloatingActionButton>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
 
             android:id="@+id/createSliderBtn"
             android:layout_width="wrap_content"
@@ -125,15 +123,13 @@
             android:layout_alignParentRight="true"
             android:layout_marginEnd="90dp"
             android:clickable="true"
-            app:elevation="0dp"
             android:src="@drawable/ic_baseline_library_music_24"
             app:backgroundTint="#FFFFFF"
-            >
+            app:elevation="0dp">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
 
             android:id="@+id/shareMultipleBtn"
             android:layout_width="wrap_content"
@@ -141,13 +137,23 @@
             android:layout_alignParentRight="true"
             android:layout_marginEnd="150dp"
             android:clickable="true"
-            app:elevation="0dp"
             android:src="@drawable/ic_baseline_share_24"
             app:backgroundTint="#FFFFFF"
-            >
+            app:elevation="0dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+            android:id="@+id/addToAlbumBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="210dp"
+            android:clickable="true"
+            android:src="@drawable/ic_baseline_folder_24"
+            app:backgroundTint="#FFFFFF"
+            app:elevation="0dp">
+
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
-
-
 
 
     </RelativeLayout>
@@ -155,9 +161,8 @@
 
     <LinearLayout
 
-        android:visibility="visible"
-
         android:id="@+id/navbar"
+
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
@@ -165,10 +170,11 @@
         android:elevation="10dp"
         android:gravity="center"
         android:orientation="horizontal"
-
-
         android:paddingTop="5dp"
+
+
         android:paddingBottom="5dp"
+        android:visibility="visible"
 
         android:weightSum="3"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -177,11 +183,11 @@
             android:id="@+id/photosLayout"
             android:layout_width="0dp"
             android:layout_height="40dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_weight="1"
             android:background="@drawable/round_photos"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_marginHorizontal="10dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp">
 
@@ -191,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_baseline_photo"
-                app:tint="@color/photos"/>
+                app:tint="@color/photos" />
 
             <TextView
                 android:id="@+id/photos_txt"
@@ -205,10 +211,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginHorizontal="10dp"
             android:id="@+id/albumsLayout"
             android:layout_width="0dp"
             android:layout_height="40dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
@@ -235,10 +241,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginHorizontal="10dp"
             android:id="@+id/settingsLayout"
             android:layout_width="0dp"
             android:layout_height="40dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"

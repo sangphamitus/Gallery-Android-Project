@@ -4,28 +4,29 @@ package com.example.gallerygr3;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import android.os.Build;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-
-import android.content.Context;
-import android.content.DialogInterface;
 
 import android.content.Intent;
 
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -45,6 +46,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -53,17 +56,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity  implements MainCallBack {
@@ -90,9 +84,10 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     FloatingActionButton createSliderBtn;
     FloatingActionButton shareMultipleBtn;
+    FloatingActionButton addToAlbumBtn;
 
 
-    String[] ImageExtensions = new String[] {
+    public static String[] ImageExtensions = new String[] {
             ".jpg",
             ".png",
             ".gif",
@@ -106,7 +101,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     int[] arrIcon = new int[3];
     int[] arrSelectedIcon = new int[3];
 
-    Class[] arrFrag = new Class[3];
+    Fragment[] arrFrag = new Fragment[3];
 
 
     public void askForPermissions() {
@@ -163,8 +158,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         Picture= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
      //   arrFrag[0] = ImageDisplay.getInstance();
-        arrFrag[1] = AlbumsFragment.class;
-        arrFrag[2] = SettingsFragment.class;
+        arrFrag[1] = AlbumsFragment.getInstance();
+        arrFrag[2] = new SettingsFragment();
 
         arrRoundLayout[0] = R.drawable.round_photos;
         arrRoundLayout[1] = R.drawable.round_albums;
@@ -179,6 +174,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         selectAll=(FloatingActionButton) findViewById(R.id.selectAll);
         createSliderBtn=(FloatingActionButton)findViewById(R.id.createSliderBtn);
         shareMultipleBtn=(FloatingActionButton)findViewById(R.id.shareMultipleBtn);
+        addToAlbumBtn=(FloatingActionButton)findViewById(R.id.addToAlbumBtn);
         informationSelected=(TextView)findViewById(R.id.infomationText);
 
 
@@ -238,6 +234,14 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     paths.add(select[i]);
                 }
                 shareImages(paths);
+            }
+        });
+
+        addToAlbumBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlbumChoosingDialog dialog=new AlbumChoosingDialog(context);
+                dialog.show();
             }
         });
 
@@ -445,7 +449,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         for (String name:input)
         {
             FileInPaths.remove(name);
-
+            ImageDisplay.getInstance().removeImage(name);
         }
 
     }
@@ -461,7 +465,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     {
         changeFileInFolder(Picture, oldName, newName);
         changeFileInFolder(DCIM, oldName, newName);
-
+        //changeFileInFolder();
     }
 
     @Override
@@ -478,16 +482,22 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     @Override
     public void Holding(boolean isHolding)
     {
+        ImageDisplay instance=ImageDisplay.getInstance() ;
         if(isHolding)
         {
             chooseNavbar.setVisibility(View.VISIBLE);
             navbar.setVisibility(View.INVISIBLE);
             status.setVisibility(View.VISIBLE);
+            if(instance.callback != null){instance.callback.onLongClick();}
         }
         else {
             chooseNavbar.setVisibility(View.INVISIBLE);
             navbar.setVisibility(View.VISIBLE);
             status.setVisibility(View.INVISIBLE);
+
+            if(instance.callback !=null){instance.callback.afterLongClick();}
+
+
         }
     }
     @Override
@@ -737,5 +747,129 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             }
         }
 
+    }
+
+    private class AlbumChoosingDialog extends Dialog{
+
+
+        public AlbumChoosingDialog(@NonNull Context context) {
+            super(context);
+            RelativeLayout layout= (RelativeLayout) getLayoutInflater().inflate(R.layout.album_choosing,null);
+
+            ImageButton backBtn=layout.findViewById(R.id.album_choosing_back);
+            backBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismiss();
+                }
+            });
+
+            GridView imageList=layout.findViewById(R.id.album_choosing_list);
+            imageList.setAdapter(new AlbumChoosingAdapter());
+
+            imageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Drawable buttonDrawable = view.getBackground();
+                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                    //the color is a direct color int and not a color resource
+                    DrawableCompat.setTint(buttonDrawable, context.getResources().getColor(R.color.fullScreenBtn));
+                    view.setBackground(buttonDrawable);
+                    MoveOrCopy dialog=new MoveOrCopy(context, new MoveOrCopy.MoveOrCopyCallBack() {
+                        @Override
+                        public void dismissCallback(String method) {
+                            view.setBackgroundTintList(null);
+                            TextView imgCount= view.findViewById(R.id.album_images_count);
+                            imgCount.setText(String.format(context.getString(R.string.album_image_count),AlbumsFragment.albumList.get(i).imagePaths.size()));
+                            if(method.equals("remove"))
+                            {
+                                ImageDisplay ic= ImageDisplay.getInstance();
+                                clearChooseToDeleteInList();
+                                ic.clearClicked();
+                                dismiss();
+                            }
+                        }
+
+                        @Override
+                        public void copiedCallback(String newImagePath) {
+                            AlbumsFragment.albumList.get(i).imagePaths.add(newImagePath);
+                        }
+
+                        @Override
+                        public void removedCallback(String oldImagePath, String newImagePath) {
+                            ImageDisplay.getInstance().removeImage(oldImagePath);
+                            AlbumsFragment.albumList.get(i).imagePaths.add(newImagePath);
+                        }
+
+
+                    },AlbumsFragment.albumList.get(i), chooseToDeleteInList());
+                    dialog.show();
+                }
+            });
+
+            setContentView(layout);
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(getWindow().getAttributes());
+            layoutParams.width = (int) (WindowManager.LayoutParams.MATCH_PARENT);
+            layoutParams.height = (int) (WindowManager.LayoutParams.MATCH_PARENT);
+            getWindow().setAttributes(layoutParams);
+        }
+        private class AlbumChoosingAdapter extends BaseAdapter {
+            ArrayList<Album> albumList;
+            public AlbumChoosingAdapter(){
+                this.albumList =AlbumsFragment.albumList;
+            }
+
+            @Override
+            public int getCount() {
+                return albumList.size();
+            }
+
+            @Override
+            public Object getItem(int i) {
+                return albumList.get(i);
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return i;
+            }
+
+            @Override
+            public View getView(int i, View view, ViewGroup viewGroup) {
+                AlbumChoosingAdapter.ViewHolder viewHolder=null;
+//            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                if(view == null){
+                    view =getLayoutInflater().inflate(R.layout.row_album,viewGroup,false);
+                    viewHolder=new AlbumChoosingAdapter.ViewHolder();
+                    viewHolder.albumName=view.findViewById(R.id.album_name);
+                    viewHolder.albumImageCount=view.findViewById(R.id.album_images_count);
+                    viewHolder.imageView=view.findViewById(R.id.album_image);
+                    view.setTag(viewHolder);
+                } else {
+                    viewHolder=(AlbumChoosingAdapter.ViewHolder) view.getTag();
+                }
+                viewHolder.albumName.setText(albumList.get(i).name);
+                viewHolder.albumImageCount.setText(String.format(context.getString(R.string.album_image_count),albumList.get(i).imagePaths.size()));
+                view.setBackgroundTintList(null);
+                if(albumList.get(i).name.equals(AlbumsFragment.favourite))
+                {
+                    viewHolder.imageView.setImageResource(R.drawable.heart);
+                    view.setBackgroundResource(R.drawable.custom_row_album_favorite);
+                }else{
+                    viewHolder.imageView.setImageResource(R.drawable.ic_baseline_folder_24);
+                    view.setBackgroundResource(R.drawable.custom_row_album);
+
+
+                }
+                return view;
+            }
+
+            private class ViewHolder{
+                TextView albumName;
+                TextView albumImageCount;
+                ImageView imageView;
+            }
+        }
     }
 }

@@ -738,7 +738,16 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                             }
                             String newName = editText.getText()+fileExtension;
                             customDialog.dismiss();
-                            ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
+                            //ic.renameClicked(ImageDisplay.getDisplayName(paths[currentPosition]), newName);
+                            File oldImg=new File(paths[currentPosition]);
+                            String oldImg_name=oldImg.getName();
+                            File newImg= new File(paths[currentPosition].replace(oldImg_name,newName));
+                            if(oldImg.renameTo(newImg)){
+                                newImg= new File(paths[currentPosition].replace(oldImg_name,newName));
+                                ic.addNewImage(newImg.getAbsolutePath());
+                                ic.removeImage(oldImg.getAbsolutePath());
+                                Toast.makeText(getApplicationContext(),"Rename succeeded",Toast.LENGTH_SHORT).show();
+                            }
                             renameImageUpdate(newName);
 
                             showDialogSuccessChange("File name change successfully !");
