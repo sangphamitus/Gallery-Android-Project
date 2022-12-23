@@ -113,7 +113,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     LongClickCallback callback=null;
 
 
-    boolean isHolding=false;
+    public boolean isHolding=false;
     public static boolean isMain=true;
 
     ArrayList<String> selectedImages=new ArrayList<>();
@@ -127,7 +127,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     //  displayImage(...) call if no options will be passed to this method
 
     private ImageDisplay() {
-        // Required empty public constructor
+        // Required empty public constructors
     }
 
     // TODO: Rename and change types and number of parameters
@@ -140,7 +140,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                     INSTANCE = new ImageDisplay();
                 }
             }
-
         }
         return INSTANCE;
     }
@@ -266,22 +265,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             {
                 viewHolder.check.setVisibility(View.INVISIBLE);
             }
-//            viewHolder.imageView.setImageBitmap(myBitmap);
-//            if(isHolding)
-//            {
-//               //viewHolder.check.setVisibility(View.VISIBLE);
-//                viewHolder.check.setChecked(checkPhoto.get(i));
-//                viewHolder.imageView.setClickable(true);
-//
-//            }
-//            else
-//            {
-//               // viewHolder.check.setVisibility(View.INVISIBLE);
-//
-//            }
             File imgFile= new File(imagePhotos.get(i));
-         //   viewHolder.imageView.setImageBitmap(BitmapFactory.decodeFile(imagePhotos.get(i)));
-          //  ImageLoader.getInstance().notifyAll();
           ImageLoader.getInstance().displayImage(String.valueOf(Uri.parse("file://"+imgFile.getAbsolutePath().toString())),viewHolder.imageView);
 
 
@@ -736,7 +720,6 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     {
         customAdapter.notifyDataSetChanged();
         listAdapter.notifyDataSetChanged();
-
     }
 
 
@@ -975,6 +958,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             this.names.remove(index);
             this.dates.remove(index);
             this.size.remove(index);
+            notifyChanged();
         }
     }
 }
