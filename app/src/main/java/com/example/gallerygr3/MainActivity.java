@@ -59,7 +59,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+// reviewed code for task: https://ppsang.atlassian.net/browse/A2G-14
 public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     String currentDirectory=null;
