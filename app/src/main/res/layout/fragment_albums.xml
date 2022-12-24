@@ -33,7 +33,7 @@
                 android:clickable="true"
                 android:contentDescription="Expand"
                 android:src="@android:drawable/ic_menu_add"
-                app:backgroundTint="#DAE5D0"
+                android:theme="@style/customFloatBtnPri"
                 app:elevation="0dp" />
         </LinearLayout>
 

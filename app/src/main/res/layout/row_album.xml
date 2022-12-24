@@ -6,12 +6,12 @@
     android:layout_marginLeft="10dp"
     android:layout_marginTop="5dp"
     android:layout_marginRight="10dp"
-    android:background="@drawable/custom_row_album"
-    android:backgroundTint="@color/fullScreenBtn"
+    android:theme="@style/customBackground"
     android:gravity="center"
     android:orientation="horizontal">
 
     <ImageView
+        android:theme="@style/selectedImg"
         android:id="@+id/album_image"
         android:layout_width="103dp"
         android:layout_height="80dp"

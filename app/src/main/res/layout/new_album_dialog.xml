@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:orientation="vertical"
-    android:background="@drawable/custom_dialog"
+    android:theme="@style/dBackground"
+    android:paddingVertical="10dp"
     >
 
     <TextView
@@ -50,20 +51,20 @@
 
 
         <ImageButton
+            android:theme="@style/dSelectedBtn"
             android:id="@+id/new_album_cancel"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/button_line"
             android:src="@drawable/ic_baseline_close_24"
             android:layout_marginRight="30dp"
             />
 
         <ImageButton
+            android:theme="@style/dSelectedBtn"
             android:id="@+id/new_alubum_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="30dp"
-            android:background="@drawable/button_line"
             android:src="@drawable/ic_baseline_check_24" />
     </LinearLayout>
 

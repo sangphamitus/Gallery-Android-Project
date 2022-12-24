@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ImageDisplay"
-    android:id="@+id/imagedisplay_corLay">
+    android:id="@+id/imagedisplay_corLay"
+    android:theme="@style/customBackground"
+    >
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,9 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MainActivity"
-            android:background="@color/white"
             android:orientation="vertical">
-
             <TableLayout
                 android:src="@android:drawable/divider_horizontal_dark"
                 android:padding="10dp"
@@ -36,11 +36,13 @@
                         android:gravity="center_vertical"
                         android:paddingStart="20sp"
                         android:text="Gallery"
-                        android:textSize="30sp">
+                        android:textSize="30sp"
+                        >
 
                     </TextView>
 
                     <ImageButton
+                        android:theme="@style/imageBtn"
                         android:id="@+id/resizeView"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
@@ -56,8 +58,7 @@
             </TableLayout>
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:layout_height="1dp"/>
             <GridView
                 android:id="@+id/gridView"
                 android:layout_width="match_parent"
@@ -65,7 +66,6 @@
                 android:horizontalSpacing="8dp"
                 android:numColumns="4"
                 android:verticalSpacing="8dp" />
-
         </LinearLayout>
     </FrameLayout>
 
@@ -73,7 +73,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="6dp"
-        >
+        app:layout_anchor="@+id/imagedisplay"
+        app:layout_anchorGravity="center">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -84,6 +85,7 @@
             android:padding="10dp">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:borderWidth="0dp"
                 android:id="@+id/fab_url"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,11 +95,13 @@
                 android:clickable="true"
                 android:contentDescription="Url"
                 android:src="@android:drawable/stat_sys_download"
-                app:backgroundTint="@color/fab"
+                android:theme="@style/customFloatBtnSec"
 
                 app:elevation="0dp" />
 
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:borderWidth="0dp"
                 android:id="@+id/fab_Camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,11 +110,12 @@
                 android:layout_marginBottom="26dp"
                 android:clickable="true"
                 android:contentDescription="Camera"
-                app:backgroundTint="@color/fab"
                 android:src="@android:drawable/ic_menu_camera"
-                app:elevation="0dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+                android:theme="@style/customFloatBtnSec"
+                app:elevation="0dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:borderWidth="0dp"
                 android:id="@+id/fab_expand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -118,9 +123,9 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="6dp"
                 android:clickable="true"
-                app:backgroundTint="@color/red_1"
                 android:contentDescription="Expand"
                 android:src="@drawable/ic_baseline_add_circle_outline_24"
+                android:theme="@style/customFloatBtnPri"
                 app:elevation="0dp" />
         </LinearLayout>
 

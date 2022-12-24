@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -44,6 +46,7 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -120,9 +123,34 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    boolean isDark;
+    SharedPreferences shareconfig;
+    SharedPreferences.Editor edit;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        shareconfig=getSharedPreferences("AppPreferences",MODE_PRIVATE);
+        edit= shareconfig.edit();
+        isDark=shareconfig.getBoolean("darkmode",false);
+
+        if(isDark){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            edit.putBoolean("darkmode",isDark);
+            edit.commit();
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            edit.putBoolean("darkmode",isDark);
+            edit.commit();
+        }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .delayBeforeLoading(0)
@@ -270,6 +298,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     }
 
 
+
     @Override
     public void shareImages(ArrayList<String> paths){
 
@@ -321,7 +350,18 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         }
     }
 
+    @Override
+    public boolean getIsDark() {
+        return isDark;
+    }
 
+    @Override
+    public void setIsDark(boolean status) {
+        isDark=status;
+        edit.putBoolean("darkmode",isDark);
+        edit.commit();
+        this.recreate();
+    }
 
 
     private void showSliderDiaglogBox(){
@@ -696,13 +736,15 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             thisIndex = index;
         }
 
+
+
         @SuppressLint("ResourceAsColor")
         @Override
         public void onClick(View view) {
             if (selectedTab != thisIndex) {
-
                 //go to current fragment
                 selectedTab = thisIndex;
+
                 if(thisIndex!=0)
                 {
                     getSupportFragmentManager().beginTransaction()
@@ -722,21 +764,26 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 for (int i = 0; i < 3; i++) {
                     if (i != thisIndex) {
                         arrNavTextViews[i].setVisibility(View.GONE);
-                        arrNavImageViews[i].setImageResource(arrIcon[i]);
-                        arrNavLinearLayouts[i].setBackgroundColor(getResources().getColor(R.color.white, null));
-                        arrNavImageViews[i].setColorFilter(R.color.black);
+//                        arrNavImageViews[i].setImageResource(arrIcon[i]);
+//                        arrNavLinearLayouts[i].setBackgroundColor(getResources().getColor(R.color.space_grey, null));
+                        if(isDark){
+//                            arrNavImageViews[i].setColorFilter(R.color.white);
+                        }
+//                        arrNavImageViews[i].setColorFilter(Color.argb(255, 255, 255, 255));
+
                     }
                     else
                     {
-                        arrNavImageViews[i].setColorFilter(Color.argb(255, 255, 255, 255));
+                        if(isDark){
+//                            arrNavImageViews[i].setColorFilter(R.color.white);
+                        }
                     }
-
+//                        arrNavImageViews[i].setColorFilter(Color.argb(255, 255, 255, 255));
                     //change this icon
                     arrNavTextViews[thisIndex].setVisibility(View.VISIBLE);
-                    arrNavImageViews[thisIndex].setImageResource(arrSelectedIcon[thisIndex]);
-                    arrNavLinearLayouts[thisIndex].setBackgroundResource(arrRoundLayout[thisIndex]);
-
-                    //animation
+                    if(isDark){
+//                        arrNavImageViews[i].setColorFilter(R.color.white);
+                    }
                     ScaleAnimation scaleAnimation = new ScaleAnimation(0.8f, 1.0f, 1f, 1f, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0.0f);
                     scaleAnimation.setDuration(200);
                     scaleAnimation.setFillAfter(true);

@@ -37,5 +37,11 @@
     <color name="select">#fefefe</color>
 
 
+<!--    color dialog-->
+<!--    dark mode-->
+    <color name="ddmain">#65737e</color>
+<!--    light mode-->
+    <color name="dlmain">@color/white</color>
+
 
 </resources>

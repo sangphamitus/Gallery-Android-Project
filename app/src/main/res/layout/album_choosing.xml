@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <ImageButton
+            android:theme="@style/selectedImg"
             android:id="@+id/album_choosing_back"
             android:layout_width="60dp"
             android:layout_height="match_parent"
