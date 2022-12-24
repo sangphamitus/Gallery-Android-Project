@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SelectedPicture"
-    android:background="#ffffff"
+    android:theme="@style/customBackgroundSecond"
     >
     <RelativeLayout
+        android:theme="@style/customBackgroundSecond"
         android:translationZ="100dp"
         android:layout_alignParentTop="true"
         android:visibility="visible"
@@ -15,32 +16,28 @@
         android:layout_height="60dp"
         android:gravity="center_vertical"
         android:id="@+id/topNavSinglePic"
-        android:background="@color/white"
         >
 
         <ImageButton
+            android:theme="@style/selectedImg"
             android:id="@+id/backButton"
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:background="@drawable/button_line"
             android:src="@drawable/ic_baseline_arrow_back_24" />
-        <ImageButton
 
-            android:background="@drawable/button_line"
+        <ImageButton
             android:id="@+id/saveBtn"
             android:layout_width="70dp"
             android:layout_height="match_parent"
             android:layout_toStartOf="@id/infoBtn"
             android:gravity="right"
-
-            android:src="@drawable/ic_baseline_save_24" />
+            android:src="@drawable/ic_baseline_save_24"
+            android:theme="@style/selectedImg" />
         <ImageButton
-
-            android:background="@drawable/button_line"
+            android:theme="@style/selectedImg"
             android:id="@+id/infoBtn"
             android:layout_width="70dp"
             android:layout_height="match_parent"
-
             android:layout_alignParentEnd="true"
             android:gravity="right"
             android:src="@drawable/ic_baseline_info_24" />
@@ -73,6 +70,7 @@
             >
 
             <ImageView
+                android:theme="@style/selectedImg"
                 android:src="@drawable/rename"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -95,6 +93,7 @@
             >
 
             <ImageView
+                android:theme="@style/selectedImg"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/image"
@@ -117,6 +116,7 @@
             >
 
             <ImageView
+                android:theme="@style/selectedImg"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/photos"
@@ -143,10 +143,10 @@
             android:translationZ="10dp"
             android:layout_alignParentTop="true"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/black"/>
+            android:layout_height="1dp"/>
 
         <LinearLayout
+            android:theme="@style/customBackgroundSecond"
             android:id="@+id/navbar_fullscreen"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -163,44 +163,34 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_weight="1"
-                android:background="@drawable/button_line"
+                android:theme="@style/selectedImg"
                 android:src="@drawable/ic_baseline_share_24" />
-
             <ImageButton
-                android:background="@drawable/button_line"
-
+                android:theme="@style/selectedImg"
                 android:id="@+id/editBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:layout_weight="1"
-
                 android:src="@drawable/ic_baseline_edit_24" />
-
             <ImageButton
-                android:background="@drawable/button_line"
-
+                android:theme="@style/selectedImg"
                 android:id="@+id/deleteSingleBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:layout_weight="1"
-
                 android:src="@drawable/ic_baseline_delete_white_24" />
-
             <ImageButton
-                android:background="@drawable/button_line"
-
+                android:theme="@style/selectedImg"
                 android:id="@+id/rotateBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:layout_weight="1"
-
                 android:src="@drawable/ic_baseline_screen_rotation_24" />
-
             <ImageButton
-                android:background="@drawable/button_line"
+                android:theme="@style/selectedImg"
                 android:id="@+id/moreBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

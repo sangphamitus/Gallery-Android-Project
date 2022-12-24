@@ -11,4 +11,6 @@ public interface EditImageCallbacks {
     public void ConfirmBlur(Bitmap input);
     public void BitmapFilterChoose(Bitmap input,String name);
 
+    public void recreateOnDarkMode();
+
 }

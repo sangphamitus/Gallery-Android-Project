@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/custom_dialog"
+    android:theme="@style/dBackground"
+    android:paddingHorizontal="10dp"
+    android:paddingTop="20dp"
     >
     <TextView
         android:layout_width="match_parent"
@@ -32,20 +34,20 @@
         android:paddingTop="10dp"
         >
             <ImageButton
+                android:theme="@style/dSelectedBtn"
                 android:id="@+id/cancel_delete"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/button_line"
                 android:src="@drawable/ic_baseline_close_24"
                 android:layout_marginRight="20dp"
                 />
 
             <ImageButton
+                android:theme="@style/dSelectedBtn"
                 android:id="@+id/confirmDelete"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/button_line"
                 android:src="@drawable/ic_baseline_check_24" />
 
     </LinearLayout>

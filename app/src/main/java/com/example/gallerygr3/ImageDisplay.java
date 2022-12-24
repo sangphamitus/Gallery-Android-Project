@@ -416,6 +416,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         //
         Toast.makeText(getContext(),"ImageDisplay oncreatview",Toast.LENGTH_SHORT).show();
         // Get images

@@ -2,7 +2,9 @@ package com.example.gallerygr3;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -19,6 +21,8 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -26,7 +30,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class EditImage extends FragmentActivity implements EditImageCallbacks {
+public class EditImage extends AppCompatActivity implements EditImageCallbacks {
 
     ImageButton edit_cancel;
     ImageButton edit_confirm;
@@ -55,8 +59,13 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
 
     RelativeLayout edit_nav;
 
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_image);
 
@@ -265,6 +274,11 @@ public class EditImage extends FragmentActivity implements EditImageCallbacks {
     public void BitmapFilterChoose(Bitmap input, String name) {
         edit_img.setImageBitmap(input);
 
+    }
+
+    @Override
+    public void recreateOnDarkMode() {
+        recreate();
     }
 
 
