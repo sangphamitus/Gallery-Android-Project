@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:background="@color/white"
     android:paddingBottom="50dp"
+    android:theme="@style/customBackground"
     >
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -19,6 +20,7 @@
         </LinearLayout>
     </HorizontalScrollView>
     <LinearLayout
+        android:theme="@style/customBackgroundSecond"
         android:paddingTop="20dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -27,16 +29,17 @@
         android:gravity="center">
 
         <ImageButton
+            android:theme="@style/selectedImg"
             android:layout_marginHorizontal="35dp"
             android:id="@+id/backBtns"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="8dp"
-            android:background="@drawable/button_line"
             android:padding="2dp"
             android:src="@drawable/ic_baseline_close_24" />
 
         <ImageButton
+            android:theme="@style/selectedImg"
             android:layout_marginHorizontal="35dp"
             android:id="@+id/confirmBtns"
             android:layout_width="48dp"
@@ -44,7 +47,6 @@
             android:layout_alignParentEnd="true"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="8dp"
-            android:background="@drawable/button_line"
             android:padding="2dp"
             android:src="@drawable/ic_baseline_check_24" />
     </LinearLayout>

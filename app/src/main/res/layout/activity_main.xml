@@ -8,25 +8,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-
     android:orientation="horizontal"
     android:id="@+id/mainLayout"
-    android:background="@color/photos"
     >
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/navbar" />
+        android:layout_above="@+id/navbar"
+        android:theme="@style/customBackgroundSecond" />
 
 
     <RelativeLayout
         android:id="@+id/status"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="65dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/round_navbar"
+        android:theme="@style/customBackground"
         android:elevation="10dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
@@ -39,34 +39,31 @@
         >
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-
+            android:theme="@style/customFloatBtnNormal"
             android:id="@+id/selectAll"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
-
             android:layout_marginEnd="10dp"
             android:clickable="true"
-
+            app:borderWidth="0dp"
             android:src="@drawable/ic_baseline_playlist_add_check_24"
-            app:backgroundTint="#FFFFFF"
-
             app:elevation="0dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-
+            android:theme="@style/customFloatBtnNormal"
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-
+            app:borderWidth="0dp"
             android:layout_alignParentStart="true"
 
             android:layout_centerInParent="true"
-            android:layout_marginStart="10dp"
 
+            android:layout_marginStart="10dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_clear_24"
-            app:backgroundTint="#FFFFFF"
+
             app:elevation="0dp" />
 
         <TextView
@@ -86,6 +83,7 @@
 
 
     <RelativeLayout
+        android:theme="@style/customBackground"
         android:id="@+id/selectNavbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -102,7 +100,7 @@
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-
+            app:borderWidth="0dp"
             android:id="@+id/deleteImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,13 +108,13 @@
             android:layout_marginEnd="30dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_delete_outline_24"
-            app:backgroundTint="#FFFFFF"
+            android:theme="@style/customFloatBtnNormal"
             app:elevation="0dp">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-
+            app:borderWidth="0dp"
             android:id="@+id/createSliderBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,13 +122,14 @@
             android:layout_marginEnd="90dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_library_music_24"
-            app:backgroundTint="#FFFFFF"
+            android:theme="@style/customFloatBtnNormal"
+
             app:elevation="0dp">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-
+            app:borderWidth="0dp"
             android:id="@+id/shareMultipleBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,11 +137,12 @@
             android:layout_marginEnd="150dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_share_24"
-            app:backgroundTint="#FFFFFF"
+            android:theme="@style/customFloatBtnNormal"
+
             app:elevation="0dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-
+            app:borderWidth="0dp"
             android:id="@+id/addToAlbumBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -150,8 +150,9 @@
             android:layout_marginEnd="210dp"
             android:clickable="true"
             android:src="@drawable/ic_baseline_folder_24"
-            app:backgroundTint="#FFFFFF"
-            app:elevation="0dp">
+            android:theme="@style/customFloatBtnNormal"
+            app:elevation="0dp"
+            >
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
@@ -160,36 +161,27 @@
 
 
     <LinearLayout
-
         android:id="@+id/navbar"
-
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/round_navbar"
-        android:elevation="10dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingTop="5dp"
-
-
-        android:paddingBottom="5dp"
+        android:theme="@style/navbar"
         android:visibility="visible"
-
         android:weightSum="3"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:id="@+id/photosLayout"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/round_photos"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingStart="5dp"
-            android:paddingEnd="5dp">
+            android:paddingEnd="5dp"
+            android:theme="@style/fragBtn">
 
             <ImageView
                 android:id="@+id/photos_img"
@@ -197,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_baseline_photo"
-                app:tint="@color/photos" />
+                />
 
             <TextView
                 android:id="@+id/photos_txt"
@@ -205,7 +197,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="Photos"
-                android:textColor="@color/photos"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -213,13 +204,13 @@
         <LinearLayout
             android:id="@+id/albumsLayout"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingStart="5dp"
-            android:paddingEnd="5dp">
+            android:paddingEnd="5dp"
+            android:theme="@style/fragBtn">
 
             <ImageView
                 android:id="@+id/albums_img"
@@ -234,7 +225,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="Albums"
-                android:textColor="@color/photos"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
@@ -243,13 +233,13 @@
         <LinearLayout
             android:id="@+id/settingsLayout"
             android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingStart="5dp"
-            android:paddingEnd="5dp">
+            android:paddingEnd="5dp"
+            android:theme="@style/fragBtn">
 
             <ImageView
                 android:id="@+id/settings_img"
@@ -264,7 +254,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="Settings"
-                android:textColor="@color/photos"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone" />

@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/custom_dialog"
     android:layout_marginRight="20dp"
     android:layout_marginLeft="20dp"
-
+    android:theme="@style/dBackground"
+    android:paddingVertical="10dp"
     >
     <TextView
         android:layout_width="match_parent"
@@ -81,12 +81,12 @@
         </TableRow>
     </TableLayout>
     <ImageButton
+        android:theme="@style/dSelectedBtn"
         android:id="@+id/ok_button"
         android:layout_marginTop="20dp"
         android:layout_width="80dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:background="@drawable/button_line"
         android:src="@drawable/ic_baseline_check_24" />
 
 </LinearLayout>

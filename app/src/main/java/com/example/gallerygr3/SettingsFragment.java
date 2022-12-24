@@ -2,11 +2,13 @@ package com.example.gallerygr3;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 /**
@@ -24,6 +26,9 @@ public class SettingsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+//    darkmode var
+    SwitchCompat changeDark;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -58,6 +63,19 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        changeDark= (SwitchCompat) view.findViewById(R.id.switchDarkmode);
+        boolean status = ((MainActivity)getContext()).getIsDark();
+        changeDark.setChecked(status);
+        changeDark.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Toast.makeText(getContext(), "hello"+b, Toast.LENGTH_SHORT).show();
+                ((MainActivity)getContext()).setIsDark(b);
+            }
+        });
+
+        return view;
     }
 }
