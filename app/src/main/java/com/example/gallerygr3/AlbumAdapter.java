@@ -81,6 +81,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+
                 holder.isChoosing=!holder.isChoosing;
                 colorChoosingState(holder.itemView,holder.isChoosing);
                 choosingAlbumView =holder;
@@ -125,10 +126,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         view.setBackground(buttonDrawable);
     }
     public void colorChoosingState(View view,boolean isChoosing){
+
+
         int colorWhileChoosing=R.color.fullScreenBtn;
         if(isChoosing){
+            view.setBackgroundResource(R.drawable.custom_row_album);
             setBackgroundColor(view,colorWhileChoosing);
         } else {
+            view.setBackgroundResource(android.R.color.transparent);
             setBackgroundColor(view,null);
         }
     }

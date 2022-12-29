@@ -850,6 +850,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             imageList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    view.setBackgroundResource(R.drawable.custom_row_album);
+
                     Drawable buttonDrawable = view.getBackground();
                     buttonDrawable = DrawableCompat.wrap(buttonDrawable);
                     //the color is a direct color int and not a color resource
@@ -858,6 +860,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                     MoveOrCopy dialog=new MoveOrCopy(context, new MoveOrCopy.MoveOrCopyCallBack() {
                         @Override
                         public void dismissCallback(String method) {
+                            view.setBackgroundResource(android.R.color.transparent);
+
                             view.setBackgroundTintList(null);
                             TextView imgCount= view.findViewById(R.id.album_images_count);
                             imgCount.setText(String.format(context.getString(R.string.album_image_count),AlbumsFragment.albumList.get(i).imagePaths.size()));
@@ -935,12 +939,10 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 if(albumList.get(i).name.equals(AlbumsFragment.favourite))
                 {
                     viewHolder.imageView.setImageResource(R.drawable.ic_baseline_favorite_24);
-                    view.setBackgroundResource(R.drawable.custom_row_album_favorite);
+                    //view.setBackgroundResource(R.drawable.custom_row_album_favorite);
                 }else{
                     viewHolder.imageView.setImageResource(R.drawable.ic_baseline_folder_24);
-                    view.setBackgroundResource(R.drawable.custom_row_album);
-
-
+                    //view.setBackgroundResource(R.drawable.custom_row_album);
                 }
                 return view;
             }
