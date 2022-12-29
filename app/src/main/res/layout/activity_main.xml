@@ -83,7 +83,6 @@
 
 
     <RelativeLayout
-        android:theme="@style/customBackground"
         android:id="@+id/selectNavbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -92,15 +91,15 @@
         android:elevation="10dp"
         android:orientation="horizontal"
         android:paddingTop="5dp"
-
         android:paddingBottom="5dp"
+
+        android:theme="@style/customBackground"
         android:visibility="invisible"
         android:weightSum="3"
         app:layout_constraintBottom_toBottomOf="parent">
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:borderWidth="0dp"
             android:id="@+id/deleteImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -109,12 +108,12 @@
             android:clickable="true"
             android:src="@drawable/ic_baseline_delete_outline_24"
             android:theme="@style/customFloatBtnNormal"
+            app:borderWidth="0dp"
             app:elevation="0dp">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:borderWidth="0dp"
             android:id="@+id/createSliderBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -123,13 +122,13 @@
             android:clickable="true"
             android:src="@drawable/ic_baseline_library_music_24"
             android:theme="@style/customFloatBtnNormal"
+            app:borderWidth="0dp"
 
             app:elevation="0dp">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-            app:borderWidth="0dp"
             android:id="@+id/shareMultipleBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,11 +137,11 @@
             android:clickable="true"
             android:src="@drawable/ic_baseline_share_24"
             android:theme="@style/customFloatBtnNormal"
+            app:borderWidth="0dp"
 
             app:elevation="0dp"></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            app:borderWidth="0dp"
             android:id="@+id/addToAlbumBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -151,8 +150,22 @@
             android:clickable="true"
             android:src="@drawable/ic_baseline_folder_24"
             android:theme="@style/customFloatBtnNormal"
-            app:elevation="0dp"
-            >
+            app:borderWidth="0dp"
+            app:elevation="0dp">
+
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addToFavoriteBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="270dp"
+            android:clickable="true"
+            android:src="@drawable/ic_baseline_favorite_24"
+            android:theme="@style/customFloatBtnNormal"
+            app:borderWidth="0dp"
+            app:elevation="0dp">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
@@ -188,8 +201,7 @@
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_baseline_photo"
-                />
+                android:src="@drawable/ic_baseline_photo" />
 
             <TextView
                 android:id="@+id/photos_txt"

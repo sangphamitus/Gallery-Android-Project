@@ -228,5 +228,13 @@ public class AlbumsFragment extends Fragment{
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.create().show();
     }
-
+    public static Album favoriteAlbum(){
+        for (Album album: albumList){
+            if(album.name .equals(favourite))
+            {
+                return album;
+            }
+        }
+        return null;
+    }
 }

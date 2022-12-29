@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     FloatingActionButton createSliderBtn;
     FloatingActionButton shareMultipleBtn;
     FloatingActionButton addToAlbumBtn;
+    FloatingActionButton addToFavoriteBtn;
 
 
     public static String[] ImageExtensions = new String[] {
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         createSliderBtn=(FloatingActionButton)findViewById(R.id.createSliderBtn);
         shareMultipleBtn=(FloatingActionButton)findViewById(R.id.shareMultipleBtn);
         addToAlbumBtn=(FloatingActionButton)findViewById(R.id.addToAlbumBtn);
+        addToFavoriteBtn=(FloatingActionButton) findViewById(R.id.addToFavoriteBtn) ;
         informationSelected=(TextView)findViewById(R.id.infomationText);
 
 
@@ -269,6 +271,37 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             @Override
             public void onClick(View view) {
                 AlbumChoosingDialog dialog=new AlbumChoosingDialog(context);
+                dialog.show();
+            }
+        });
+
+        addToFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MoveOrCopy dialog=new MoveOrCopy(context, new MoveOrCopy.MoveOrCopyCallBack() {
+                    @Override
+                    public void dismissCallback(String method) {
+                        if(method.equals("remove"))
+                        {
+                            ImageDisplay ic= ImageDisplay.getInstance();
+                            clearChooseToDeleteInList();
+                            ic.clearClicked();
+                        }
+                    }
+
+                    @Override
+                    public void copiedCallback(String newImagePath) {
+                        AlbumsFragment.favoriteAlbum().imagePaths.add(newImagePath);
+                    }
+
+                    @Override
+                    public void removedCallback(String oldImagePath, String newImagePath) {
+                        ImageDisplay.getInstance().removeImage(oldImagePath);
+                        AlbumsFragment.favoriteAlbum().imagePaths.add(newImagePath);
+                    }
+
+
+                },AlbumsFragment.favoriteAlbum(), chooseToDeleteInList());
                 dialog.show();
             }
         });
@@ -901,7 +934,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                 view.setBackgroundTintList(null);
                 if(albumList.get(i).name.equals(AlbumsFragment.favourite))
                 {
-                    viewHolder.imageView.setImageResource(R.drawable.heart);
+                    viewHolder.imageView.setImageResource(R.drawable.ic_baseline_favorite_24);
                     view.setBackgroundResource(R.drawable.custom_row_album_favorite);
                 }else{
                     viewHolder.imageView.setImageResource(R.drawable.ic_baseline_folder_24);

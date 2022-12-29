@@ -73,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="6dp"
-        app:layout_anchor="@+id/imagedisplay"
+        app:layout_anchor="@id/imagedisplay"
         app:layout_anchorGravity="center">
 
         <LinearLayout
