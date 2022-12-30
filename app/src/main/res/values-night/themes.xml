@@ -86,6 +86,10 @@
         <item name="android:tint">?attr/colorPrimary</item>
     </style>
 
+    <style name="customHeart">
+        <item name="android:tint">?attr/colorOnPrimary</item>
+    </style>
+
 
 
 </resources>
