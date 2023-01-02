@@ -173,7 +173,8 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                 {
 
-                    ImageDelete.saveImage(rotateImage, imageRotated);
+                    String newImgPath=ImageDelete.saveImage(rotateImage, imageRotated);
+                    ImageDisplay.getInstance().addNewImage(newImgPath);
                     Intent intent=new Intent();
                     setResult(2,intent);
                     finish();
