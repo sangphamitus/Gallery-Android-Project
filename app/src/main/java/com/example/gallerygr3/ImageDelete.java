@@ -85,14 +85,16 @@ public final class ImageDelete extends Activity {
         File myFile = new File(imagePath);
 
         int i= 0;
-        String[] delim=imagePath.split("\\.");
-        String temp=delim[0];
+        String oldName=myFile.getName().split("\\.")[0];
+        String extension=myFile.getName().split("\\.")[1];
+//        String[] delim=imagePath.split("\\.");
+        String newName=oldName;
         while( myFile.exists())
         {
-            temp+="_"+i;
+            newName+="_"+i;
             i++;
-            myFile = new File(temp+"."+delim[1]);
-            temp=delim[0];
+            myFile = new File(myFile.getParent()+"/"+newName+"."+extension);
+            newName=oldName;
         }
         try {
             FileOutputStream out = new FileOutputStream(myFile);
