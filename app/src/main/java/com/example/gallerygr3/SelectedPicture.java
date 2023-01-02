@@ -173,7 +173,8 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                 {
 
-                    ImageDelete.saveImage(rotateImage, imageRotated);
+                    String newImgPath=ImageDelete.saveImage(rotateImage, imageRotated);
+                    ImageDisplay.getInstance().addNewImage(newImgPath);
                     Intent intent=new Intent();
                     setResult(2,intent);
                     finish();
@@ -406,15 +407,15 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                         Intent get=result.getData();
                        String imgName=get.getStringExtra("imgPath");
-                       String[] temp= new String[1];
-                        temp[0]= imgName;
+                       ImageDisplay.getInstance().addNewImage(imgName);
+
                         Intent intent=new Intent();
                         setResult(2,intent);
                         finish();
 
-                        aa.setImageView(currentSelectedName,currentPosition);
-                        ImageDisplay ic= ImageDisplay.getInstance();
-                        ic.setNameAndPhoto();
+//                        aa.setImageView(currentSelectedName,currentPosition);
+//                        ImageDisplay ic= ImageDisplay.getInstance();
+//                        ic.setNameAndPhoto();
 
                     }
                                   }
@@ -676,6 +677,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                             String[] temp = new String[1];
                             temp[0] = ImageDelete.saveImage(rotateImage2, imageRotated2);
+                            ImageDisplay.getInstance().addNewImage(temp[0]);
                             Intent intent=new Intent();
                             setResult(2,intent);
                             finish();

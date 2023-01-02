@@ -765,7 +765,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == 2)
                     {
-                        ((MainActivity) getContext()).readAgain();
+//                        ((MainActivity) getContext()).readAgain();
                     }
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
@@ -935,8 +935,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
 
 //                        String dateString = intf.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL);
 //                        Date lastModDate = new Date(file.lastModified());
-                    size.add(((Number) file.length()).intValue());
-                    dates.add(lastModDate.toString());
+                    size.add(0,((Number) file.length()).intValue());
+                    dates.add(0,lastModDate.toString());
 //                        Log.i("PHOTO DATE", "Dated : " + dateString); //Display dateString. You can do/use it your own way
                 }
             } catch (IOException e) {
@@ -944,11 +944,11 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             }
             if (intf == null) {
                 Date lastModDate = new Date(file.lastModified());
-                dates.add(lastModDate.toString());
+                dates.add(0,lastModDate.toString());
 //                    Log.i("PHOTO DATE", "Dated : " + lastModDate.toString());//Dispaly lastModDate. You can do/use it your own way
             }
-            images.add(imagePath);
-            names.add(getDisplayName(imagePath));
+            images.add(0,imagePath);
+            names.add(0,getDisplayName(imagePath));
             notifyChanged();
         }
     }
