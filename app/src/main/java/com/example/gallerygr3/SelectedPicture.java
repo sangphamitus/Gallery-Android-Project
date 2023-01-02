@@ -677,6 +677,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                             String[] temp = new String[1];
                             temp[0] = ImageDelete.saveImage(rotateImage2, imageRotated2);
+                            ImageDisplay.getInstance().addNewImage(temp[0]);
                             Intent intent=new Intent();
                             setResult(2,intent);
                             finish();
