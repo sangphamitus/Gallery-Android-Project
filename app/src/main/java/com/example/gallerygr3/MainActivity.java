@@ -618,6 +618,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     public void filterImage(String name){
         Bitmap test= BitmapFactory.decodeFile(name);
+        if(test ==null)return;
         boolean have= false;
         int HashCode= ImageDelete.hashBitmap(test);
         if(!hashMap.containsKey(HashCode))

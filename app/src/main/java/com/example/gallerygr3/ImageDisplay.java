@@ -604,7 +604,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         }
 
         if (fileName.length()==0){
-            fileName= (new Date()).toString();
+            fileName= (new Date()).getTime() +"";
 
         }
         fullNameFile=((MainActivity)getContext()).getPictureDirectory() + "/" + fileName + fileExtension;
