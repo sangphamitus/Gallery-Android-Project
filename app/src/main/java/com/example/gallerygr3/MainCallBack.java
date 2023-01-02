@@ -29,7 +29,7 @@ public interface MainCallBack {
     public void clearChooseToDeleteInList();
     public void addImageUpdate(String[] input);
 
-
+    public void readAgain();
     public void shareImages(ArrayList<String> paths);
     public boolean getIsDark();
     public void setIsDark(boolean status);

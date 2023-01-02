@@ -87,7 +87,7 @@ public class EditImage extends AppCompatActivity implements EditImageCallbacks {
 
               //  ((MainActivity)getApplicationContext()).UpdateChangeImageOnMainActivity();
 
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(),SelectedPicture.class);
                 intent.putExtra("imgPath", temp[0]);
                 setResult(RESULT_OK,intent );
 

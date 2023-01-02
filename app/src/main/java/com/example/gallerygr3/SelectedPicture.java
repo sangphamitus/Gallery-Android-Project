@@ -222,9 +222,8 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                 intent.putExtra("imgPath", currentSelectedName);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-//                someActivityResultLauncher.launch(intent);
-startActivity(intent);
+               someActivityResultLauncher.launch(intent);
+//startActivity(intent);
 
             }
         });
@@ -405,7 +404,7 @@ startActivity(intent);
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // There are no request codes
 
-                        Intent get=getIntent();
+                        Intent get=result.getData();
                        String imgName=get.getStringExtra("imgPath");
                        String[] temp= new String[1];
                         temp[0]= imgName;
@@ -416,6 +415,7 @@ startActivity(intent);
                         aa.setImageView(currentSelectedName,currentPosition);
                         ImageDisplay ic= ImageDisplay.getInstance();
                         ic.setNameAndPhoto();
+
                     }
                                   }
             });
