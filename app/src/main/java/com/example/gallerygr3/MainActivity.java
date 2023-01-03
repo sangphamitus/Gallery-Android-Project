@@ -469,8 +469,14 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
                                 (new String[chooseToDeleteInList.size()]);
                         String temp=select[0];
                         // String[] select= (String[]) selectedImages.toArray();
+                        for (String file : select)
+                        {
+                            File f = new File(file);
+                            ((MainActivity) context).removeInHash(f.getAbsolutePath());
+                        }
                         ImageDelete.DeleteImage(select);
                         removeImageUpdate(select);
+
                         clearChooseToDeleteInList(); // ??
                         ic.deleteClicked(); // xoá clicked
                         customDialog.dismiss();// ẩn diaglogbox
@@ -523,6 +529,19 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         {
             FileInPaths.remove(name);
             ImageDisplay.getInstance().removeImage(name);
+            Bitmap test= BitmapFactory.decodeFile(name);
+            if(test ==null)return;
+            // boolean have= false;
+            int HashCode= ImageDelete.hashBitmap(test);
+            if(!hashMap.containsKey(HashCode))
+            {
+                FileInPaths.add(name);
+                hashMap.put(HashCode,test);
+            }
+            else {
+                hashMap.remove(HashCode);
+                ImageDelete.DeleteImage(name);
+            }
         }
 
     }
@@ -617,9 +636,9 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
 
     public void filterImage(String name){
-        Bitmap test= BitmapFactory.decodeFile(name);
+      Bitmap test= BitmapFactory.decodeFile(name);
         if(test ==null)return;
-        boolean have= false;
+       // boolean have= false;
         int HashCode= ImageDelete.hashBitmap(test);
         if(!hashMap.containsKey(HashCode))
         {
@@ -670,6 +689,39 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         }
 
     }
+    @Override
+    public boolean checkInHash(String name)
+    {
+        Bitmap test= BitmapFactory.decodeFile(name);
+
+        if(test ==null)return false;
+        // boolean have= false;
+        int HashCode= ImageDelete.hashBitmap(test);
+        if(!hashMap.containsKey(HashCode))
+        {
+
+            hashMap.put(HashCode,test);
+            return true;
+        }
+        return false;
+
+    }
+    @Override
+    public void removeInHash(String name)
+    {
+        Bitmap test= BitmapFactory.decodeFile(name);
+
+        if(test ==null)return ;
+        // boolean have= false;
+        int HashCode= ImageDelete.hashBitmap(test);
+        if(hashMap.containsKey(HashCode))
+        {
+            hashMap.remove(HashCode);
+        }
+
+
+    }
+
 
     private void changeFileInFolder(String Dir, String oldName, String newName) {
 

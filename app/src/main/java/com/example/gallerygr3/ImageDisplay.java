@@ -618,9 +618,8 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         Notification noti = new NotificationCompat.Builder((MainActivity)getContext(),"Download " +fullNameFile )
                 .setContentText("Downloaded item")
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.ic_launcher_background).build();
 
-                .build();
 
 
 
@@ -924,7 +923,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         {
             return;
         }
-        if(!images.contains(imagePath))
+        if(!images.contains(imagePath)&& ((MainActivity )getContext()).checkInHash(imagePath) )
         {
             ExifInterface intf = null;
             try {
