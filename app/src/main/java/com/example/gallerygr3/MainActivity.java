@@ -704,6 +704,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     @Override
     public void removeInHash(String name)
     {
+        File check=new File(name);
+
         Bitmap test= BitmapFactory.decodeFile(name);
 
         if(test ==null)return ;

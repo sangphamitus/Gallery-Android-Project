@@ -955,6 +955,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         int index=this.images.indexOf(name);
         if(index != -1)
         {
+            ((MainActivity )getContext()).removeInHash(name);
             this.images.remove(index);
             this.names.remove(index);
             this.dates.remove(index);

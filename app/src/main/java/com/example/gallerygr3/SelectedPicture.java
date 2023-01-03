@@ -761,11 +761,16 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                             File oldImg=new File(paths[currentPosition]);
                             String oldImg_name=oldImg.getName();
                             File newImg= new File(paths[currentPosition].replace(oldImg_name,newName));
+
+                            ic.removeImage(oldImg.getAbsolutePath());
                             if(oldImg.renameTo(newImg)){
                                 newImg= new File(paths[currentPosition].replace(oldImg_name,newName));
+//                                ic.removeImage(oldImg.getAbsolutePath());
                                 ic.addNewImage(newImg.getAbsolutePath());
-                                ic.removeImage(oldImg.getAbsolutePath());
                                 Toast.makeText(getApplicationContext(),"Rename succeeded",Toast.LENGTH_SHORT).show();
+                            } else{
+                                ic.addNewImage(oldImg.getAbsolutePath());
+                                Toast.makeText(getApplicationContext(),"Rename failed",Toast.LENGTH_SHORT).show();
                             }
                             renameImageUpdate(newName);
 
