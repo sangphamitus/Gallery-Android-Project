@@ -923,7 +923,7 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
         {
             return;
         }
-        if(!images.contains(imagePath)&& ((MainActivity )getContext()).checkInHash(imagePath) )
+        if(!images.contains(imagePath)&& MainActivity.checkInHash(imagePath) )
         {
             ExifInterface intf = null;
             try {

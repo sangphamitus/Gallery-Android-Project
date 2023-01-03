@@ -56,8 +56,8 @@ public final class ImageDelete extends Activity {
         return running;
     }
 
-    public static int hashBitmap(Bitmap bitmap) {
-        int hash_result = 0;
+    public static long hashBitmap(Bitmap bitmap) {
+        long hash_result = 0;
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
         hash_result = (hash_result << 7) ^ h;

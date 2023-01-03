@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     String Picture;
     ArrayList<String> folderPaths=new ArrayList<String>();
     public ArrayList<String> FileInPaths=new ArrayList<String>();
-    HashMap<Integer,Bitmap> hashMap= new HashMap<Integer, Bitmap>();
+    static  HashMap<Long,Bitmap> hashMap= new HashMap<Long, Bitmap>();
 //    PhotosFragment photo;
 
     LinearLayout navbar;
@@ -529,7 +529,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
             ImageDisplay.getInstance().removeImage(name);
             if(test ==null)return;
             // boolean have= false;
-            int HashCode= ImageDelete.hashBitmap(test);
+            long HashCode= ImageDelete.hashBitmap(test);
             if(hashMap.containsKey(HashCode))
             {
 
@@ -634,7 +634,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
       Bitmap test= BitmapFactory.decodeFile(name);
         if(test ==null)return;
        // boolean have= false;
-        int HashCode= ImageDelete.hashBitmap(test);
+        long  HashCode= ImageDelete.hashBitmap(test);
         if(!hashMap.containsKey(HashCode))
         {
             FileInPaths.add(name);
@@ -684,19 +684,23 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         }
 
     }
-    @Override
-    public boolean checkInHash(String name)
+
+    public static boolean checkInHash(String name)
     {
         Bitmap test= BitmapFactory.decodeFile(name);
 
         if(test ==null)return false;
         // boolean have= false;
-        int HashCode= ImageDelete.hashBitmap(test);
+        long HashCode= ImageDelete.hashBitmap(test);
         if(!hashMap.containsKey(HashCode))
         {
 
             hashMap.put(HashCode,test);
             return true;
+        }
+        else
+        {
+            ImageDelete.DeleteImage(name);
         }
         return false;
 
@@ -708,7 +712,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
         if(test ==null)return ;
         // boolean have= false;
-        int HashCode= ImageDelete.hashBitmap(test);
+        long HashCode= ImageDelete.hashBitmap(test);
         if(hashMap.containsKey(HashCode))
         {
             hashMap.remove(HashCode);
