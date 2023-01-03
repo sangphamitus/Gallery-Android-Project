@@ -91,5 +91,11 @@
     </style>
 
 
+<!--    fix bug -->
+    <style name="fixImage">
+        <item name="android:tint">@android:color/transparent</item>
+    </style>
+
+
 
 </resources>

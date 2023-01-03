@@ -4,7 +4,9 @@
     android:theme="@style/dialogbackgroud"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:stretchColumns="1">
+    android:stretchColumns="1"
+
+    >
 
     <TableLayout
         android:layout_width="match_parent"
@@ -12,6 +14,7 @@
         android:stretchColumns="1"
         >
         <TableRow
+            android:theme="@style/fixImage"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center_vertical"
