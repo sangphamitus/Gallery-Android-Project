@@ -20,7 +20,7 @@ public interface MainCallBack {
 
     public void renameImageUpdate(String oldNam, String newName);
 
-    public boolean checkInHash(String name);
+
     public void removeInHash(String name);
     public void Holding(boolean isHolding);
     public void SelectedTextChange();
