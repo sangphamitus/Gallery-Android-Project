@@ -230,13 +230,13 @@ public class AlbumDisplayFragment extends Fragment implements ImageDisplay.LongC
 
                         @Override
                         public void copiedCallback(String newImagePath) {
-                            ImageDisplay.getInstance().addNewImage(newImagePath);
+                            ImageDisplay.getInstance().addNewImage(newImagePath,1);
                         }
 
                         @Override
                         public void removedCallback(String oldImagePath, String newImagePath) {
                             ((MainActivity) context).FileInPaths.remove(oldImagePath);
-                            ImageDisplay.getInstance().addNewImage(newImagePath);
+                            ImageDisplay.getInstance().addNewImage(newImagePath,1);
                         }
                     };
                     MoveOrCopy dialog=new MoveOrCopy(context,callBack,album,addedPaths);

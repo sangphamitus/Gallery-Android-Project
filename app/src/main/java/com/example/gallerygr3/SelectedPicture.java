@@ -174,7 +174,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                 {
 
                     String newImgPath=ImageDelete.saveImage(rotateImage, imageRotated);
-                    ImageDisplay.getInstance().addNewImage(newImgPath);
+                    ImageDisplay.getInstance().addNewImage(newImgPath,0);
                     Intent intent=new Intent();
                     setResult(2,intent);
                     finish();
@@ -408,7 +408,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                         Intent get=result.getData();
                        String imgName=get.getStringExtra("imgPath");
 
-                           ImageDisplay.getInstance().addNewImage(imgName);
+                           ImageDisplay.getInstance().addNewImage(imgName,0);
                         Intent intent=new Intent();
                         setResult(2,intent);
                         finish();
@@ -679,7 +679,7 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
 
                             temp[0] = ImageDelete.saveImage(rotateImage2, imageRotated2);
 
-                                ImageDisplay.getInstance().addNewImage(temp[0]);
+                                ImageDisplay.getInstance().addNewImage(temp[0],0);
 
 
                             Intent intent=new Intent();
@@ -770,10 +770,10 @@ public class SelectedPicture extends AppCompatActivity implements IselectedPictu
                             if(oldImg.renameTo(newImg)){
                                 newImg= new File(paths[currentPosition].replace(oldImg_name,newName));
 //                                ic.removeImage(oldImg.getAbsolutePath());
-                                ic.addNewImage(newImg.getAbsolutePath());
+                                ic.addNewImage(newImg.getAbsolutePath(),0);
                                 Toast.makeText(getApplicationContext(),"Rename succeeded",Toast.LENGTH_SHORT).show();
                             } else{
-                                ic.addNewImage(oldImg.getAbsolutePath());
+                                ic.addNewImage(oldImg.getAbsolutePath(),0);
                                 Toast.makeText(getApplicationContext(),"Rename failed",Toast.LENGTH_SHORT).show();
                             }
                             renameImageUpdate(newName);

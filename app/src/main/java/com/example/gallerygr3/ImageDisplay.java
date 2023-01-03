@@ -917,14 +917,21 @@ public class ImageDisplay extends Fragment implements chooseAndDelete{
             // ====================================================
         }
     }
-    public void addNewImage(String imagePath){
+    public void addNewImage(String imagePath,int status){
         File file = new File(imagePath);
         if (!file.exists()) //Extra check, Just to validate the given path
         {
             return;
         }
-        if(!images.contains(imagePath)&& MainActivity.checkInHash(imagePath) )
+        if(!images.contains(imagePath) )
         {
+                if(status==0)
+                {
+                    if(!MainActivity.checkInHash((imagePath)))
+                    {
+                        return;
+                    }
+                }
             ExifInterface intf = null;
             try {
                 intf = new ExifInterface(imagePath);
