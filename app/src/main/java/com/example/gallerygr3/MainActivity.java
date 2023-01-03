@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
     FloatingActionButton addToAlbumBtn;
     FloatingActionButton addToFavoriteBtn;
 
-
     public static String[] ImageExtensions = new String[] {
             ".jpg",
             ".png",
@@ -134,6 +133,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         shareconfig=getSharedPreferences("AppPreferences",MODE_PRIVATE);
         edit= shareconfig.edit();
         isDark=shareconfig.getBoolean("darkmode",false);
@@ -151,7 +151,8 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        FileInPaths.clear();
+        hashMap.clear();
 
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .delayBeforeLoading(0)
@@ -393,7 +394,7 @@ public class MainActivity extends AppCompatActivity  implements MainCallBack {
         isDark=status;
         edit.putBoolean("darkmode",isDark);
         edit.commit();
-        this.recreate();
+  this.recreate();
     }
 
 
